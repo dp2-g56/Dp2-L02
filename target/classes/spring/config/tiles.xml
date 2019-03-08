@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+  * tiles.xml 
+  * 
+  * Copyright (C) 2019 Universidad de Sevilla 
+  * 
+  * The use of this project is hereby constrained to the conditions of the 
+  * TDG Licence, a copy of which you may download from 
+  * http://www.tdg-seville.info/License.html 
+-->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:util="http://www.springframework.org/schema/util" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd
+	">
+
+	<util:list id="tiles">
+		<value>/views/master-page/tiles.xml</value>		
+		<value>/views/misc/tiles.xml</value>		
+		<value>/views/security/tiles.xml</value>
+		<value>/views/welcome/tiles.xml</value>
+		
+		<value>/views/administrator/tiles.xml</value>
+		<value>/views/brotherhood/tiles.xml</value>
+		<value>/views/profile/tiles.xml</value>
+		
+		<value>/views/member/tiles.xml</value>
+	</util:list>
+
+</beans>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!-- 
+ * tiles.xml
+ *
+ * Copyright (C) 2018 Universidad de Sevilla
+ * 
+ * The use of this project is hereby constrained to the conditions of the 
+ * TDG Licence, a copy of which you may download from 
+ * http://www.tdg-seville.info/License.html
+ -->
+
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"
+       "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+       
+<tiles-definitions>
+
+	<definition name="authenticated/showProfile" extends="master.page">	
+		<put-attribute name="title" value="My profile" />
+		<put-attribute name="body" value="/views/actor/listSocialProfiles.jsp" />
+	</definition>
+	
+	<definition name="authenticated/socialProfile/create" extends="master.page">	
+		<put-attribute name="title" value="Create/Edit Social Profile" />
+		<put-attribute name="body" value="/views/actor/editSocialProfile.jsp" />
+	</definition>
+	
+	<definition name="authenticated/edit" extends="master.page">	
+		<put-attribute name="title" value="Edit Personal data" />
+		<put-attribute name="body" value="/views/actor/editPersonalData.jsp" />
+	</definition>
+	
+	<definition name="authenticated/picture/list" extends="master.page">	
+		<put-attribute name="title" value="Pictures of the brotherhood" />
+		<put-attribute name="body" value="/views/actor/picturesBrotherhood.jsp" />
+	</definition>
+	
+	<definition name="authenticated/picture/create" extends="master.page">	
+		<put-attribute name="title" value="Add Picture" />
+		<put-attribute name="body" value="/views/actor/createPictureBrotherhood.jsp" />
+	</definition>
+
+	
+</tiles-definitions>

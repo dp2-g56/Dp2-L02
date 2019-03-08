@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!-- 
+ * tiles_es.xml
+ *
+ * Copyright (C) 2019 Universidad de Sevilla
+ * 
+ * The use of this project is hereby constrained to the conditions of the 
+ * TDG Licence, a copy of which you may download from 
+ * http://www.tdg-seville.info/License.html
+ -->
+
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"
+       "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+      
+<tiles-definitions>
+
+	<definition name="area/brotherhood/showArea" extends="master.page">	
+		<put-attribute name="title" value="Mi area" />
+		<put-attribute name="body" value="/views/brotherhood/showArea.jsp" />
+	</definition>
+		
+	<definition name="procession/brotherhood/list" extends="master.page">	
+		<put-attribute name="title" value="Procesiones" />
+		<put-attribute name="body" value="/views/brotherhood/processionList.jsp" />
+	</definition>
+	
+	<definition name="area/brotherhood/selectArea" extends="master.page">	
+		<put-attribute name="title" value="Seleccionar area" />
+		<put-attribute name="body" value="/views/brotherhood/selectArea.jsp" />
+	</definition>
+	
+	<definition name="area/brotherhood/showPictures" extends="master.page">	
+		<put-attribute name="title" value="Imagenes" />
+		<put-attribute name="body" value="/views/brotherhood/showPictures.jsp" />
+	</definition>	
+	
+	<definition name="procession/brotherhood/create" extends="master.page">	
+		<put-attribute name="title" value="Crear una Procesion" />
+		<put-attribute name="body" value="/views/brotherhood/createProcession.jsp" />
+	</definition>
+	
+	<definition name="float/brotherhood/list" extends="master.page">	
+		<put-attribute name="title" value="Mis Pasos" />
+		<put-attribute name="body" value="/views/brotherhood/showFloats.jsp" />
+	</definition>
+	
+	<definition name="float/brotherhood/create" extends="master.page">	
+		<put-attribute name="title" value="Crear un paso" />
+		<put-attribute name="body" value="/views/brotherhood/createFloat.jsp" />
+	</definition>
+	
+	<definition name="brotherhood/requests" extends="master.page">	
+		<put-attribute name="title" value="Solicitudes" />
+		<put-attribute name="body" value="/views/brotherhood/requests.jsp" />
+	</definition>
+	
+	<definition name="procession/brotherhood/requests" extends="master.page">	
+		<put-attribute name="title" value="Requests" />
+		<put-attribute name="body" value="/views/brotherhood/requestsProcession.jsp" />
+	</definition>
+	
+	<definition name="picture/brotherhood/picturesFloat" extends="master.page">	
+		<put-attribute name="title" value="Imagenes" />
+		<put-attribute name="body" value="/views/brotherhood/picturesFloat.jsp" />
+	</definition>
+	
+	<definition name="picture/brotherhood/createPicture" extends="master.page">	
+		<put-attribute name="title" value="Añadir imagenes" />
+		<put-attribute name="body" value="/views/brotherhood/createPictureFloat.jsp" />
+	</definition>
+	
+	
+	<definition name="brotherhood/editRequest" extends="master.page">	
+		<put-attribute name="title" value="Editar solicitud" />
+		<put-attribute name="body" value="/views/brotherhood/editRequest.jsp" />
+	</definition>
+	
+	<definition name="member/brotherhood/list" extends="master.page">	
+		<put-attribute name="title" value="Miembros" />
+		<put-attribute name="body" value="/views/brotherhood/members.jsp" />
+	</definition>
+	
+	<definition name="enrolment/brotherhood/list" extends="master.page">	
+		<put-attribute name="title" value="Inscripciones pendientes" />
+		<put-attribute name="body" value="/views/brotherhood/pendingEnrolments.jsp" />
+	</definition>
+		
+	<definition name="processionCheckbox/brotherhood/createCheckbox" extends="master.page">	
+		<put-attribute name="title" value="Crear una Procesion" />
+		<put-attribute name="body" value="/views/brotherhood/createProcessionCheckbox.jsp" />
+	</definition>
+	
+	<definition name="enrolment/brotherhood/assignPosition" extends="master.page">	
+		<put-attribute name="title" value="Asignar posicion" />
+		<put-attribute name="body" value="/views/brotherhood/assignPosition.jsp" />
+	</definition>
+	
+</tiles-definitions>

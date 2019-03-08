@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!-- 
+ * tiles_es.xml
+ *
+ * Copyright (C) 2019 Universidad de Sevilla
+ * 
+ * The use of this project is hereby constrained to the conditions of the 
+ * TDG Licence, a copy of which you may download from 
+ * http://www.tdg-seville.info/License.html
+ -->
+
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"
+       "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+      
+<tiles-definitions>
+
+	<definition name="anonymous/createMember" extends="master.page">	
+		<put-attribute name="title" value="Registrarse como Miembro" />
+		<put-attribute name="body" value="/views/anonymous/createMember.jsp" />
+	</definition>
+	
+	<definition name="anonymous/createBrotherhood" extends="master.page">	
+		<put-attribute name="title" value="Registrarse como Hermandad" />
+		<put-attribute name="body" value="/views/anonymous/createBrotherhood.jsp" />
+	</definition>
+	
+	<definition name="termsAndConditionsES" extends="master.page">	
+		<put-attribute name="body" value="/views/anonymous/termsAndConditionsES.jsp" />
+	</definition>
+	
+	<definition name="showAll/annonymous/brotherhood/list" extends="master.page">	
+		<put-attribute name="title" value="Listado de hermandades" />
+		<put-attribute name="body" value="/views/anonymous/showBrotherhoods.jsp" />
+	</definition>
+	
+	<definition name="showAll/annonymous/float/list" extends="master.page">	
+		<put-attribute name="title" value="Lista de pasos" />
+		<put-attribute name="body" value="/views/anonymous/showFloats.jsp" />
+	</definition>
+	
+	<definition name="showAll/annonymous/member/list" extends="master.page">	
+		<put-attribute name="title" value="Lista de miembros" />
+		<put-attribute name="body" value="/views/anonymous/showMembers.jsp" />
+	</definition>
+	
+	<definition name="showAll/annonymous/procession/list" extends="master.page">	
+		<put-attribute name="title" value="Lista de procesiones" />
+		<put-attribute name="body" value="/views/anonymous/showProcessions.jsp" />
+	</definition>
+	
+	<definition name="showAll/annonymous/picturesFloat" extends="master.page">	
+		<put-attribute name="title" value="Imagenes del paso" />
+		<put-attribute name="body" value="/views/anonymous/picturesFloat.jsp" />
+	</definition>
+	
+	<definition name="showAll/annonymous/picturesBrotherhood" extends="master.page">	
+		<put-attribute name="title" value="Imagenes de la hermandad" />
+		<put-attribute name="body" value="/views/anonymous/picturesBrotherhood.jsp" />
+	</definition>
+		
+	
+</tiles-definitions>

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+ * security.xml
+ *
+ * Copyright (C) 2019 Universidad de Sevilla
+ * 
+ * The use of this project is hereby constrained to the conditions of the 
+ * TDG Licence, a copy of which you may download from 
+ * http://www.tdg-seville.info/License.html
+ -->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:security="http://www.springframework.org/schema/security"	
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd		
+        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.2.xsd
+    ">
+
+	<!-- Security infrastructure -->
+
+	<bean id="loginService" class="security.LoginService" />
+
+	<bean id="passwordEncoder"
+		class="org.springframework.security.authentication.encoding.Md5PasswordEncoder" />
+
+	<!-- Access control -->
+
+	<security:http auto-config="true" use-expressions="true">
+	
+	
+		<!-- Permit all -->
+		<security:intercept-url pattern="/" access="permitAll" /> 
+		<security:intercept-url pattern="/favicon.ico" access="permitAll" /> 
+		<security:intercept-url pattern="/images/**" access="permitAll" /> 
+		<security:intercept-url pattern="/scripts/**" access="permitAll" /> 
+		<security:intercept-url pattern="/styles/**" access="permitAll" /> 
+		<security:intercept-url pattern="/views/misc/index.jsp" access="permitAll" /> 
+		<security:intercept-url pattern="/security/login.do" access="permitAll" /> 
+		<security:intercept-url pattern="/security/loginFailure.do" access="permitAll" /> 
+		<security:intercept-url pattern="/welcome/index.do" access="permitAll" /> 
+		<security:intercept-url pattern="/anonymous/termsAndConditionsEN.do" access="permitAll" />
+		<security:intercept-url pattern="/anonymous/termsAndConditionsES.do" access="permitAll" />
+		<security:intercept-url pattern="/showAll/annonymous/**" access="permitAll" /> 
+	
+		<!-- admin -->
+		<security:intercept-url pattern="/words/administrator/**" access="hasRole('ADMIN')" />
+		<security:intercept-url pattern="/suspicious/administrator/**" access="hasRole('ADMIN')"  />
+		<security:intercept-url pattern="/configuration/administrator/**" access="hasRole('ADMIN')"/>
+		<security:intercept-url pattern="/position/administrator/**" access="hasRole('ADMIN')"/> 
+		<security:intercept-url pattern="/area/administrator/**" access="hasRole('ADMIN')" />
+		<security:intercept-url pattern="/statistics/administrator/**" access="hasRole('ADMIN')" />
+		<security:intercept-url pattern="/priority/administrator/**" access="hasRole('ADMIN')" />
+		<security:intercept-url pattern="/broadcast/administrator/**" access="hasRole('ADMIN')"  />
+		<security:intercept-url pattern="/administrator/**" access="hasRole('ADMIN')"  />
+		
+		<!-- brotherhood -->
+		<security:intercept-url pattern="/area/brotherhood/**" access="hasRole('BROTHERHOOD')" />
+		<security:intercept-url pattern="/procession/brotherhood/**" access="hasRole('BROTHERHOOD')" />
+		<security:intercept-url pattern="/float/brotherhood/**" access="hasRole('BROTHERHOOD')" />
+		<security:intercept-url pattern="/request/brotherhood/**" access="hasRole('BROTHERHOOD')" />
+		<security:intercept-url pattern="/member/brotherhood/**" access="hasRole('BROTHERHOOD')" />
+		<security:intercept-url pattern="/enrolment/brotherhood/**" access="hasRole('BROTHERHOOD')" />
+		
+		<!-- Member -->
+		<security:intercept-url pattern="/request/member/**" access="hasRole('MEMBER')" /> 
+		<security:intercept-url pattern="/finder/member/**" access="hasRole('MEMBER')" /> 
+		<security:intercept-url pattern="/enrolment/member/**" access="hasRole('MEMBER')" /> 
+		<security:intercept-url pattern="/picture/member/**" access="hasRole('MEMBER')" /> 
+		<security:intercept-url pattern="/brotherhood/member/**" access="hasRole('MEMBER')" /> 
+		<security:intercept-url pattern="/float/member/**" access="hasRole('MEMBER')" /> 
+		
+		<!-- Authenticated -->
+		 <security:intercept-url pattern="/authenticated/**" access="isAuthenticated()" /> 
+		 <security:intercept-url pattern="/box/actor/**" access="isAuthenticated()" /> 
+		 <security:intercept-url pattern="/message/actor/**" access="isAuthenticated()" /> 
+		 
+		 
+		<!-- Anonymous -->
+		<security:intercept-url pattern="/anonymous/**" access="isAnonymous()" />
+		
+		
+		<!-- None -->
+		<security:intercept-url pattern="/**" access="hasRole('NONE')" />
+
+		<security:form-login 
+			login-page="/security/login.do"
+			password-parameter="password" 
+			username-parameter="username"
+			authentication-failure-url="/security/loginFailure.do" />
+
+		<security:logout 
+			logout-success-url="/" 
+			invalidate-session="true" />
+	</security:http>
+
+</beans>

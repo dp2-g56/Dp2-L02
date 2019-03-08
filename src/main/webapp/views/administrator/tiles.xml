@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!-- 
+ * tiles.xml
+ *
+ * Copyright (C) 2019 Universidad de Sevilla
+ * 
+ * The use of this project is hereby constrained to the conditions of the 
+ * TDG Licence, a copy of which you may download from 
+ * http://www.tdg-seville.info/License.html
+ -->
+
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"
+       "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+       
+<tiles-definitions>
+
+	<definition name="area/administrator/showAreas" extends="master.page">	
+		<put-attribute name="title" value="All areas" />
+		<put-attribute name="body" value="/views/brotherhood/showArea.jsp" />
+	</definition>
+	
+	<definition name="area/administrator/edit" extends="master.page">	
+		<put-attribute name="title" value="Edit area" />
+		<put-attribute name="body" value="/views/administrator/editArea.jsp" />
+	</definition>
+	
+	<definition name="area/administrator/showPictures" extends="master.page">	
+		<put-attribute name="title" value="Pictures" />
+		<put-attribute name="body" value="/views/brotherhood/showPictures.jsp" />
+	</definition>
+	
+	
+	<definition name="words/administrator/create" extends="master.page">	
+		<put-attribute name="title" value="Administrator: Create good or bad words" />
+		<put-attribute name="body" value="/views/administrator/goodAndBadWordsCreate.jsp" />
+	</definition>
+	
+	<definition name="words/administrator/list" extends="master.page">	
+		<put-attribute name="title" value="Administrator: Show good or bad words" />
+		<put-attribute name="body" value="/views/administrator/goodAndBadWordsList.jsp" />
+	</definition>
+	
+	<definition name="suspicious/administrator/list" extends="master.page">	
+		<put-attribute name="title" value="Administrator: Ban/unban" />
+		<put-attribute name="body" value="/views/administrator/banUnban.jsp" />
+	</definition>
+	
+	<definition name="administrator/configuration" extends="master.page">	
+		<put-attribute name="title" value="Configuration" /> 
+		<put-attribute name="body" value="/views/administrator/configuration.jsp" />
+	</definition>
+	
+	<definition name="administrator/editConfiguration" extends="master.page">	
+		<put-attribute name="title" value="Edit Configuration" /> 
+		<put-attribute name="body" value="/views/administrator/editConfiguration.jsp" />
+	</definition>
+	
+	<definition name="administrator/positions" extends="master.page">	
+		<put-attribute name="title" value="Positions" /> 
+		<put-attribute name="body" value="/views/administrator/positions.jsp" />
+	</definition>
+	
+	<definition name="administrator/editPosition" extends="master.page">	
+		<put-attribute name="title" value="Edit position" /> 
+		<put-attribute name="body" value="/views/administrator/createPosition.jsp" />
+	</definition>
+	
+	<definition name="administrator/createPosition" extends="master.page">	
+		<put-attribute name="title" value="Create position" /> 
+		<put-attribute name="body" value="/views/administrator/createPosition.jsp" />
+	</definition>
+	
+	<definition name="statistics/administrator/show" extends="master.page">	
+		<put-attribute name="title" value="Statistics" />
+		<put-attribute name="body" value="/views/administrator/statistics.jsp" />
+	</definition>
+	
+		<definition name="priority/administrator" extends="master.page">	
+		<put-attribute name="title" value="Priorities" />
+		<put-attribute name="body" value="/views/administrator/priorityList.jsp" />
+	</definition>
+	
+	<definition name="priority/administrator/create" extends="master.page">	
+		<put-attribute name="title" value="Add Priority" />
+		<put-attribute name="body" value="/views/administrator/createPriority.jsp" />
+	</definition>
+	
+	<definition name="broadcast/administrator/send" extends="master.page">	
+		<put-attribute name="title" value="Broadcast notification" /> 
+		<put-attribute name="body" value="/views/administrator/broadcast.jsp" />
+	</definition>
+	
+	<definition name="administrator/createAdmin" extends="master.page">	
+		<put-attribute name="title" value="Create a new Administrator" />
+		<put-attribute name="body" value="/views/administrator/createAdmin.jsp" />
+	</definition>
+	
+	<definition name="broadcast/administrator/sendSecurityBreach" extends="master.page">	
+		<put-attribute name="title" value="Broadcast notification" /> 
+		<put-attribute name="body" value="/views/administrator/broadcast.jsp" />
+	</definition>
+	
+</tiles-definitions>

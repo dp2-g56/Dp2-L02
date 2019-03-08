@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!-- 
+ * tiles_es.xml
+ *
+ * Copyright (C) 2018 Universidad de Sevilla
+ * 
+ * The use of this project is hereby constrained to the conditions of the 
+ * TDG Licence, a copy of which you may download from 
+ * http://www.tdg-seville.info/License.html
+ -->
+
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"
+       "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+      
+<tiles-definitions>
+	
+	<!-- Estos están bien -->
+	<definition name="box/actor/list" extends="master.page">	
+		<put-attribute name="title" value="Boxes" />
+		<put-attribute name="body" value="/views/mail/boxes.jsp" />
+	</definition>
+	
+	<definition name="box/actor/create" extends="master.page">	
+		<put-attribute name="title" value="Boxes" />
+		<put-attribute name="body" value="/views/mail/newEditBox.jsp" />
+	</definition>
+	
+	<definition name="box/actor/edit" extends="master.page">	
+		<put-attribute name="title" value="Editar cajas" />
+		<put-attribute name="body" value="/views/mail/newEditBox.jsp" />
+	</definition>
+	
+	
+	
+	<definition name="message/actor/list" extends="master.page">	
+		<put-attribute name="title" value="Messages" />
+		<put-attribute name="body" value="/views/mail/messages.jsp" />
+	</definition>
+	
+	<definition name="message/actor/create" extends="master.page">	
+		<put-attribute name="title" value="Escribir Mensaje" />
+		<put-attribute name="body" value="/views/mail/newMessage.jsp" />
+	</definition>
+	
+	<definition name="message/actor/edit" extends="master.page">	
+		<put-attribute name="title" value="Edit Message" />
+		<put-attribute name="body" value="/views/mail/newMessage.jsp" />
+	</definition>
+	
+	<definition name="message/actor/createmove" extends="master.page">	
+		<put-attribute name="title" value="Actualizar caja del mensaje" />
+		<put-attribute name="body" value="/views/mail/message.jsp" />
+	</definition>
+	
+	<definition name="message/actor/move" extends="master.page">	
+		<put-attribute name="title" value="Actualizar caja del mensaje" />
+		<put-attribute name="body" value="/views/mail/message.jsp" />
+	</definition>
+	
+
+	
+	<!-- Estos probablemente no -->
+	<definition name="/mail/messages" extends="master.page">	
+		<put-attribute name="title" value="Mensajes" />
+		<put-attribute name="body" value="/views/mail/messages.jsp" />
+	</definition>
+	
+	<definition name="/mail/message" extends="master.page">	
+		<put-attribute name="title" value="Mensaje" />
+		<put-attribute name="body" value="/views/mail/message.jsp" />
+	</definition>
+	
+	<definition name="/mail/newMessage" extends="master.page">	
+		<put-attribute name="title" value="Nuevo mensaje" />
+		<put-attribute name="body" value="/views/mail/newMessage.jsp" />
+	</definition>
+	
+	<definition name="/mail/newEditBox" extends="master.page">	
+		<put-attribute name="title" value="Bandeja" />
+		<put-attribute name="body" value="/views/mail/newEditBox.jsp" />
+	</definition>
+	
+</tiles-definitions>

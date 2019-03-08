@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!-- 
+ * tiles_es.xml
+ *
+ * Copyright (C) 2019 Universidad de Sevilla
+ * 
+ * The use of this project is hereby constrained to the conditions of the 
+ * TDG Licence, a copy of which you may download from 
+ * http://www.tdg-seville.info/License.html
+ -->
+
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"
+       "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+      
+<tiles-definitions>
+
+	<definition name="profile/action-1" extends="master.page">	
+		<put-attribute name="title" value="Perfil: Acción 1" />
+		<put-attribute name="body" value="/views/profile/action-1.jsp" />
+	</definition>
+	
+	<definition name="profile/action-2" extends="master.page">	
+		<put-attribute name="title" value="Perfil: Acción 2" />
+		<put-attribute name="body" value="/views/profile/action-2.jsp" />
+	</definition>
+	
+</tiles-definitions>

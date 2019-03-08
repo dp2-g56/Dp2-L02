@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!-- 
+ * tiles_es.xml
+ *
+ * Copyright (C) 2019 Universidad de Sevilla
+ * 
+ * The use of this project is hereby constrained to the conditions of the 
+ * TDG Licence, a copy of which you may download from 
+ * http://www.tdg-seville.info/License.html
+ -->
+
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"
+       "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+      
+<tiles-definitions>
+
+
+	<definition name="member/finder" extends="master.page">	
+		<put-attribute name="title" value="Buscador de Procesiones" />
+		<put-attribute name="body" value="/views/member/finder.jsp" />
+	</definition>
+	
+	<definition name="member/finderResult" extends="master.page">			
+		<put-attribute name="title" value="Processions Finder Result" />
+		<put-attribute name="body" value="/views/member/finderResult.jsp" />	
+	</definition>
+	
+	<definition name="member/requests" extends="master.page">	
+		<put-attribute name="title" value="Solicitudes" />
+		<put-attribute name="body" value="/views/member/requests.jsp" />
+	</definition>
+	
+	<definition name="enrolment/member/list" extends="master.page">	
+		<put-attribute name="title" value="Inscripciones" />
+		<put-attribute name="body" value="/views/member/enrolments.jsp" />
+	</definition>
+	
+	<definition name="brotherhood/member/list" extends="master.page">	
+		<put-attribute name="title" value="Hermandades" />
+		<put-attribute name="body" value="/views/member/brotherhoods.jsp" />
+	</definition>
+	
+	<definition name="picture/member/listPerBrotherhood" extends="master.page">	
+		<put-attribute name="title" value="Fotos" />
+		<put-attribute name="body" value="/views/member/picturesBrotherhood.jsp" />
+	</definition>
+	
+</tiles-definitions>

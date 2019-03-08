@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- * persistence.xml * * Copyright (C) 2019 Universidad de Sevilla * * 
+	The use of this project is hereby constrained to the conditions of the * 
+	TDG Licence, a copy of which you may download from * http://www.tdg-seville.info/License.html -->
+
+<persistence version="2.0"
+	xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
+
+	<persistence-unit name="Acme-Madruga">
+
+		<properties>
+			<property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver" />
+			<property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/Acme-Madruga" />
+			<property name="javax.persistence.jdbc.user" value="acme-manager" />
+			<property name="javax.persistence.jdbc.password" value="ACME-M@n@ger-6874" />
+
+			<property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
+			<property name="hibernate.ejb.naming_strategy" value="org.hibernate.cfg.ImprovedNamingStrategy" />
+		</properties>
+
+	</persistence-unit>
+
+</persistence>
+
+

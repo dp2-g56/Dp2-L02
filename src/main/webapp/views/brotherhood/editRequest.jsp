@@ -9,20 +9,20 @@
 
 <security:authorize access="hasRole('BROTHERHOOD')">
 
-<spring:message code="max.positions.procession" var="maxPos"/>
+<spring:message code="max.positions.parade" var="maxPos"/>
 <p><jstl:out value="${maxPos}"/></p>
 
-<display:table name="procession" requestURI="request/brotherhood/decide.do">
-	<display:column titleKey="procession.rows">
-		<jstl:out value="${procession.rowNumber}"/>
+<display:table name="parade" requestURI="request/brotherhood/decide.do">
+	<display:column titleKey="parade.rows">
+		<jstl:out value="${parade.rowNumber}"/>
 	</display:column>
 	
-	<display:column titleKey="procession.columns">
-		<jstl:out value="${procession.columnNumber}"/>
+	<display:column titleKey="parade.columns">
+		<jstl:out value="${parade.columnNumber}"/>
 	</display:column>
 </display:table>
 
-<spring:message code="procession.occuped" var="posOcupadas"/>
+<spring:message code="parade.occuped" var="posOcupadas"/>
 <p><jstl:out value="${posOcupadas}"/></p>
 
 <display:table pagesize="5" name="requests" id="row" class="displaytag" 
@@ -67,7 +67,7 @@
 	<br/>
 	
 	<acme:submit name="edit" code="request.save"/>
-	<acme:cancel url="request/brotherhood/list.do" code="procession.cancel"/>
+	<acme:cancel url="request/brotherhood/list.do" code="parade.cancel"/>
 
 </form:form>
 

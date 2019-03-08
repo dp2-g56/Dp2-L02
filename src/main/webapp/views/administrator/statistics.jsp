@@ -177,17 +177,17 @@ new Chartist.Bar('.ct-chart-minMaxAvgStdvMembersPerBrotherhood', data, {
 </table>
 <br />
 
-<strong><spring:message code="statistics.ratiosRequestByProcession" />:</strong>	
+<strong><spring:message code="statistics.ratiosRequestByParade" />:</strong>	
 <br />
 <table style="width: 100%">
 	<tr>
-		<td><h4><spring:message code="statistics.ratioRequestApprovedByProcession" />:</h4></td> 
+		<td><h4><spring:message code="statistics.ratioRequestApprovedByParade" />:</h4></td> 
 		<td></td>
 	</tr>
-	<jstl:forEach items="${processionNames}" var="nameP">
+	<jstl:forEach items="${paradeNames}" var="nameP">
   		<tr>
   			<td><jstl:out value="${nameP}"/></td>
-  			<td><jstl:out value="${ratioRequestApprovedByProcession.get(nameP)}"/></td>
+  			<td><jstl:out value="${ratioRequestApprovedByParade.get(nameP)}"/></td>
   			
  		</tr>
  		
@@ -195,40 +195,40 @@ new Chartist.Bar('.ct-chart-minMaxAvgStdvMembersPerBrotherhood', data, {
  		
  	</jstl:forEach>
 	<tr>
-		<td><h4><spring:message code="statistics.ratioRequestPendingByProcession" />:</h4></td>
+		<td><h4><spring:message code="statistics.ratioRequestPendingByParade" />:</h4></td>
 		<td></td>
 	</tr>
-	<jstl:forEach items="${processionNames}" var="nameP">
+	<jstl:forEach items="${paradeNames}" var="nameP">
   		<tr>
   			<td><jstl:out value="${nameP}"/></td>
-  			<td><jstl:out value="${ratioRequestPendingByProcession.get(nameP)}"/></td>
+  			<td><jstl:out value="${ratioRequestPendingByParade.get(nameP)}"/></td>
  		</tr>
  	</jstl:forEach>
  	
  	<tr>
-		<td><h4><spring:message code="statistics.ratioRequestRejectedByProcession" />:</h4></td>
+		<td><h4><spring:message code="statistics.ratioRequestRejectedByParade" />:</h4></td>
 		<td></td>
 	</tr>
-	<jstl:forEach items="${processionNames}" var="nameP">
+	<jstl:forEach items="${paradeNames}" var="nameP">
   		<tr>
   			<td><jstl:out value="${nameP}"/></td>
-  			<td><jstl:out value="${ratioRequestRejectedByProcession.get(nameP)}"/></td>
+  			<td><jstl:out value="${ratioRequestRejectedByParade.get(nameP)}"/></td>
  		</tr>
  	</jstl:forEach>
 </table>
 <br />
 
-<strong><spring:message code="statistics.processionsNextMonth" />:</strong>			
+<strong><spring:message code="statistics.paradesNextMonth" />:</strong>			
 <br />
 <table style="width: 100%">
 	<jstl:choose>
-		<jstl:when test="${processionsOfNextMonth.isEmpty()}">
+		<jstl:when test="${paradesOfNextMonth.isEmpty()}">
 			 <td><spring:message code="statistics.none" /></td>
 		</jstl:when>
 		<jstl:otherwise>
-			<jstl:forEach items="${processionsOfNextMonth}" var="nameProcessionNextMonth">
+			<jstl:forEach items="${paradesOfNextMonth}" var="nameParadeNextMonth">
   				<tr>
-  					<td><jstl:out value="${nameProcessionNextMonth}"/></td>
+  					<td><jstl:out value="${nameParadeNextMonth}"/></td>
  				</tr>
  			</jstl:forEach>
  		</jstl:otherwise>

@@ -7,35 +7,35 @@
 <%@taglib prefix="display" uri="http://displaytag.sf.net"%>
 <%@taglib prefix="acme" tagdir="/WEB-INF/tags" %>
 
-<p><spring:message code="procession.create" /></p>
+<p><spring:message code="parade.create" /></p>
 
 
 
-<form:form action="procession/brotherhood/editCheckbox.do" modelAttribute="formObjectProcessionFloatCheckbox" >
+<form:form action="parade/brotherhood/editCheckbox.do" modelAttribute="formObjectParadeFloatCheckbox" >
 
 
 
 <fieldset>
-  <legend> <spring:message code="procession.data" /> </legend>
+  <legend> <spring:message code="parade.data" /> </legend>
   	
   	<form:hidden path ="id"/>
 
-	<acme:textbox code="procession.title" path="titleProcession"/>	
+	<acme:textbox code="parade.title" path="titleParade"/>	
 	<br />
 	
-	<acme:textarea code="procession.description" path="descriptionProcession"/>	
+	<acme:textarea code="parade.description" path="descriptionParade"/>	
 	<br />
 		
-	<acme:datebox code="procession.moment" path="moment"/>	
+	<acme:datebox code="parade.moment" path="moment"/>	
 	<br />
 	
-	<acme:boolean code="procession.isDraftMode" trueCode="procession.true" falseCode="procession.false" path="isDraftMode"/>	
+	<acme:boolean code="parade.isDraftMode" trueCode="parade.true" falseCode="parade.false" path="isDraftMode"/>	
 	<br />
 	
-	<acme:input code="procession.rowNumber" path="rowNumber"/>	
+	<acme:input code="parade.rowNumber" path="rowNumber"/>	
 	<br />
 	
-	<acme:input code="procession.columnNumber" path="columnNumber"/>	
+	<acme:input code="parade.columnNumber" path="columnNumber"/>	
 	<br />
 	
 </fieldset>
@@ -52,12 +52,12 @@
 	
 	<acme:submit code="float.createButton" name="save" />
 	<br />
-	<jstl:if test="${processionId != 0 }">
+	<jstl:if test="${paradeId != 0 }">
  		<acme:submit name="delete" code="float.delete" />
  	</jstl:if> 
 	<br />
 </form:form> 
 	
-	<acme:cancel url="/procession/brotherhood/list.do" code="float.cancel" /> 
+	<acme:cancel url="/parade/brotherhood/list.do" code="float.cancel" /> 
 	
 	

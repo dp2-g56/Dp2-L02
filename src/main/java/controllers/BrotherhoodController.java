@@ -43,7 +43,7 @@ public class BrotherhoodController extends AbstractController {
 		List<domain.Float> allFloats = new ArrayList<domain.Float>();
 
 		List<domain.Float> floatFinalMode = new ArrayList<domain.Float>();
-		floatFinalMode = this.floatService.floatsInProcessionInFinalMode();
+		floatFinalMode = this.floatService.floatsInParadeInFinalMode();
 
 		allFloats = this.floatService.showBrotherhoodFloats();
 
@@ -58,7 +58,7 @@ public class BrotherhoodController extends AbstractController {
 
 	//LIST PICTURES
 	@RequestMapping(value = "/picture/list", method = RequestMethod.GET)
-	public ModelAndView listBro(@RequestParam int floatId, @RequestParam boolean procession) {
+	public ModelAndView listBro(@RequestParam int floatId, @RequestParam boolean parade) {
 
 		ModelAndView result;
 
@@ -76,25 +76,25 @@ public class BrotherhoodController extends AbstractController {
 
 		result.addObject("pictures", pictures);
 		result.addObject("requestURI", "float/brotherhood/picture/list.do");
-		result.addObject("procession", procession);
+		result.addObject("parade", parade);
 		result.addObject("floatId", floatId);
 
 		return result;
 	}
 
 	@RequestMapping(value = "/picture/create", method = RequestMethod.GET)
-	public ModelAndView createPictures(@RequestParam int floatId, @RequestParam boolean procession) {
+	public ModelAndView createPictures(@RequestParam int floatId, @RequestParam boolean parade) {
 		ModelAndView result;
 
 		result = new ModelAndView("picture/brotherhood/createPicture");
 		result.addObject("floatId", floatId);
-		result.addObject("procession", procession);
+		result.addObject("parade", parade);
 
 		return result;
 	}
 
 	@RequestMapping(value = "/picture/save", method = RequestMethod.POST, params = "save")
-	public ModelAndView savePicture(String picture, int floatId, @RequestParam boolean procession) {
+	public ModelAndView savePicture(String picture, int floatId, @RequestParam boolean parade) {
 		ModelAndView result;
 		domain.Float floatt = new domain.Float();
 		floatt = this.floatService.findOne(floatId);
@@ -103,10 +103,10 @@ public class BrotherhoodController extends AbstractController {
 			if (picture.trim().isEmpty() || picture.trim().isEmpty() || !this.floatService.isUrl(picture)) {
 				result = new ModelAndView("picture/brotherhood/createPicture");
 				result.addObject("floatId", floatId);
-				result.addObject("procession", procession);
+				result.addObject("parade", parade);
 			} else {
 				this.floatService.addPicture(picture, floatt);
-				result = new ModelAndView("redirect:list.do?floatId=" + floatId + "&procession=" + procession);
+				result = new ModelAndView("redirect:list.do?floatId=" + floatId + "&parade=" + parade);
 			}
 		} catch (Throwable oops) {
 			result = new ModelAndView("picture/brotherhood/createPicture");
@@ -140,7 +140,7 @@ public class BrotherhoodController extends AbstractController {
 		this.brotherhoodService.loggedAsBrotherhood();
 		Brotherhood loggedBrotherhood = this.brotherhoodService.loggedBrotherhood();
 		List<domain.Float> floatFinalMode = new ArrayList<domain.Float>();
-		floatFinalMode = this.floatService.floatsInProcessionInFinalMode();
+		floatFinalMode = this.floatService.floatsInParadeInFinalMode();
 
 		domain.Float floatt = this.floatService.findOne(floatId);
 
@@ -163,7 +163,7 @@ public class BrotherhoodController extends AbstractController {
 		this.brotherhoodService.loggedAsBrotherhood();
 		Brotherhood loggedBrotherhood = this.brotherhoodService.loggedBrotherhood();
 		List<domain.Float> floatFinalMode = new ArrayList<domain.Float>();
-		floatFinalMode = this.floatService.floatsInProcessionInFinalMode();
+		floatFinalMode = this.floatService.floatsInParadeInFinalMode();
 
 		Assert.notNull(loggedBrotherhood.getArea());
 		Assert.isTrue(!floatFinalMode.contains(floatt));

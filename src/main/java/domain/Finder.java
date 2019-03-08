@@ -24,7 +24,7 @@ public class Finder extends DomainEntity {
 	private Date				maxDate;
 	private Date				lastEdit;
 
-	private List<Procession>	processions;
+	private List<Parade>	parades;
 
 
 	@Valid
@@ -80,12 +80,12 @@ public class Finder extends DomainEntity {
 
 	@Valid
 	@ManyToMany
-	public List<Procession> getProcessions() {
-		return this.processions;
+	public List<Parade> getParades() {
+		return this.parades;
 	}
 
-	public void setProcessions(final List<Procession> processions) {
-		this.processions = processions;
+	public void setParades(final List<Parade> parades) {
+		this.parades = parades;
 	}
 
 }

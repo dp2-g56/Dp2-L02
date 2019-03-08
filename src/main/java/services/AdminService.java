@@ -26,8 +26,8 @@ import domain.Area;
 import domain.Box;
 import domain.Member;
 import domain.Message;
+import domain.Parade;
 import domain.Position;
-import domain.Procession;
 import domain.SocialProfile;
 import forms.FormObjectMember;
 
@@ -36,37 +36,37 @@ import forms.FormObjectMember;
 public class AdminService {
 
 	@Autowired
-	private AdminRepository		adminRepository;
+	private AdminRepository	adminRepository;
 
 	@Autowired
-	private MessageService		messageService;
+	private MessageService	messageService;
 
 	@Autowired
-	private ActorService		actorService;
+	private ActorService	actorService;
 
 	@Autowired
-	private BoxService			boxService;
+	private BoxService		boxService;
 
 	@Autowired
-	private ProcessionService	processionService;
+	private ParadeService	paradeService;
 
 	@Autowired
-	private RequestService		requestService;
+	private RequestService	requestService;
 
 	@Autowired
-	private AreaService			areaService;
+	private AreaService		areaService;
 
 	@Autowired
-	private PositionService		positionService;
+	private PositionService	positionService;
 
 	@Autowired
-	private Validator			validator;
+	private Validator		validator;
 
 	@Autowired
-	private FinderService		finderService;
+	private FinderService	finderService;
 
 	@Autowired
-	private MemberService		memberService;
+	private MemberService	memberService;
 
 
 	// 1. Create user accounts for new administrators.
@@ -480,24 +480,24 @@ public class AdminService {
 		else
 			return this.nameStatisticsArea(this.adminRepository.ratioBrotherhoodPerArea());
 	}
-	public Map<String, Float> ratioRequestApprovedByProcession() {
-		return this.nameStatisticsProcession(this.noZeroDivision(this.adminRepository.ratioApprovedRequestsByProcessions()));
+	public Map<String, Float> ratioRequestApprovedByParade() {
+		return this.nameStatisticsParade(this.noZeroDivision(this.adminRepository.ratioApprovedRequestsByParades()));
 	}
 
-	public Map<String, Float> ratioRequestPendingByProcession() {
-		return this.nameStatisticsProcession(this.noZeroDivision(this.adminRepository.ratioPendingRequestsByProcessions()));
+	public Map<String, Float> ratioRequestPendingByParade() {
+		return this.nameStatisticsParade(this.noZeroDivision(this.adminRepository.ratioPendingRequestsByParades()));
 	}
 
-	public Map<String, Float> ratioRequestRejectedByProcession() {
-		return this.nameStatisticsProcession(this.noZeroDivision(this.adminRepository.ratioRejectedRequestsByProcessions()));
+	public Map<String, Float> ratioRequestRejectedByParade() {
+		return this.nameStatisticsParade(this.noZeroDivision(this.adminRepository.ratioRejectedRequestsByParades()));
 	}
 
 	public List<Float> prueba() {
-		return this.adminRepository.ratioRejectedRequestsByProcessions();
+		return this.adminRepository.ratioRejectedRequestsByParades();
 	}
 
-	public List<String> processionsOfNextMonth() {
-		return this.adminRepository.listProcessionNext30Days();
+	public List<String> paradesOfNextMonth() {
+		return this.adminRepository.listParadeNext30Days();
 	}
 
 	public List<Member> membersAtLeastTenPercentRequestsApproved() {
@@ -525,9 +525,9 @@ public class AdminService {
 	}
 
 	public List<Float> noZeroDivision(List<Float> result) {
-		List<Procession> pro = this.processionService.findAll();
+		List<Parade> pro = this.paradeService.findAll();
 		Assert.isTrue(result.size() == pro.size());
-		for (Procession p : pro)
+		for (Parade p : pro)
 			try {
 				Assert.notNull(result.get(pro.indexOf(p)));
 			} catch (Exception e) {
@@ -563,13 +563,13 @@ public class AdminService {
 		return result;
 	}
 
-	public Map<String, Float> nameStatisticsProcession(List<Float> statistics) {
+	public Map<String, Float> nameStatisticsParade(List<Float> statistics) {
 		Map<String, Float> result = new HashMap<String, Float>();
-		List<Procession> processions = this.processionService.findAll();
-		Assert.isTrue(statistics.size() == processions.size());
+		List<Parade> parades = this.paradeService.findAll();
+		Assert.isTrue(statistics.size() == parades.size());
 
-		for (Procession p : processions)
-			result.put(p.getTitle(), statistics.get(processions.indexOf(p)));
+		for (Parade p : parades)
+			result.put(p.getTitle(), statistics.get(parades.indexOf(p)));
 
 		return result;
 	}

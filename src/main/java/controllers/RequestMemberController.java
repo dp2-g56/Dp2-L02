@@ -31,7 +31,7 @@ import services.MemberService;
 import services.RequestService;
 import domain.Finder;
 import domain.Member;
-import domain.Procession;
+import domain.Parade;
 import domain.Request;
 import domain.Status;
 
@@ -129,7 +129,7 @@ public class RequestMemberController extends AbstractController {
 	@RequestMapping(value = "/create", method = RequestMethod.GET
 	//RequestMethod.POST, params = "saveRequest"
 	)
-	public ModelAndView requestCreate(@RequestParam int processionId) {
+	public ModelAndView requestCreate(@RequestParam int paradeId) {
 		ModelAndView result;
 
 		Member member = this.memberService.securityAndMember();
@@ -159,30 +159,30 @@ public class RequestMemberController extends AbstractController {
 
 		Integer time = this.configurationService.getConfiguration().getTimeFinder();
 
-		List<Procession> processions = new ArrayList<>();
-		Hibernate.initialize(finder.getProcessions());
-		List<Procession> finderProcessions = finder.getProcessions();
+		List<Parade> parades = new ArrayList<>();
+		Hibernate.initialize(finder.getParades());
+		List<Parade> finderParades = finder.getParades();
 
 		if (currentDay.equals(lastEditDay) && currentMonth.equals(lastEditMonth) && currentYear.equals(lastEditYear) && lastEditHour < (currentHour + time)) {
 			Integer numFinderResult = this.configurationService.getConfiguration().getFinderResult();
 
-			if (finderProcessions.size() > numFinderResult)
+			if (finderParades.size() > numFinderResult)
 				for (int i = 0; i < numFinderResult; i++)
-					processions.add(finderProcessions.get(i));
+					parades.add(finderParades.get(i));
 			else
-				processions = finderProcessions;
+				parades = finderParades;
 		}
 
-		if (this.requestService.canRequest(member, processionId))
+		if (this.requestService.canRequest(member, paradeId))
 			try {
-				this.requestService.createRequestAsMember(member, processionId);
+				this.requestService.createRequestAsMember(member, paradeId);
 
 				result = new ModelAndView("member/finderResult");
 
 				flag = true;
 
 				result.addObject("flag", flag);
-				result.addObject("processions", processions);
+				result.addObject("parades", parades);
 				result.addObject("member", member);
 			} catch (Throwable oops) {
 				result = new ModelAndView("member/finderResult");
@@ -190,7 +190,7 @@ public class RequestMemberController extends AbstractController {
 				flag = false;
 
 				result.addObject("flag", flag);
-				result.addObject("processions", processions);
+				result.addObject("parades", parades);
 				result.addObject("member", member);
 			}
 		else {
@@ -199,7 +199,7 @@ public class RequestMemberController extends AbstractController {
 			flag = false;
 
 			result.addObject("flag", flag);
-			result.addObject("processions", processions);
+			result.addObject("parades", parades);
 			result.addObject("member", member);
 		}
 

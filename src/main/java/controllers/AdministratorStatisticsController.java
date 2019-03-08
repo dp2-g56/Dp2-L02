@@ -51,16 +51,16 @@ public class AdministratorStatisticsController extends AbstractController {
 		List<Member> membersTenPercent = this.adminService.membersAtLeastTenPercentRequestsApproved();
 		List<String> largestBrotherhoods = this.adminService.largestBrotherhoods();
 		List<String> smallestBrotherhoods = this.adminService.smallestBrotherhoods();
-		List<String> processionsOfNextMonth = this.adminService.processionsOfNextMonth();
+		List<String> paradesOfNextMonth = this.adminService.paradesOfNextMonth();
 
 		Map<String, Float> countBrotherhoodsPerArea = this.adminService.countBrotherhoodsArea();
 		Map<String, Float> ratioBrotherhoodsPerArea = this.adminService.ratioBrotherhoodPerArea();
 		Set<String> areaNames = ratioBrotherhoodsPerArea.keySet();
 
-		Map<String, Float> ratioRequestApprovedByProcession = this.adminService.ratioRequestApprovedByProcession();
-		Map<String, Float> ratioRequestPendingByProcession = this.adminService.ratioRequestPendingByProcession();
-		Map<String, Float> ratioRequestRejectedByProcession = this.adminService.ratioRequestRejectedByProcession();
-		Set<String> processionNames = ratioRequestRejectedByProcession.keySet();
+		Map<String, Float> ratioRequestApprovedByParade = this.adminService.ratioRequestApprovedByParade();
+		Map<String, Float> ratioRequestPendingByParade = this.adminService.ratioRequestPendingByParade();
+		Map<String, Float> ratioRequestRejectedByParade = this.adminService.ratioRequestRejectedByParade();
+		Set<String> paradeNames = ratioRequestRejectedByParade.keySet();
 		Map<Position, Float> countPositions = this.adminService.mapNumberPositions();
 		Set<Position> positions = countPositions.keySet();
 
@@ -70,13 +70,13 @@ public class AdministratorStatisticsController extends AbstractController {
 		result.addObject("membersTenPercent", membersTenPercent);
 		result.addObject("largestBrotherhoods", largestBrotherhoods);
 		result.addObject("smallestBrotherhoods", smallestBrotherhoods);
-		result.addObject("processionsOfNextMonth", processionsOfNextMonth);
+		result.addObject("paradesOfNextMonth", paradesOfNextMonth);
 		result.addObject("countBrotherhoodsPerArea", countBrotherhoodsPerArea);
 		result.addObject("ratioBrotherhoodsPerArea", ratioBrotherhoodsPerArea);
-		result.addObject("ratioRequestApprovedByProcession", ratioRequestApprovedByProcession);
-		result.addObject("ratioRequestPendingByProcession", ratioRequestPendingByProcession);
-		result.addObject("ratioRequestRejectedByProcession", ratioRequestRejectedByProcession);
-		result.addObject("processionNames", processionNames);
+		result.addObject("ratioRequestApprovedByParade", ratioRequestApprovedByParade);
+		result.addObject("ratioRequestPendingByParade", ratioRequestPendingByParade);
+		result.addObject("ratioRequestRejectedByParade", ratioRequestRejectedByParade);
+		result.addObject("paradeNames", paradeNames);
 		result.addObject("countPositions", countPositions);
 		result.addObject("locale", locale);
 		result.addObject("positions", positions);

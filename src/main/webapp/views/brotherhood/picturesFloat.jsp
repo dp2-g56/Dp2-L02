@@ -22,14 +22,14 @@
 		</display:column>
 	</display:table>
 	
-	<spring:url var="picturesURL" value="/float/brotherhood/picture/create.do?floatId=${floatId}&procession=${procession}"> 
+	<spring:url var="picturesURL" value="/float/brotherhood/picture/create.do?floatId=${floatId}&parade=${parade}"> 
 	  </spring:url>
 	  <a href="${picturesURL}">
           <spring:message code="pictures.create" /></a>
 	
 	<jstl:choose>
-		<jstl:when test="${!procession}" >
-			<input type="button" name="cancel" value="<spring:message code="area.back"/>" onclick="javascript:relativeRedir('procession/brotherhood/list.do');" />
+		<jstl:when test="${!parade}" >
+			<input type="button" name="cancel" value="<spring:message code="area.back"/>" onclick="javascript:relativeRedir('parade/brotherhood/list.do');" />
 		</jstl:when>																				
 		<jstl:otherwise>			
 			<input type="button" name="cancel" value="<spring:message code="area.back"/>" onclick="javascript:relativeRedir('float/brotherhood/list.do');" />

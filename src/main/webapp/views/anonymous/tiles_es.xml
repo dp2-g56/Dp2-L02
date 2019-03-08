@@ -45,9 +45,9 @@
 		<put-attribute name="body" value="/views/anonymous/showMembers.jsp" />
 	</definition>
 	
-	<definition name="showAll/annonymous/procession/list" extends="master.page">	
-		<put-attribute name="title" value="Lista de procesiones" />
-		<put-attribute name="body" value="/views/anonymous/showProcessions.jsp" />
+	<definition name="showAll/annonymous/parade/list" extends="master.page">	
+		<put-attribute name="title" value="Lista de defiles" />
+		<put-attribute name="body" value="/views/anonymous/showParades.jsp" />
 	</definition>
 	
 	<definition name="showAll/annonymous/picturesFloat" extends="master.page">	

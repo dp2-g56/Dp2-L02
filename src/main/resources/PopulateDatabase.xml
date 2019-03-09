@@ -64,8 +64,8 @@
 		<property name="timeFinder" value="1"/>
 
 		
-		<property name="welcomeMessageEnglish" value="Welcome to Acme Madrugá, the site to organise your processions" />
-		<property name="welcomeMessageSpanish" value="¡Bienvenido a Acme Madrugá! el lugar para organizar tus procesiones" />
+		<property name="welcomeMessageEnglish" value="Welcome to Acme Madrugá, the site to organise your parades" />
+		<property name="welcomeMessageSpanish" value="¡Bienvenido a Acme Madrugá! el lugar para organizar tus desfiles" />
 		
 		<property name="systemName" value="Acme Madrugá" />
 		<property name="imageURL" value="https://tinyurl.com/acme-madruga" />
@@ -392,11 +392,11 @@
 				<ref bean="float2" />
 			</list>
 		</property>
-		<property name="processions">
+		<property name="parades">
 			<list>
-				<ref bean="procession1" />
-				<ref bean="procession2" />
-				<ref bean="procession3" />
+				<ref bean="parade1" />
+				<ref bean="parade2" />
+				<ref bean="parade3" />
 			</list>
 		</property>
 		
@@ -454,9 +454,9 @@
 				<ref bean="float4" />
 			</list>
 		</property>
-		<property name="processions">
+		<property name="parades">
 			<list>
-				<ref bean="procession4" />
+				<ref bean="parade4" />
 			</list>
 		</property>
 		
@@ -1622,11 +1622,11 @@
 	<!-- FIN COACH -->
 	
 	
-	<!-- PROCESSION -->
+	<!-- PARADE -->
 		<!-- BROTHERHOOD 1 -->
-	<bean id ="procession1" class="domain.Procession">
-		<property name="title" value="procession1" />
-		<property name="description" value="The First Procession" />
+	<bean id ="parade1" class="domain.Parade">
+		<property name="title" value="parade1" />
+		<property name="description" value="The First Parade" />
 		<property value="11/11/2020 11:11" name="moment" />
 		<property value="201111-a34Gt4" name="ticker" />
 		<property value="true" name="isDraftMode" />
@@ -1640,9 +1640,9 @@
 		</property>	<!-- no hay request porque es draft -->	
 	</bean>
 	
-	<bean id ="procession2" class="domain.Procession">
-		<property name="title" value="procession2" />
-		<property name="description" value="The Second Procession" />
+	<bean id ="parade2" class="domain.Parade">
+		<property name="title" value="parade2" />
+		<property name="description" value="The Second Parade" />
 		<property value="06/07/2021 12:16" name="moment" />
 		<property value="210706-lEbI67" name="ticker" />
 		<property value="false" name="isDraftMode" />
@@ -1662,9 +1662,9 @@
 		</property>			
 	</bean>
 	
-	<bean id ="procession3" class="domain.Procession">
-		<property name="title" value="procession3" />
-		<property name="description" value="The Third Procession" />
+	<bean id ="parade3" class="domain.Parade">
+		<property name="title" value="parade3" />
+		<property name="description" value="The Third Parade" />
 		<property value="07/08/2022 12:16" name="moment" />
 		<property value="220807-PLA65E" name="ticker" />
 		<property value="false" name="isDraftMode" />
@@ -1685,9 +1685,9 @@
 	</bean>
 	
 		<!-- BROTHERHOOD 2 -->
-	<bean id ="procession4" class="domain.Procession">
-		<property name="title" value="procession4" />
-		<property name="description" value="The Fourth Procession" />
+	<bean id ="parade4" class="domain.Parade">
+		<property name="title" value="parade4" />
+		<property name="description" value="The Fourth Parade" />
 		<property value="07/08/2023 12:16" name="moment" />
 		<property value="230807-E1fgh5" name="ticker" />
 		<property value="true" name="isDraftMode" />
@@ -1699,7 +1699,7 @@
 		</property>		<!-- No hay Request porque es Draft -->
 	</bean>
 	
-	<!-- FIN PROCESSION -->
+	<!-- FIN PARADE -->
 	
 	
 	<!-- FINDER -->
@@ -1708,10 +1708,10 @@
 		<property name="area" value="area1" />
 		<property name="minDate" value="02/01/2019 11:30" />
 		<property name="maxDate" value="02/01/2025 11:45" />
-		<property name="processions">	<!-- SOLO ENCUENTRA FINAL MODE -->
+		<property name="parades">	<!-- SOLO ENCUENTRA FINAL MODE -->
 			<list>
-				<ref bean="procession2" />
-				<ref bean="procession3" />
+				<ref bean="parade2" />
+				<ref bean="parade3" />
 			</list>
 		</property>
 	<property name="lastEdit" value="02/01/2018 11:45" />
@@ -1722,10 +1722,10 @@
 		<property name="area" value="area2" />
 		<property name="minDate" value="02/01/2019 11:30" />
 		<property name="maxDate" value="02/01/2025 11:45" />
-		<property name="processions">	<!-- SOLO ENCUENTRA FINAL MODE -->
+		<property name="parades">	<!-- SOLO ENCUENTRA FINAL MODE -->
 			<list>
-				<ref bean="procession2" />
-				<ref bean="procession3" />
+				<ref bean="parade2" />
+				<ref bean="parade3" />
 			</list>
 		</property>
 	<property name="lastEdit" value="02/01/2018 11:45" />
@@ -1736,10 +1736,10 @@
 		<property name="area" value="area3" />
 		<property name="minDate" value="02/01/2019 11:30" />
 		<property name="maxDate" value="02/01/2025 11:45" />
-		<property name="processions">	<!-- SOLO ENCUENTRA FINAL MODE -->
+		<property name="parades">	<!-- SOLO ENCUENTRA FINAL MODE -->
 			<list>
-				<ref bean="procession2" />
-				<ref bean="procession3" />
+				<ref bean="parade2" />
+				<ref bean="parade3" />
 			</list>
 		</property>
 	<property name="lastEdit" value="02/01/2018 11:45" />
@@ -1750,10 +1750,10 @@
 		<property name="area" value="area4" />
 		<property name="minDate" value="02/01/2019 11:30" />
 		<property name="maxDate" value="02/01/2025 11:45" />
-		<property name="processions">	<!-- SOLO ENCUENTRA FINAL MODE -->
+		<property name="parades">	<!-- SOLO ENCUENTRA FINAL MODE -->
 			<list>
-				<ref bean="procession2" />
-				<ref bean="procession3" />
+				<ref bean="parade2" />
+				<ref bean="parade3" />
 			</list>
 		</property>
 	<property name="lastEdit" value="02/01/2018 11:45" />
@@ -1865,13 +1865,13 @@
 		<property name="columnNumber" value="3" />
 		<!-- <property name="reasonDescription" value="hola" />	-->
 		<property name="member" ref="member1" />
-		<property name="procession" ref="procession2" />
+		<property name="parade" ref="parade2" />
 	</bean>
 	
 	<bean id="request2" class="domain.Request">
 		<property name="status" value="PENDING" />
 		<property name="member" ref="member1" />
-		<property name="procession" ref="procession3" />
+		<property name="parade" ref="parade3" />
 	</bean>
 		<!-- FIN MEMBER1 -->
 		
@@ -1882,7 +1882,7 @@
 		<property name="columnNumber" value="1" />
 		<!-- <property name="reasonDescription" value="hola" />	-->
 		<property name="member" ref="member2" />
-		<property name="procession" ref="procession2" />
+		<property name="parade" ref="parade2" />
 	</bean>
 	
 	<bean id="request4" class="domain.Request">
@@ -1891,7 +1891,7 @@
 		<property name="columnNumber" value="1" />	 -->
 		<property name="reasonDescription" value="There are no more candles" /> 
 		<property name="member" ref="member2" />
-		<property name="procession" ref="procession3" />
+		<property name="parade" ref="parade3" />
 	</bean>
 		<!-- FIN MEMBER2
 		
@@ -1905,7 +1905,7 @@
 		<property name="columnNumber" value="" />  -->
 		<property name="reasonDescription" value="Your tunic is blue and orange" /> 
 		<property name="member" ref="member4" />
-		<property name="procession" ref="procession2" />
+		<property name="parade" ref="parade2" />
 	</bean>
 	
 	<bean id="request6" class="domain.Request">
@@ -1914,7 +1914,7 @@
 		 <property name="columnNumber" value="1" />	
 		<property name="reasonDescription" value="There are no more candles" /> -->
 		<property name="member" ref="member4" />
-		<property name="procession" ref="procession3" />
+		<property name="parade" ref="parade3" />
 	</bean>
 <!-- 		FIN MEMBER4
 		

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import domain.Brotherhood;
 import domain.Float;
-import domain.Procession;
+import domain.Parade;
 
 @Repository
 public interface BrotherhoodRepository extends JpaRepository<Brotherhood, Integer> {
@@ -17,12 +17,12 @@ public interface BrotherhoodRepository extends JpaRepository<Brotherhood, Intege
 	@Query("select b.floats from Brotherhood b where b.id = ?1")
 	public List<Float> getFloatsByBrotherhood(int id);
 
-	@Query("select b.processions from Brotherhood b where b.id = ?1")
-	public List<Procession> getProcessionsByBrotherhood(int id);
+	@Query("select b.parades from Brotherhood b where b.id = ?1")
+	public List<Parade> getParadesByBrotherhood(int id);
 
 	@Query("select a from Brotherhood a join a.userAccount b where b.username = ?1")
 	public Brotherhood getBrotherhoodByUsername(String a);
 
-	@Query("select p from Brotherhood b join b.processions p where p.isDraftMode = false and b.id = ?1")
-	public List<Procession> getProcessionsByBrotherhoodFinal(int id);
+	@Query("select p from Brotherhood b join b.parades p where p.isDraftMode = false and b.id = ?1")
+	public List<Parade> getParadesByBrotherhoodFinal(int id);
 }

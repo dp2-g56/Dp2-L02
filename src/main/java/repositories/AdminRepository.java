@@ -84,20 +84,20 @@ public interface AdminRepository extends JpaRepository<Admin, Integer> {
 	@Query("select distinct (cast((select count(a1.status) from Request a1 where status='APPROVED') as float)/ (select count(a2) from Request a2) * 100) from Configuration a")
 	public Float ratioApprovedRequests();
 
-	@Query("select (cast((select count(a1.status) from Request a1 where status='APPROVED' and a1.procession = a) as float)/ (a.requests.size) * 100) from Procession a")
-	public List<Float> ratioApprovedRequestsByProcessions();
+	@Query("select (cast((select count(a1.status) from Request a1 where status='APPROVED' and a1.parade = a) as float)/ (a.requests.size) * 100) from Parade a")
+	public List<Float> ratioApprovedRequestsByParades();
 
 	@Query("select distinct (cast((select count(a1.status) from Request a1 where status='PENDING') as float)/ (select count(a2) from Request a2) * 100) from Configuration a")
 	public Float ratioPendingRequests();
 
-	@Query("select (cast((select count(a1.status) from Request a1 where status='PENDING' and a1.procession = a) as float)/ (a.requests.size) * 100) from Procession a")
-	public List<Float> ratioPendingRequestsByProcessions();
+	@Query("select (cast((select count(a1.status) from Request a1 where status='PENDING' and a1.parade = a) as float)/ (a.requests.size) * 100) from Parade a")
+	public List<Float> ratioPendingRequestsByParades();
 
 	@Query("select distinct (cast((select count(a1.status) from Request a1 where status='REJECTED') as float)/ (select count(a2) from Request a2) * 100) from Configuration a")
 	public Float ratioRejectedRequests();
 
-	@Query("select (cast((select count(a1.status) from Request a1 where status='REJECTED' and a1.procession = a) as float)/ (a.requests.size) * 100) from Procession a")
-	public List<Float> ratioRejectedRequestsByProcessions();
+	@Query("select (cast((select count(a1.status) from Request a1 where status='REJECTED' and a1.parade = a) as float)/ (a.requests.size) * 100) from Parade a")
+	public List<Float> ratioRejectedRequestsByParades();
 
 	@Query("select a.title from Brotherhood a where cast((select count(b) from Enrolment b where b.brotherhood = a AND b.statusEnrolment = 'ACCEPTED') as float) = (select max(cast((select count(b) from Enrolment b where b.brotherhood = a AND b.statusEnrolment = 'ACCEPTED') as float)) from Brotherhood a)")
 	public List<String> largestBrotherhoods();
@@ -126,25 +126,25 @@ public interface AdminRepository extends JpaRepository<Admin, Integer> {
 	@Query("select stddev(cast((select count(a) from Brotherhood a where a.area = b) as float)) from Area b")
 	public Float stddevNumberBrotherhoodPerArea();
 
-	@Query("select a.title from Procession a where a.isDraftMode = false and a.moment between (NOW()) and (select (NOW() + 30000000) from Configuration c)")
-	public List<String> listProcessionNext30Days();
+	@Query("select a.title from Parade a where a.isDraftMode = false and a.moment between (NOW()) and (select (NOW() + 30000000) from Configuration c)")
+	public List<String> listParadeNext30Days();
 
-	@Query("select min(a.processions.size) from Finder a")
+	@Query("select min(a.parades.size) from Finder a")
 	public Float minResultFinders();
 
-	@Query("select max(a.processions.size) from Finder a")
+	@Query("select max(a.parades.size) from Finder a")
 	public Float maxResultFinders();
 
-	@Query("select avg(a.processions.size) from Finder a")
+	@Query("select avg(a.parades.size) from Finder a")
 	public Float avgResultFinders();
 
-	@Query("select stddev(a.processions.size) from Finder a")
+	@Query("select stddev(a.parades.size) from Finder a")
 	public Float stddevResultFinders();
 
-	@Query("select (cast((select count(a) from Finder a where a.processions.size = 0) as float)/(select count(c) from Finder c where c.processions.size > 0)) from Configuration b")
+	@Query("select (cast((select count(a) from Finder a where a.parades.size = 0) as float)/(select count(c) from Finder c where c.parades.size > 0)) from Configuration b")
 	public Float ratioEmptyFinder();
 
-	@Query("select count(c) from Finder c where c.processions.size > 0")
+	@Query("select count(c) from Finder c where c.parades.size > 0")
 	public Integer numberNonEmptyFinders();
 
 	@Query("select cast((select count(b) from Enrolment b where b.position = a and b.statusEnrolment = 'ACCEPTED') as float) from Position a")

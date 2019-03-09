@@ -39,10 +39,10 @@
 		<display:column>
 		
 			<spring:url var="createUrl1"
-				value="/showAll/annonymous/procession/list.do?brotherhoodId={brotherhoodId}">
+				value="/showAll/annonymous/parade/list.do?brotherhoodId={brotherhoodId}">
 				<spring:param name="brotherhoodId" value="${row.id}" />
 			</spring:url>
-				<a href="${createUrl1}"><spring:message code="annonymous.processions"/></a>
+				<a href="${createUrl1}"><spring:message code="annonymous.parades"/></a>
 		</display:column>
 		
 		<display:column>

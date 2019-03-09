@@ -32,7 +32,7 @@ public class Brotherhood extends Actor {
 	//Relaciones
 	private Area				area;
 	private List<Float>			floats;
-	private List<Procession>	processions;
+	private List<Parade>	parades;
 	private List<Enrolment>		enrolments;
 
 
@@ -87,12 +87,12 @@ public class Brotherhood extends Actor {
 
 	@Valid
 	@OneToMany
-	public List<Procession> getProcessions() {
-		return this.processions;
+	public List<Parade> getParades() {
+		return this.parades;
 	}
 
-	public void setProcessions(final List<Procession> processions) {
-		this.processions = processions;
+	public void setParades(final List<Parade> parades) {
+		this.parades = parades;
 	}
 
 	@Valid

@@ -25,10 +25,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import services.BrotherhoodService;
-import services.ProcessionService;
+import services.ParadeService;
 import services.RequestService;
 import domain.Brotherhood;
-import domain.Procession;
+import domain.Parade;
 import domain.Request;
 import domain.Status;
 
@@ -41,7 +41,7 @@ public class RequestBrotherhoodController extends AbstractController {
 	@Autowired
 	private BrotherhoodService	brotherhoodService;
 	@Autowired
-	private ProcessionService	processionService;
+	private ParadeService		paradeService;
 
 
 	// Constructors -----------------------------------------------------------
@@ -99,13 +99,13 @@ public class RequestBrotherhoodController extends AbstractController {
 
 		Brotherhood brotherhood = this.brotherhoodService.securityAndBrotherhood();
 		Request request = this.requestService.findOne(requestId);
-		Procession procession = request.getProcession();
+		Parade parade = request.getParade();
 
-		if (!brotherhood.getProcessions().contains(procession))
+		if (!brotherhood.getParades().contains(parade))
 			return this.requestsList();
 
 		if (request.getId() != 0) {
-			Collection<Request> requests = this.requestService.getRequestApprovedByBrotherhoodAndProcession(brotherhood, request.getProcession());
+			Collection<Request> requests = this.requestService.getRequestApprovedByBrotherhoodAndParade(brotherhood, request.getParade());
 
 			List<Integer> freePosition = this.requestService.getFreePosition(request);
 
@@ -118,7 +118,7 @@ public class RequestBrotherhoodController extends AbstractController {
 			result = new ModelAndView("brotherhood/editRequest");
 			result.addObject("request", request);
 			result.addObject("requests", requests);
-			result.addObject("procession", procession);
+			result.addObject("parade", parade);
 			result.addObject("freePosition", freePosition);
 			result.addObject("approved", approved);
 		} else
@@ -134,8 +134,8 @@ public class RequestBrotherhoodController extends AbstractController {
 
 		Brotherhood brotherhood = this.brotherhoodService.securityAndBrotherhood();
 		Request requestFounded = this.requestService.findOne(request.getId());
-		Collection<Request> requests = this.requestService.getRequestApprovedByBrotherhoodAndProcession(brotherhood, requestFounded.getProcession());
-		Procession procession = requestFounded.getProcession();
+		Collection<Request> requests = this.requestService.getRequestApprovedByBrotherhoodAndParade(brotherhood, requestFounded.getParade());
+		Parade parade = requestFounded.getParade();
 
 		r = this.requestService.reconstructRequest(request, binding);
 
@@ -149,7 +149,7 @@ public class RequestBrotherhoodController extends AbstractController {
 			result = new ModelAndView("brotherhood/editRequest");
 			result.addObject("request", request);
 			result.addObject("requests", requests);
-			result.addObject("procession", procession);
+			result.addObject("parade", parade);
 			result.addObject("approved", approved);
 		} else
 			try {
@@ -160,7 +160,7 @@ public class RequestBrotherhoodController extends AbstractController {
 				result = new ModelAndView("brotherhood/editRequest");
 				result.addObject("request", request);
 				result.addObject("requests", requests);
-				result.addObject("procession", procession);
+				result.addObject("parade", parade);
 				result.addObject("approved", approved);
 				result.addObject("message", "request.commit.error");
 			}
@@ -168,21 +168,21 @@ public class RequestBrotherhoodController extends AbstractController {
 		return result;
 	}
 
-	@RequestMapping(value = "/filterProcession", method = RequestMethod.POST, params = "refresh2")
-	public ModelAndView requestsFilterProcession(@Valid String fselect, @RequestParam int processionId) {
+	@RequestMapping(value = "/filterParade", method = RequestMethod.POST, params = "refresh2")
+	public ModelAndView requestsFilterParade(@Valid String fselect, @RequestParam int paradeId) {
 		ModelAndView result;
-		Procession procession = new Procession();
-		procession = this.processionService.findOne(processionId);
+		Parade parade = new Parade();
+		parade = this.paradeService.findOne(paradeId);
 
-		Assert.isTrue(this.brotherhoodService.loggedBrotherhood().getProcessions().contains(procession));
+		Assert.isTrue(this.brotherhoodService.loggedBrotherhood().getParades().contains(parade));
 
 		if (fselect.equals("ALL")) {
-			result = new ModelAndView("procession/brotherhood/requests");
+			result = new ModelAndView("parade/brotherhood/requests");
 
-			List<Request> requests = this.processionService.findOne(processionId).getRequests();
+			List<Request> requests = this.paradeService.findOne(paradeId).getRequests();
 
 			result.addObject("requests", requests);
-			result.addObject("processionId", processionId);
+			result.addObject("paradeId", paradeId);
 		} else {
 
 			Status status = Status.APPROVED;
@@ -191,13 +191,13 @@ public class RequestBrotherhoodController extends AbstractController {
 			else if (fselect.equals("REJECTED"))
 				status = Status.REJECTED;
 
-			List<Request> requests = this.requestService.getRequestsByProcessionAndStatus(procession, status);
+			List<Request> requests = this.requestService.getRequestsByParadeAndStatus(parade, status);
 
-			result = new ModelAndView("procession/brotherhood/requests");
+			result = new ModelAndView("parade/brotherhood/requests");
 
 			result.addObject("requests", requests);
-			result.addObject("processionId", processionId);
-			result.addObject("requestURI", "request/brotherhood/filterProcession.do");
+			result.addObject("paradeId", paradeId);
+			result.addObject("requestURI", "request/brotherhood/filterParade.do");
 		}
 
 		return result;

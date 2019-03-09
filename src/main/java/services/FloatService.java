@@ -17,9 +17,9 @@ import org.springframework.validation.Validator;
 
 import repositories.FloatRepository;
 import domain.Brotherhood;
-import domain.Procession;
-import forms.FormObjectProcessionFloat;
-import forms.FormObjectProcessionFloatCheckbox;
+import domain.Parade;
+import forms.FormObjectParadeFloat;
+import forms.FormObjectParadeFloatCheckbox;
 
 @Service
 @Transactional
@@ -31,7 +31,7 @@ public class FloatService {
 	@Autowired
 	private BrotherhoodService	brotherhoodService;
 	@Autowired
-	private ProcessionService	processionService;
+	private ParadeService		paradeService;
 	@Autowired
 	private Validator			validator;
 
@@ -58,9 +58,9 @@ public class FloatService {
 		this.validator.validate(result, binding);
 		return result;
 	}
-	public List<domain.Float> showAssignedFloats(Procession procession) {
+	public List<domain.Float> showAssignedFloats(Parade parade) {
 		List<domain.Float> floatts = new ArrayList<domain.Float>();
-		floatts = procession.getFloats();
+		floatts = parade.getFloats();
 		return floatts;
 	}
 
@@ -87,16 +87,16 @@ public class FloatService {
 	}
 
 	public void remove(domain.Float floatt) {
-		//No se pueden eliminar pasos asignados a procesiones en final mode
+		//No se pueden eliminar pasos asignados a desfiles en final mode
 
 		this.brotherhoodService.loggedAsBrotherhood();
 		Brotherhood bro = new Brotherhood();
 		bro = this.brotherhoodService.loggedBrotherhood();
-		List<Procession> pro = new ArrayList<Procession>();
+		List<Parade> pro = new ArrayList<Parade>();
 
-		pro = this.brotherhoodService.getProcessionsByBrotherhood(bro);
-		Assert.isTrue(this.allProcesionsDraftMode(pro));
-		for (final Procession p : pro)
+		pro = this.brotherhoodService.getParadesByBrotherhood(bro);
+		Assert.isTrue(this.allParadesDraftMode(pro));
+		for (final Parade p : pro)
 			if (p.getFloats().contains(floatt))
 				p.getFloats().remove(floatt);
 		bro.getFloats().remove(floatt);
@@ -108,12 +108,12 @@ public class FloatService {
 		//Obtener float list
 		//quitar float antiguo y añadir el nuevo
 		//Hacer set del float list modificado
-		//Save procession
+		//Save parade
 
 		//Obtener loggedBrotherhood
 
 		//A PARTIR DE AQUI PUEDE QUE SEA OPCIONAL
-		//Quitar procession antigua y añadir nueva
+		//Quitar parade antigua y añadir nueva
 		//Obt
 
 		this.brotherhoodService.loggedAsBrotherhood();
@@ -142,33 +142,33 @@ public class FloatService {
 		return floatt;
 	}
 
-	public Boolean allProcesionsDraftMode(final List<Procession> pro) {
+	public Boolean allParadesDraftMode(final List<Parade> pro) {
 		final Boolean res = true;
-		for (final Procession p : pro)
+		for (final Parade p : pro)
 			if (p.getIsDraftMode() == false)
 				return true;
 		return res;
 	}
 
-	public void AssingFloatToProcession(final domain.Float floatt, final Procession procession) {
-		Assert.isTrue(procession.getIsDraftMode() == true);
-		if (!(procession.getFloats().contains(floatt)))
-			procession.getFloats().add(floatt);
-		this.processionService.save(procession);
+	public void AssingFloatToParade(final domain.Float floatt, final Parade parade) {
+		Assert.isTrue(parade.getIsDraftMode() == true);
+		if (!(parade.getFloats().contains(floatt)))
+			parade.getFloats().add(floatt);
+		this.paradeService.save(parade);
 	}
 
-	public void UnAssingFloatToProcession(domain.Float floatt, Procession procession) {
-		Assert.isTrue(procession.getIsDraftMode() == true);
-		if (procession.getFloats().contains(floatt))
-			procession.getFloats().remove(floatt);
-		this.processionService.save(procession);
+	public void UnAssingFloatToParade(domain.Float floatt, Parade parade) {
+		Assert.isTrue(parade.getIsDraftMode() == true);
+		if (parade.getFloats().contains(floatt))
+			parade.getFloats().remove(floatt);
+		this.paradeService.save(parade);
 	}
 
-	public domain.Float reconstructForm(FormObjectProcessionFloat formObjectProcessionFloat, BindingResult binding) {
+	public domain.Float reconstructForm(FormObjectParadeFloat formObjectParadeFloat, BindingResult binding) {
 		domain.Float result = new domain.Float();
 
-		result.setTitle(formObjectProcessionFloat.getTitle());
-		result.setDescription(formObjectProcessionFloat.getDescription());
+		result.setTitle(formObjectParadeFloat.getTitle());
+		result.setDescription(formObjectParadeFloat.getDescription());
 
 		//		this.validator.validate(result, binding);
 
@@ -190,9 +190,9 @@ public class FloatService {
 		return map;
 	}
 
-	public List<domain.Float> reconstructList(FormObjectProcessionFloatCheckbox formObjectProcessionFloatCheckbox) {
+	public List<domain.Float> reconstructList(FormObjectParadeFloatCheckbox formObjectParadeFloatCheckbox) {
 
-		List<Integer> ids = formObjectProcessionFloatCheckbox.getFloats();
+		List<Integer> ids = formObjectParadeFloatCheckbox.getFloats();
 
 		this.brotherhoodService.loggedAsBrotherhood();
 
@@ -212,13 +212,13 @@ public class FloatService {
 		return floats;
 
 	}
-	public List<domain.Float> floatsInProcessionInFinalMode() {
+	public List<domain.Float> floatsInParadeInFinalMode() {
 		this.brotherhoodService.loggedAsBrotherhood();
 		Brotherhood bro = new Brotherhood();
 		bro = this.brotherhoodService.loggedBrotherhood();
 		List<domain.Float> floatt = new ArrayList<domain.Float>();
 
-		floatt = this.floatRepository.getFloatsInProcessionInFinalMode(bro.getId());
+		floatt = this.floatRepository.getFloatsInParadeInFinalMode(bro.getId());
 
 		return floatt;
 	}

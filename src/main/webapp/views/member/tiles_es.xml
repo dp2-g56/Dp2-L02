@@ -18,12 +18,12 @@
 
 
 	<definition name="member/finder" extends="master.page">	
-		<put-attribute name="title" value="Buscador de Procesiones" />
+		<put-attribute name="title" value="Buscador de Desfiles" />
 		<put-attribute name="body" value="/views/member/finder.jsp" />
 	</definition>
 	
 	<definition name="member/finderResult" extends="master.page">			
-		<put-attribute name="title" value="Processions Finder Result" />
+		<put-attribute name="title" value="Resultados del buscador de desfiles" />
 		<put-attribute name="body" value="/views/member/finderResult.jsp" />	
 	</definition>
 	

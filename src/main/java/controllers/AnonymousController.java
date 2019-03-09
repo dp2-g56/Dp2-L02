@@ -13,12 +13,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import services.BrotherhoodService;
+import services.ChapterService;
 import services.ConfigurationService;
 import services.MemberService;
 import domain.Brotherhood;
+import domain.Chapter;
 import domain.Configuration;
 import domain.Member;
 import forms.FormObjectBrotherhood;
+import forms.FormObjectChapter;
 import forms.FormObjectMember;
 
 @Controller
@@ -27,6 +30,8 @@ public class AnonymousController extends AbstractController {
 
 	@Autowired
 	private MemberService			memberService;
+	@Autowired
+	private ChapterService			chapterService;
 	@Autowired
 	private BrotherhoodService		brotherhoodService;
 	@Autowired
@@ -52,6 +57,139 @@ public class AnonymousController extends AbstractController {
 		ModelAndView result;
 
 		result = new ModelAndView("termsAndConditionsES");
+
+		return result;
+	}
+
+	//------------------------ CHAPTER -----------------------------------------------------	
+	//Create
+	@RequestMapping(value = "/createChapter", method = RequestMethod.GET)
+	public ModelAndView createChapter() {
+		ModelAndView result;
+
+		FormObjectChapter formObjectChapter = new FormObjectChapter();
+		formObjectChapter.setTermsAndConditions(false);
+
+		String locale = LocaleContextHolder.getLocale().getLanguage().toUpperCase();
+
+		result = this.createEditModelAndView(formObjectChapter);
+		result.addObject("locale", locale);
+
+		return result;
+	}
+
+	//SAVE
+	@RequestMapping(value = "/createChapter", method = RequestMethod.POST, params = "save")
+	public ModelAndView save(@Valid FormObjectChapter formObjectChapter, BindingResult binding) {
+
+		ModelAndView result;
+
+		Chapter chapter = new Chapter();
+		chapter = this.chapterService.createChapter();
+
+		Configuration configuration = this.configurationService.getConfiguration();
+		String prefix = configuration.getSpainTelephoneCode();
+
+		//Confirmacion contraseña
+		if (!formObjectChapter.getPassword().equals(formObjectChapter.getConfirmPassword()))
+			if (LocaleContextHolder.getLocale().getLanguage().toUpperCase().contains("ES")) {
+				binding.addError(new FieldError("formObjectChapter", "password", formObjectChapter.getPassword(), false, null, null, "Las contraseñas no coinciden"));
+				return this.createEditModelAndView(chapter);
+			} else {
+				binding.addError(new FieldError("formObjectChapter", "password", formObjectChapter.getPassword(), false, null, null, "Passwords don't match"));
+				return this.createEditModelAndView(chapter);
+			}
+
+		//Confirmacion terminos y condiciones
+		if (!formObjectChapter.getTermsAndConditions())
+			if (LocaleContextHolder.getLocale().getLanguage().toUpperCase().contains("ES")) {
+				binding.addError(new FieldError("formObjectChapter", "termsAndConditions", formObjectChapter.getTermsAndConditions(), false, null, null, "Debe aceptar los terminos y condiciones"));
+				return this.createEditModelAndView(chapter);
+			} else {
+				binding.addError(new FieldError("formObjectChapter", "termsAndConditions", formObjectChapter.getTermsAndConditions(), false, null, null, "You must accept the terms and conditions"));
+				return this.createEditModelAndView(chapter);
+			}
+
+		//Reconstruccion
+		chapter = this.chapterService.reconstruct(formObjectChapter, binding);
+
+		if (binding.hasErrors())
+			result = this.createEditModelAndView(chapter);
+		else
+			try {
+
+				if (chapter.getEmail().matches("[\\w.%-]+\\<[\\w.%-]+\\@+\\>|[\\w.%-]+")) {
+					if (LocaleContextHolder.getLocale().getLanguage().toUpperCase().contains("ES")) {
+						binding.addError(new FieldError("chapter", "email", chapter.getEmail(), false, null, null, "No sigue el patron ejemplo@dominio.asd o alias <ejemplo@dominio.asd>"));
+						return this.createEditModelAndView(chapter);
+					} else {
+						binding.addError(new FieldError("chapter", "email", chapter.getEmail(), false, null, null, "Dont follow the pattern example@domain.asd or alias <example@domain.asd>"));
+						return this.createEditModelAndView(chapter);
+					}
+
+				} else if (chapter.getPhoneNumber().matches("(\\+[0-9]{1,3})(\\([0-9]{1,3}\\))([0-9]{4,})$") || chapter.getPhoneNumber().matches("(\\+[0-9]{1,3})([0-9]{4,})$"))
+					this.chapterService.saveCreate(chapter);
+				else if (chapter.getPhoneNumber().matches("([0-9]{4,})$")) {
+					chapter.setPhoneNumber(prefix + chapter.getPhoneNumber());
+					this.chapterService.saveCreate(chapter);
+				} else
+					this.chapterService.saveCreate(chapter);
+
+				result = new ModelAndView("redirect:/security/login.do");
+
+			} catch (Throwable oops) {
+				result = this.createEditModelAndView(chapter, "brotherhood.commit.error");
+
+			}
+		return result;
+	}
+
+	//MODEL AND VIEW FORM OBJECT CHAPTER
+	protected ModelAndView createEditModelAndView(FormObjectChapter formObjectChapter) {
+		ModelAndView result;
+
+		String locale = LocaleContextHolder.getLocale().getLanguage().toUpperCase();
+
+		result = this.createEditModelAndView(formObjectChapter, null);
+		result.addObject("locale", locale);
+
+		return result;
+	}
+
+	protected ModelAndView createEditModelAndView(FormObjectChapter formObjectChapter, String messageCode) {
+		ModelAndView result;
+
+		String locale = LocaleContextHolder.getLocale().getLanguage().toUpperCase();
+
+		result = new ModelAndView("anonymous/createChapter");
+		result.addObject("formObjectChapter", formObjectChapter);
+		result.addObject("message", messageCode);
+		result.addObject("locale", locale);
+
+		return result;
+	}
+
+	//MODEL AND VIEW CHAPTER
+	protected ModelAndView createEditModelAndView(Chapter chapter) {
+		ModelAndView result;
+
+		String locale = LocaleContextHolder.getLocale().getLanguage().toUpperCase();
+
+		result = this.createEditModelAndView(chapter, null);
+		result.addObject("locale", locale);
+
+		return result;
+	}
+
+	protected ModelAndView createEditModelAndView(Chapter chapter, String messageCode) {
+		ModelAndView result;
+
+		String locale = LocaleContextHolder.getLocale().getLanguage().toUpperCase();
+
+		result = new ModelAndView("anonymous/createChapter");
+		result.addObject("chapter", chapter);
+		result.addObject("message", messageCode);
+		result.addObject("locale", locale);
 
 		return result;
 	}

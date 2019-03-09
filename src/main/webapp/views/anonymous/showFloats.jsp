@@ -23,9 +23,9 @@
 		
 	<display:column titleKey="float.pictures">
         <jstl:set var="picturesSize" value="${row.pictures.size()}" />
-        <spring:url var="picturesURL" value="/showAll/annonymous/picture/list.do?floatId={floatId}&procession={procession}">      		
+        <spring:url var="picturesURL" value="/showAll/annonymous/picture/list.do?floatId={floatId}&parade={parade}">      		
         	<spring:param name="floatId" value="${row.id}"/>
-        	<spring:param name="procession" value="${!restriction}"/>
+        	<spring:param name="parade" value="${!restriction}"/>
         </spring:url>
         <a href="${picturesURL}">
               <spring:message var ="viewPictures1" code="float.viewPictures" />

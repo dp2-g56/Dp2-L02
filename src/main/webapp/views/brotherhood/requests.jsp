@@ -48,8 +48,8 @@
 			</jstl:otherwise>
 		</jstl:choose>
 		
-		<display:column titleKey="request.procession">
-			<jstl:out value="${row.procession.title}"/>
+		<display:column titleKey="request.parade">
+			<jstl:out value="${row.parade.title}"/>
 		</display:column>
 		
 		<display:column titleKey="request.member" style="color:${color}">

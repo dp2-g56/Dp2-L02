@@ -27,7 +27,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 @Table(indexes = {
 	@Index(columnList = "isDraftMode, moment"), @Index(columnList = "title, description"), @Index(columnList = "moment"), @Index(columnList = "isDraftMode")
 })
-public class Procession extends DomainEntity {
+public class Parade extends DomainEntity {
 
 	private String			title;			//
 	private String			description;	//
@@ -122,7 +122,7 @@ public class Procession extends DomainEntity {
 	}
 
 	@Valid
-	@OneToMany(mappedBy = "procession")
+	@OneToMany(mappedBy = "parade")
 	public List<Request> getRequests() {
 		return this.requests;
 	}

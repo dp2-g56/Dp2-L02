@@ -23,10 +23,10 @@
 	<button type="button" ><spring:message code="finder.edit" /></button>	
 	</a>
 
-	<display:table pagesize="5" name="processions" id="row" class="displaytag" 
+	<display:table pagesize="5" name="parades" id="row" class="displaytag" 
 					requestURI="/finder/member/list.do">
 					
-	<display:column titleKey="procession.request" >
+	<display:column titleKey="parade.request" >
 		<jstl:set var="hasRequest" value="${0}"/>
 		<jstl:forEach
 			var="request"
@@ -41,13 +41,13 @@
 		<jstl:if test="${hasRequest==0}">
 		<%--
 			<form name="newRequest" id="newRequest" action="request/member/create.do" method="post">
-				<input type="hidden" name="processionId" id="processionId" value="${row.id}"/>
+				<input type="hidden" name="paradeId" id="paradeId" value="${row.id}"/>
 				<acme:submit name="saveRequest" code="request.create"/>
 			</form>
 		--%>
 			
 			<spring:url var="createRequest" value="/request/member/create.do">
-				<spring:param name="processionId" value="${row.id}" />
+				<spring:param name="paradeId" value="${row.id}" />
 			</spring:url>
 			<a href="${createRequest}" onclick="return confirm('<spring:message code="request.create.confirmation" />')">
 				<spring:message code="request.create" />				
@@ -56,11 +56,11 @@
 		</jstl:if>
 	</display:column> 
 		
-	<display:column property="title" titleKey="procession.title" /> 
+	<display:column property="title" titleKey="parade.title" /> 
 	
-	<display:column property="description" titleKey="procession.description" /> 
+	<display:column property="description" titleKey="parade.description" /> 
 	
-	<display:column property="moment" titleKey="procession.moment" /> 
+	<display:column property="moment" titleKey="parade.moment" /> 
 	
 	</display:table>
 	

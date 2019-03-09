@@ -64,8 +64,8 @@
 		<property name="timeFinder" value="1"/>
 
 		
-		<property name="welcomeMessageEnglish" value="Welcome to Acme Madrugá, the site to organise your processions" />
-		<property name="welcomeMessageSpanish" value="¡Bienvenido a Acme Madrugá! el lugar para organizar tus procesiones" />
+		<property name="welcomeMessageEnglish" value="Welcome to Acme Madrugá, the site to organise your parades" />
+		<property name="welcomeMessageSpanish" value="¡Bienvenido a Acme Madrugá! el lugar para organizar tus desfiles" />
 		
 		<property name="systemName" value="Acme Madrugá" />
 		<property name="imageURL" value="https://tinyurl.com/acme-madruga" />

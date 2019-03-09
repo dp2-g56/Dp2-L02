@@ -7,21 +7,21 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import repositories.ProcessionRepository;
-import domain.Procession;
+import repositories.ParadeRepository;
+import domain.Parade;
 
 @Component
 @Transactional
-public class StringToProcessionConverter implements Converter<String, Procession> {
+public class StringToParadeConverter implements Converter<String, Parade> {
 
 	@Autowired
-	ProcessionRepository	processionRepository;
+	ParadeRepository	paradeRepository;
 
 
 	@Override
-	public Procession convert(String text) {
+	public Parade convert(String text) {
 
-		Procession result = new Procession();
+		Parade result = new Parade();
 		int id;
 
 		try {
@@ -29,7 +29,7 @@ public class StringToProcessionConverter implements Converter<String, Procession
 				result = null;
 			else {
 				id = Integer.valueOf(text);
-				result = this.processionRepository.findOne(id);
+				result = this.paradeRepository.findOne(id);
 			}
 
 		} catch (Throwable oops) {

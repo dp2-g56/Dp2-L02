@@ -24,7 +24,7 @@ import domain.Brotherhood;
 import domain.Enrolment;
 import domain.Float;
 import domain.Member;
-import domain.Procession;
+import domain.Parade;
 import domain.SocialProfile;
 import domain.StatusEnrolment;
 import forms.FormObjectBrotherhood;
@@ -63,12 +63,12 @@ public class BrotherhoodService {
 		return this.brotherhoodRepository.getFloatsByBrotherhood(b.getId());
 	}
 
-	public List<Procession> getProcessionsByBrotherhood(Brotherhood b) {
-		return this.brotherhoodRepository.getProcessionsByBrotherhood(b.getId());
+	public List<Parade> getParadesByBrotherhood(Brotherhood b) {
+		return this.brotherhoodRepository.getParadesByBrotherhood(b.getId());
 	}
 
-	public List<Procession> getProcessionsByBrotherhoodFinal(Brotherhood b) {
-		return this.brotherhoodRepository.getProcessionsByBrotherhoodFinal(b.getId());
+	public List<Parade> getParadesByBrotherhoodFinal(Brotherhood b) {
+		return this.brotherhoodRepository.getParadesByBrotherhoodFinal(b.getId());
 	}
 
 	public Brotherhood createBrotherhood() {
@@ -79,7 +79,7 @@ public class BrotherhoodService {
 		List<SocialProfile> socialProfiles = new ArrayList<SocialProfile>();
 		List<Enrolment> enrolments = new ArrayList<Enrolment>();
 		List<Box> boxes = new ArrayList<Box>();
-		List<Procession> processions = new ArrayList<Procession>();
+		List<Parade> parades = new ArrayList<Parade>();
 		List<Float> floats = new ArrayList<Float>();
 
 		UserAccount userAccount = new UserAccount();
@@ -113,7 +113,7 @@ public class BrotherhoodService {
 		bro.setSocialProfiles(socialProfiles);
 		bro.setTitle("");
 		bro.setUserAccount(userAccount);
-		bro.setProcessions(processions);
+		bro.setParades(parades);
 		bro.setFloats(floats);
 
 		return bro;
@@ -171,9 +171,9 @@ public class BrotherhoodService {
 		List<domain.Float> floats = new ArrayList<>();
 		bro.setFloats(floats);
 
-		//Processions
-		List<Procession> processions = new ArrayList<>();
-		bro.setProcessions(processions);
+		//Parades
+		List<Parade> parades = new ArrayList<>();
+		bro.setParades(parades);
 
 		return this.brotherhoodRepository.save(bro);
 	}
@@ -360,7 +360,7 @@ public class BrotherhoodService {
 		result.setEnrolments(pururu.getEnrolments());
 		result.setFloats(pururu.getFloats());
 		result.setArea(pururu.getArea());
-		result.setProcessions(pururu.getProcessions());
+		result.setParades(pururu.getParades());
 		result.setPictures(pururu.getPictures());
 
 		this.validator.validate(result, binding);

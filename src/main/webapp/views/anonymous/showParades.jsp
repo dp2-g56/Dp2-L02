@@ -14,20 +14,20 @@
 </p>
 
 <display:table
-	pagesize="5" name="processions" id="row"
+	pagesize="5" name="parades" id="row"
 	requestURI="${requestURI}" >
 	
-	<display:column property="ticker" titleKey="procession.ticker" />
+	<display:column property="ticker" titleKey="parade.ticker" />
 	
-	<display:column property="title" titleKey="procession.title" />
+	<display:column property="title" titleKey="parade.title" />
 	
-	<display:column property="description" titleKey="procession.description" />
+	<display:column property="description" titleKey="parade.description" />
 	
-	<display:column property="moment" titleKey="procession.moment" />
+	<display:column property="moment" titleKey="parade.moment" />
 	
-	<display:column property="rowNumber" titleKey="procession.rowNumber" />
+	<display:column property="rowNumber" titleKey="parade.rowNumber" />
 	
-	<display:column property="columnNumber" titleKey="procession.columnNumber" />
+	<display:column property="columnNumber" titleKey="parade.columnNumber" />
 	
 </display:table>	
 

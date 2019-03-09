@@ -20,7 +20,7 @@ import security.LoginService;
 import security.UserAccount;
 import domain.Finder;
 import domain.Member;
-import domain.Procession;
+import domain.Parade;
 
 @Service
 @Transactional
@@ -47,7 +47,7 @@ public class FinderService {
 
 		Finder finder = new Finder();
 
-		List<Procession> processions = new ArrayList<>();
+		List<Parade> parades = new ArrayList<>();
 
 		Date lastEdit = new Date();
 
@@ -58,7 +58,7 @@ public class FinderService {
 		finder.setMaxDate(null);
 		finder.setMinDate(null);
 		finder.setLastEdit(lastEdit);
-		finder.setProcessions(processions);
+		finder.setParades(parades);
 
 		return finder;
 
@@ -79,7 +79,7 @@ public class FinderService {
 		this.finderRepository.delete(finder);
 	}
 
-	public void filterProcessionsByFinder(Finder finder) {
+	public void filterParadesByFinder(Finder finder) {
 		UserAccount userAccount = LoginService.getPrincipal();
 
 		List<Authority> authorities = (List<Authority>) userAccount.getAuthorities();
@@ -89,39 +89,39 @@ public class FinderService {
 
 		Assert.isTrue(loggedMember.getFinder().getId() == finder.getId());
 
-		List<Procession> filter = new ArrayList<>();
-		List<Procession> result = this.getAllPublishedProcessions();
+		List<Parade> filter = new ArrayList<>();
+		List<Parade> result = this.getAllPublishedParades();
 
 		//KeyWord
 		if (!finder.getKeyWord().equals(null) && !finder.getKeyWord().equals("")) {
-			filter = this.finderRepository.getProcessionsByKeyWord("%" + finder.getKeyWord() + "%");
+			filter = this.finderRepository.getParadesByKeyWord("%" + finder.getKeyWord() + "%");
 			result.retainAll(filter);
 		}
 		//Area
 		if (!finder.getArea().equals(null) && !finder.getArea().equals("")) {
-			filter = this.finderRepository.getProcessionsByArea("%" + finder.getArea() + "%");
+			filter = this.finderRepository.getParadesByArea("%" + finder.getArea() + "%");
 			result.retainAll(filter);
 		}
 		// Dates
 
 		if (finder.getMinDate() != null) {
-			filter = this.finderRepository.getProcessionsByMinDate(finder.getMinDate());
+			filter = this.finderRepository.getParadesByMinDate(finder.getMinDate());
 			result.retainAll(filter);
 
 		}
 		if (finder.getMaxDate() != null) {
-			filter = this.finderRepository.getProcessionsByMaxDate(finder.getMaxDate());
+			filter = this.finderRepository.getParadesByMaxDate(finder.getMaxDate());
 			result.retainAll(filter);
 		}
 
-		finder.setProcessions(result);
+		finder.setParades(result);
 		Finder finderRes = this.finderRepository.save(finder);
 		loggedMember.setFinder(finderRes);
 		this.memberRepository.save(loggedMember);
 
 	}
-	public List<Procession> getAllPublishedProcessions() {
-		return this.finderRepository.getPublushedProcessions();
+	public List<Parade> getAllPublishedParades() {
+		return this.finderRepository.getPublushedParades();
 	}
 
 	public Finder reconstruct(Finder finderForm, BindingResult binding) {
@@ -131,7 +131,7 @@ public class FinderService {
 
 		result.setId(finder.getId());
 		result.setVersion(finder.getVersion());
-		result.setProcessions(finder.getProcessions());
+		result.setParades(finder.getParades());
 		Date date = new Date();
 		result.setLastEdit(date);
 		result.setArea(finderForm.getArea());
@@ -168,8 +168,8 @@ public class FinderService {
 		//Max Time Finder
 		Integer time = this.configurationService.getConfiguration().getTimeFinder();
 
-		//Empty List processions
-		List<Procession> processions = new ArrayList<>();
+		//Empty List parades
+		List<Parade> parades = new ArrayList<>();
 
 		for (Finder f : finders) {
 
@@ -181,7 +181,7 @@ public class FinderService {
 			Integer lastEditYear = calendar.get(Calendar.YEAR);
 			Integer lastEditHour = calendar.get(Calendar.HOUR);
 			if (!(currentDay.equals(lastEditDay) && currentMonth.equals(lastEditMonth) && currentYear.equals(lastEditYear) && lastEditHour < (currentHour + time))) {
-				f.setProcessions(processions);
+				f.setParades(parades);
 				this.save(f);
 			}
 		}

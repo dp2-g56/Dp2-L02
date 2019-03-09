@@ -15,17 +15,17 @@ import javax.validation.constraints.Min;
 @Entity
 @Access(AccessType.PROPERTY)
 @Table(indexes = {
-	@Index(columnList = "status"), @Index(columnList = "status, procession"), @Index(columnList = "status, member"), @Index(columnList = "member")
+	@Index(columnList = "status"), @Index(columnList = "status, parade"), @Index(columnList = "status, member"), @Index(columnList = "member")
 })
 public class Request extends DomainEntity {
 
-	private Status		status;
-	private Integer		rowNumber;
-	private Integer		columnNumber;
-	private String		reasonDescription;
+	private Status	status;
+	private Integer	rowNumber;
+	private Integer	columnNumber;
+	private String	reasonDescription;
 
-	private Member		member;
-	private Procession	procession;
+	private Member	member;
+	private Parade	parade;
 
 
 	@Valid
@@ -75,12 +75,12 @@ public class Request extends DomainEntity {
 	}
 
 	@ManyToOne(optional = false)
-	public Procession getProcession() {
-		return this.procession;
+	public Parade getParade() {
+		return this.parade;
 	}
 
-	public void setProcession(final Procession procession) {
-		this.procession = procession;
+	public void setParade(final Parade parade) {
+		this.parade = parade;
 	}
 
 }

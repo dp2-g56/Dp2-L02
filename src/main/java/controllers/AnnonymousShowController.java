@@ -16,7 +16,7 @@ import services.BrotherhoodService;
 import services.FloatService;
 import domain.Brotherhood;
 import domain.Member;
-import domain.Procession;
+import domain.Parade;
 
 @Controller
 @RequestMapping("/showAll/annonymous")
@@ -42,18 +42,18 @@ public class AnnonymousShowController extends AbstractController {
 		return result;
 	}
 
-	@RequestMapping(value = "/procession/list", method = RequestMethod.GET)
-	public ModelAndView listProcessions(@RequestParam int brotherhoodId) {
+	@RequestMapping(value = "/parade/list", method = RequestMethod.GET)
+	public ModelAndView listParades(@RequestParam int brotherhoodId) {
 		ModelAndView result;
 		Brotherhood brotherhood = new Brotherhood();
-		List<Procession> processions = new ArrayList<Procession>();
+		List<Parade> parades = new ArrayList<Parade>();
 
 		brotherhood = this.brotherhoodService.findOne(brotherhoodId);
-		processions = this.brotherhoodService.getProcessionsByBrotherhoodFinal(brotherhood);
-		result = new ModelAndView("showAll/annonymous/procession/list");
+		parades = this.brotherhoodService.getParadesByBrotherhoodFinal(brotherhood);
+		result = new ModelAndView("showAll/annonymous/parade/list");
 
-		result.addObject("processions", processions);
-		result.addObject("requestURI", "showAll/annonymous/procession/list.do");
+		result.addObject("parades", parades);
+		result.addObject("requestURI", "showAll/annonymous/parade/list.do");
 		return result;
 	}
 

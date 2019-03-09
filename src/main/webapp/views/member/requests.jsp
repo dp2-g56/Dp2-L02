@@ -47,8 +47,8 @@
 			</jstl:otherwise>
 		</jstl:choose>
 		
-		<display:column titleKey="request.procession">
-			<jstl:out value="${row.procession.title}"/>
+		<display:column titleKey="request.parade">
+			<jstl:out value="${row.parade.title}"/>
 		</display:column>
 					
 		<display:column property="status" titleKey="request.status" style="color:${color}"/>

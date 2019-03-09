@@ -21,7 +21,7 @@ import services.FinderService;
 import services.MemberService;
 import domain.Finder;
 import domain.Member;
-import domain.Procession;
+import domain.Parade;
 
 @Controller
 @RequestMapping("/finder/member/")
@@ -43,7 +43,7 @@ public class FinderMemberController extends AbstractController {
 
 	//List
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
-	public ModelAndView processionsList() {
+	public ModelAndView paradesList() {
 		ModelAndView result;
 
 		UserAccount userAccount = LoginService.getPrincipal();
@@ -71,22 +71,22 @@ public class FinderMemberController extends AbstractController {
 
 		Integer time = this.configurationService.getConfiguration().getTimeFinder();
 
-		List<Procession> processions = new ArrayList<>();
-		List<Procession> finderProcessions = finder.getProcessions();
+		List<Parade> parades = new ArrayList<>();
+		List<Parade> finderParades = finder.getParades();
 
 		if (currentDay.equals(lastEditDay) && currentMonth.equals(lastEditMonth) && currentYear.equals(lastEditYear) && lastEditHour < (currentHour + time)) {
 			Integer numFinderResult = this.configurationService.getConfiguration().getFinderResult();
 
-			if (finderProcessions.size() > numFinderResult)
+			if (finderParades.size() > numFinderResult)
 				for (int i = 0; i < numFinderResult; i++)
-					processions.add(finderProcessions.get(i));
+					parades.add(finderParades.get(i));
 			else
-				processions = finderProcessions;
+				parades = finderParades;
 		}
 
 		result = new ModelAndView("member/finderResult");
 
-		result.addObject("processions", processions);
+		result.addObject("parades", parades);
 		result.addObject("member", member);
 
 		return result;
@@ -120,7 +120,7 @@ public class FinderMemberController extends AbstractController {
 			result = this.createEditModelAndView(finderForm);
 		else
 			try {
-				this.finderService.filterProcessionsByFinder(finder);
+				this.finderService.filterParadesByFinder(finder);
 				result = new ModelAndView("redirect:list.do");
 			} catch (Throwable oops) {
 				result = this.createEditModelAndView(finder, "finder.commit.error");
@@ -138,7 +138,7 @@ public class FinderMemberController extends AbstractController {
 		Finder finder = logguedMember.getFinder();
 		Assert.notNull(finder);
 
-		List<Procession> processions = this.finderService.getAllPublishedProcessions();
+		List<Parade> parades = this.finderService.getAllPublishedParades();
 
 		Date date = new Date();
 
@@ -147,7 +147,7 @@ public class FinderMemberController extends AbstractController {
 		finder.setLastEdit(date);
 		finder.setMaxDate(null);
 		finder.setMinDate(null);
-		finder.setProcessions(processions);
+		finder.setParades(parades);
 		this.finderService.save(finder);
 
 		result = new ModelAndView("redirect:list.do");

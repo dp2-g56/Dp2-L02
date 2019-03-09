@@ -8,12 +8,12 @@
 
 <security:authorize access="hasRole('BROTHERHOOD')">	
 
-	<spring:url var="requestsUrl" value="request/brotherhood/filterProcession.do?processionId={processionId}">
-            	<spring:param name="processionId" value="${processionId}"/>
+	<spring:url var="requestsUrl" value="request/brotherhood/filterParade.do?paradeId={paradeId}">
+            	<spring:param name="paradeId" value="${paradeId}"/>
         	</spring:url>	 	
 
-	<form name="filterProcession" id="filterProcession" action="${requestsUrl}" method="post">
-		<label for="filterProcession"><spring:message code="request.filter"/></label>
+	<form name="filterParade" id="filterParade" action="${requestsUrl}" method="post">
+		<label for="filterParade"><spring:message code="request.filter"/></label>
 	
 	
 	
@@ -33,7 +33,7 @@
 	<br/>
 
 	<display:table pagesize="5" name="requests" id="row" class="displaytag" 
-					requestURI="procession/brotherhood/request/list.do">
+					requestURI="parade/brotherhood/request/list.do">
 					
 		<jstl:choose>
 			<jstl:when test="${row.status.toString()=='APPROVED'}">
@@ -53,8 +53,8 @@
 			</jstl:otherwise>
 		</jstl:choose>
 		
-		<display:column titleKey="request.procession">
-			<jstl:out value="${row.procession.title}"/>
+		<display:column titleKey="request.parade">
+			<jstl:out value="${row.parade.title}"/>
 		</display:column>
 					
 		<display:column property="status" titleKey="request.status" style="color:${color}"/>

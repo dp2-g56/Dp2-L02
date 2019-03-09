@@ -11,16 +11,16 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.format.annotation.DateTimeFormat;
 
-public class FormObjectProcessionFloat {
+public class FormObjectParadeFloat {
 
 	//No añadir el @Valid
-	//Atributos de la procesion
-	//Al controlador pasarle un @Valid FormObjectProcessionCoach
+	//Atributos del desfile
+	//Al controlador pasarle un @Valid FormObjectParadeCoach
 	//Se puede validar en este objeto
 	//Reconstruct de los dos tipos de objetos
 	//No extiende a Domain Entity
-	private String	titleProcession;
-	private String	descriptionProcession;
+	private String	titleParade;
+	private String	descriptionParade;
 	private Date	moment;
 	private Boolean	isDraftMode;
 	private int		rowNumber;
@@ -32,21 +32,21 @@ public class FormObjectProcessionFloat {
 
 
 	@NotBlank
-	public String getTitleProcession() {
-		return this.titleProcession;
+	public String getTitleParade() {
+		return this.titleParade;
 	}
 
-	public void setTitleProcession(String titleProcession) {
-		this.titleProcession = titleProcession;
+	public void setTitleParade(String titleParade) {
+		this.titleParade = titleParade;
 	}
 
 	@NotBlank
-	public String getDescriptionProcession() {
-		return this.descriptionProcession;
+	public String getDescriptionParade() {
+		return this.descriptionParade;
 	}
 
-	public void setDescriptionProcession(String descriptionProcession) {
-		this.descriptionProcession = descriptionProcession;
+	public void setDescriptionParade(String descriptionParade) {
+		this.descriptionParade = descriptionParade;
 	}
 
 	@DateTimeFormat(pattern = "dd/MM/yyyy HH:mm")

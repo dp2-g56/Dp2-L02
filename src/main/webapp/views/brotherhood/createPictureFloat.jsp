@@ -15,10 +15,10 @@
 
 <input type="text" name="picture" value="${picture}" required><br>
 <input type="hidden" id="floatId" name="floatId" value="${floatId}">
-<input type="hidden" id="procession" name="procession" value="${procession}">
+<input type="hidden" id="parade" name="parade" value="${parade}">
 
 <input type="submit" name="save" value="<spring:message code="borhterhoodFloat.create" />" />
 </form>
 
-<a href="float/brotherhood/picture/list.do?floatId=${floatId}&procession=true"><button><spring:message code="procession.back" /></button></a>
+<a href="float/brotherhood/picture/list.do?floatId=${floatId}&parade=true"><button><spring:message code="parade.back" /></button></a>
 </security:authorize>

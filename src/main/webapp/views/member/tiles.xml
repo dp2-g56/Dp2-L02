@@ -17,13 +17,13 @@
 <tiles-definitions>
 
 	<definition name="member/finder" extends="master.page">	
-		<put-attribute name="title" value="Processions Finder" />
+		<put-attribute name="title" value="Parades Finder" />
 		<put-attribute name="body" value="/views/member/finder.jsp" />
 	</definition>
 	
 	
 	<definition name="member/finderResult" extends="master.page">	
-		<put-attribute name="title" value="Processions Finder Result" />
+		<put-attribute name="title" value="Parades Finder Result" />
 		<put-attribute name="body" value="/views/member/finderResult.jsp" />
 	</definition>
 	

@@ -41,7 +41,7 @@ public class WordsAdministratorController extends AbstractController {
 
 	//List Good and Bad Words -------------------------------------------------
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
-	public ModelAndView processionsList() {
+	public ModelAndView paradesList() {
 		ModelAndView result;
 
 		List<String> badWords = this.configurationService.showBadWordsList();

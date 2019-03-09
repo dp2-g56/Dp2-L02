@@ -21,9 +21,9 @@
 		<put-attribute name="body" value="/views/brotherhood/showArea.jsp" />
 	</definition>
 		
-	<definition name="procession/brotherhood/list" extends="master.page">	
-		<put-attribute name="title" value="Processions" />
-		<put-attribute name="body" value="/views/brotherhood/processionList.jsp" />
+	<definition name="parade/brotherhood/list" extends="master.page">	
+		<put-attribute name="title" value="Parades" />
+		<put-attribute name="body" value="/views/brotherhood/paradeList.jsp" />
 	</definition>
 	
 	<definition name="area/brotherhood/selectArea" extends="master.page">	
@@ -36,9 +36,9 @@
 		<put-attribute name="body" value="/views/brotherhood/showPictures.jsp" />
 	</definition>
 		
-	<definition name="procession/brotherhood/create" extends="master.page">	
-		<put-attribute name="title" value="Create a Procession" />
-		<put-attribute name="body" value="/views/brotherhood/createProcession.jsp" />
+	<definition name="parade/brotherhood/create" extends="master.page">	
+		<put-attribute name="title" value="Create a Parade" />
+		<put-attribute name="body" value="/views/brotherhood/createParade.jsp" />
 	</definition>
 	
 	<definition name="float/brotherhood/list" extends="master.page">	
@@ -56,9 +56,9 @@
 		<put-attribute name="body" value="/views/brotherhood/requests.jsp" />
 	</definition>
 	
-	<definition name="procession/brotherhood/requests" extends="master.page">	
+	<definition name="parade/brotherhood/requests" extends="master.page">	
 		<put-attribute name="title" value="Requests" />
-		<put-attribute name="body" value="/views/brotherhood/requestsProcession.jsp" />
+		<put-attribute name="body" value="/views/brotherhood/requestsParade.jsp" />
 	</definition>
 	
 	<definition name="brotherhood/editRequest" extends="master.page">	
@@ -87,9 +87,9 @@
 		<put-attribute name="body" value="/views/brotherhood/pendingEnrolments.jsp" />
 	</definition>
 	
-	<definition name="procession/brotherhood/createCheckbox" extends="master.page">	
-		<put-attribute name="title" value="Create a Procession" />
-		<put-attribute name="body" value="/views/brotherhood/createProcessionCheckbox.jsp" />
+	<definition name="parade/brotherhood/createCheckbox" extends="master.page">	
+		<put-attribute name="title" value="Create a Parade" />
+		<put-attribute name="body" value="/views/brotherhood/createParadeCheckbox.jsp" />
 	</definition>
 	
 	<definition name="enrolment/brotherhood/assignPosition" extends="master.page">	

@@ -30,9 +30,9 @@
 		
 	<display:column titleKey="float.pictures">
         <jstl:set var="picturesSize" value="${row.pictures.size()}" />
-        <spring:url var="picturesURL" value="/float/brotherhood/picture/list.do?floatId={floatId}&procession={procession}">      		
+        <spring:url var="picturesURL" value="/float/brotherhood/picture/list.do?floatId={floatId}&parade={parade}">      		
         	<spring:param name="floatId" value="${row.id}"/>
-        	<spring:param name="procession" value="${!restriction}"/>
+        	<spring:param name="parade" value="${!restriction}"/>
         </spring:url>
         <a href="${picturesURL}">
               <spring:message var ="viewPictures1" code="float.viewPictures" />
@@ -64,7 +64,7 @@
 		</jstl:if>
 	</jstl:if>
 	<jstl:if test="${restriction}">
-		<a href="procession/brotherhood/list.do"><spring:message code="procession.back" /></a>
+		<a href="parade/brotherhood/list.do"><spring:message code="parade.back" /></a>
 	</jstl:if>
 	
 </security:authorize>

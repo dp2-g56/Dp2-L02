@@ -20,7 +20,7 @@ import domain.Actor;
 import domain.Brotherhood;
 import domain.Member;
 import domain.Message;
-import domain.Procession;
+import domain.Parade;
 import domain.Request;
 import domain.Status;
 
@@ -35,7 +35,7 @@ public class RequestService {
 	@Autowired
 	private MemberService		memberService;
 	@Autowired
-	private ProcessionService	processionService;
+	private ParadeService		paradeService;
 	@Autowired
 	private Validator			validator;
 	@Autowired
@@ -48,7 +48,7 @@ public class RequestService {
 
 	//Simple CRUD methods ---------------------------------------------------------------------
 
-	public Request createRequest(Member member, Procession procession) {
+	public Request createRequest(Member member, Parade parade) {
 		Request res = new Request();
 
 		res.setStatus(Status.PENDING);
@@ -57,7 +57,7 @@ public class RequestService {
 		res.setReasonDescription(null);
 
 		res.setMember(member);
-		res.setProcession(procession);
+		res.setParade(parade);
 
 		return res;
 	}
@@ -93,8 +93,8 @@ public class RequestService {
 		return this.requestRepository.getRequestsByBrotherhood(brotherhood);
 	}
 
-	public List<Request> getRequestsByProcessionAndStatus(Procession procession, Status status) {
-		return this.requestRepository.getRequestsByProcessionAndStatus(procession, status);
+	public List<Request> getRequestsByParadeAndStatus(Parade parade, Status status) {
+		return this.requestRepository.getRequestsByParadeAndStatus(parade, status);
 	}
 
 	public Collection<Request> getRequestsByBrotherhoodAndStatus(Brotherhood brotherhood, Status status) {
@@ -105,8 +105,8 @@ public class RequestService {
 		return this.requestRepository.getRequestByBrotherhoodAndRequestId(brotherhood, request);
 	}
 
-	public Collection<Request> getRequestApprovedByBrotherhoodAndProcession(Brotherhood brotherhood, Procession procession) {
-		return this.requestRepository.getRequestApprovedByBrotherhoodAndProcession(brotherhood, procession);
+	public Collection<Request> getRequestApprovedByBrotherhoodAndParade(Brotherhood brotherhood, Parade parade) {
+		return this.requestRepository.getRequestApprovedByBrotherhoodAndParade(brotherhood, parade);
 	}
 
 	public void deleteRequestAsMember(Member member, int requestId) {
@@ -115,11 +115,11 @@ public class RequestService {
 		Assert.isTrue(this.getRequestsByMember(member).contains(request));
 		Assert.isTrue(request.getStatus().equals(Status.PENDING));
 
-		Procession procession = request.getProcession();
-		List<Request> requests = procession.getRequests();
+		Parade parade = request.getParade();
+		List<Request> requests = parade.getRequests();
 		requests.remove(request);
-		procession.setRequests(requests);
-		this.processionService.save(procession);
+		parade.setRequests(requests);
+		this.paradeService.save(parade);
 
 		List<Request> requests2 = member.getRequests();
 		requests2.remove(request);
@@ -130,15 +130,15 @@ public class RequestService {
 
 	}
 
-	public void createRequestAsMember(Member member, int processionId) {
-		Procession procession = this.processionService.findOne(processionId);
-		List<Request> requests = procession.getRequests();
+	public void createRequestAsMember(Member member, int paradeId) {
+		Parade parade = this.paradeService.findOne(paradeId);
+		List<Request> requests = parade.getRequests();
 
-		Assert.isTrue(procession.getIsDraftMode() == false);
+		Assert.isTrue(parade.getIsDraftMode() == false);
 		for (Request r : requests)
 			Assert.isTrue(!r.getMember().equals(member));
 
-		Request newRequest = this.createRequest(member, procession);
+		Request newRequest = this.createRequest(member, parade);
 		Request saveRequest = this.save(newRequest);
 
 		List<Request> requests2 = member.getRequests();
@@ -146,19 +146,19 @@ public class RequestService {
 		member.setRequests(requests2);
 		this.memberService.save(member);
 
-		List<Request> requests3 = procession.getRequests();
+		List<Request> requests3 = parade.getRequests();
 		requests3.add(saveRequest);
-		procession.setRequests(requests3);
-		this.processionService.save(procession);
+		parade.setRequests(requests3);
+		this.paradeService.save(parade);
 	}
 
-	public boolean canRequest(Member member, int processionId) {
+	public boolean canRequest(Member member, int paradeId) {
 		boolean res = true;
 
-		Procession procession = this.processionService.findOne(processionId);
-		List<Request> requests = procession.getRequests();
+		Parade parade = this.paradeService.findOne(paradeId);
+		List<Request> requests = parade.getRequests();
 
-		if (procession.getIsDraftMode() == true)
+		if (parade.getIsDraftMode() == true)
 			res = false;
 		if (res == true)
 			for (Request r : requests)
@@ -177,8 +177,8 @@ public class RequestService {
 			Assert.notNull(request.getColumnNumber());
 			Assert.notNull(request.getRowNumber());
 
-			Procession procession = request.getProcession();
-			Collection<Request> requests = procession.getRequests();
+			Parade parade = request.getParade();
+			Collection<Request> requests = parade.getRequests();
 
 			Integer col = request.getColumnNumber();
 			Integer row = request.getRowNumber();
@@ -194,7 +194,7 @@ public class RequestService {
 					break;
 				}
 
-			Boolean respectMaxAndMin = col <= procession.getColumnNumber() && row <= procession.getRowNumber() && col >= 1 && row >= 1;
+			Boolean respectMaxAndMin = col <= parade.getColumnNumber() && row <= parade.getRowNumber() && col >= 1 && row >= 1;
 
 			Assert.isTrue(isFree && respectMaxAndMin);
 
@@ -224,7 +224,7 @@ public class RequestService {
 
 		result2.setId(result.getId());
 		result2.setMember(result.getMember());
-		result2.setProcession(result.getProcession());
+		result2.setParade(result.getParade());
 		result2.setVersion(result.getVersion());
 
 		Integer col = request.getColumnNumber();
@@ -261,10 +261,10 @@ public class RequestService {
 	public List<Integer> getFreePosition(Request request) {
 		List<Integer> position = new ArrayList<>();
 
-		Procession procession = request.getProcession();
+		Parade parade = request.getParade();
 
 		Brotherhood brotherhood = this.brotherhoodService.securityAndBrotherhood();
-		List<Request> requests = (List<Request>) this.getRequestApprovedByBrotherhoodAndProcession(brotherhood, procession);
+		List<Request> requests = (List<Request>) this.getRequestApprovedByBrotherhoodAndParade(brotherhood, parade);
 
 		List<String> occupedPositions = new ArrayList<>();
 		for (Request r : requests)
@@ -277,8 +277,8 @@ public class RequestService {
 		if (occupedPositions.size() != 0) {
 
 			List<String> allPositions = new ArrayList<>();
-			for (int i = 1; i <= procession.getRowNumber(); i++)
-				for (int j = 1; j <= procession.getColumnNumber(); j++)
+			for (int i = 1; i <= parade.getRowNumber(); i++)
+				for (int j = 1; j <= parade.getColumnNumber(); j++)
 					allPositions.add(i + "-" + j);
 
 			for (String all : allPositions)
@@ -320,8 +320,8 @@ public class RequestService {
 
 		String subject = "Request updated: " + statusEN + " / Solicitud actualizada: " + statusES;
 
-		String body = "Request associated to the procession: " + request.getProcession().getTicker() + ", " + request.getProcession().getTitle() + " has been updated" + " / " + "Solicitud asociada a la procesión: " + request.getProcession().getTicker()
-			+ ", " + request.getProcession().getTitle() + " ha sido actualizada";
+		String body = "Request associated to the parade: " + request.getParade().getTicker() + ", " + request.getParade().getTitle() + " has been updated" + " / " + "Solicitud asociada al desfile: " + request.getParade().getTicker() + ", "
+			+ request.getParade().getTitle() + " ha sido actualizada";
 
 		Message messageB = this.messageService.createNotification(subject, body, "NEUTRAL", "Notification, Request", brotherhood);
 		Message messageM = this.messageService.createNotification(subject, body, "NEUTRAL", "Notification, Request", request.getMember());

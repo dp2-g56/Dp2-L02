@@ -257,6 +257,20 @@
 		<property name="isNotLocked" value="True" />
 	</bean> 
 	
+	<!-- sponsor -->
+	<bean id="userAccount14" class="security.UserAccount">
+		<property name="username" value="sponsor1" />
+		<property name="password" value="42c63ad66d4dc07ed17753772bef96d6" />
+		<property name="authorities">
+			<list>
+				<bean class="security.Authority">
+					<property name="authority" value="SPONSOR" />
+				</bean>
+			</list>
+		</property>
+		<property name="isNotLocked" value="True" />
+	</bean> 
+	
 	<!-- FIN USER ACCOUNT -->
 	
 
@@ -787,6 +801,34 @@
 		</property>		
 	</bean>
 	
+	<!-- SPONSOR -->
+		<!-- SYSTEM -->
+	<bean id="sponsor1" class="domain.Sponsor">
+		<property name="name" value="Pepe" />
+		<property name="middleName" value="" />
+		<property name="surname" value="Martin" />
+		<property name="photo" value="https://www.url.com/example" />
+		<property name="email" value="sponsor1@sponsor.com" />
+		<property name="phoneNumber" value="+34653248458" />
+		<property name="address" value="Sevilla" />
+		<property name="socialProfiles">
+			<list>
+			</list>
+		</property>
+		<property name="boxes">
+			<list>
+				<ref bean="inBoxSponsor1" />
+				<ref bean="outBoxSponsor1" />
+				<ref bean="trashBoxSponsor1" />
+				<ref bean="spamBoxSponsor1" />
+				<ref bean="notificationBoxSponsor1" />
+			</list>
+		</property>
+		<property name="userAccount" ref="userAccount14" />
+		<property name="hasSpam" value = "false"/>
+		<property name="polarity" value ="0.0"/>
+	</bean>
+	
 	<!-- SOCIAL PROFILES -->
 		<!-- ADMIN -->
 			<bean class="domain.SocialProfile" id="socialProfile1">
@@ -921,6 +963,53 @@
 	
 	
 	<!-- BOXES -->
+		<!-- SPONSOR -->
+				<bean class="domain.Box" id="inBoxSponsor1">
+					<property value="INBOX" name="name" />
+					<property value="true" name="isSystem" />
+					<property name="messages">
+						<list>
+						</list>
+					</property>
+				</bean>
+				
+				<bean class="domain.Box" id="outBoxSponsor1">
+					<property value="OUTBOX" name="name" />
+					<property value="true" name="isSystem" />
+					<property name="messages">
+						<list>
+						</list>
+					</property>
+				</bean>
+				
+				<bean class="domain.Box" id="trashBoxSponsor1">
+					<property value="TRASHBOX" name="name" />
+					<property value="true" name="isSystem" />
+					<property name="messages">
+						<list>
+						</list>
+					</property>
+				</bean>
+				
+				<bean class="domain.Box" id="spamBoxSponsor1">
+					<property value="SPAMBOX" name="name" />
+					<property value="true" name="isSystem" />
+					<property name="messages">
+						<list>
+						</list>
+					</property>
+				</bean>
+				
+				<bean class="domain.Box" id="notificationBoxSponsor1">
+					<property value="NOTIFICATIONBOX" name="name" />
+					<property value="true" name="isSystem" />
+					<property name="messages">
+						<list>
+						</list>
+					</property>
+				</bean>
+			<!-- FIN SPONSOR -->
+		
 		<!-- ADMIN -->
 		<!-- SYSTEM -->
 				<bean class="domain.Box" id="inBoxAdmin4">

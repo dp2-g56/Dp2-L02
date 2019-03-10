@@ -70,6 +70,9 @@
 		<security:intercept-url pattern="/brotherhood/member/**" access="hasRole('MEMBER')" /> 
 		<security:intercept-url pattern="/float/member/**" access="hasRole('MEMBER')" /> 
 		
+		<!-- Sponsor --> 
+		<security:intercept-url pattern="/parade/sponsor/**" access="hasRole('SPONSOR')" /> 
+		
 		<!-- Authenticated -->
 		 <security:intercept-url pattern="/authenticated/**" access="isAuthenticated()" /> 
 		 <security:intercept-url pattern="/box/actor/**" access="isAuthenticated()" /> 

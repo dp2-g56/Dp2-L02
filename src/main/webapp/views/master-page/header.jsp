@@ -38,6 +38,15 @@
 			</li>
 		</security:authorize>
 		
+		<security:authorize access="hasRole('SPONSOR')">
+			<li><a class="fNiv"><spring:message	code="master.page.sponsor" /></a>
+				<ul>
+					<li class="arrow"></li>				
+					<li><a href="parade/sponsor/list.do"><spring:message code="master.page.sponsor.listParades" /></a></li>
+				</ul>
+			</li>
+		</security:authorize>
+		
 		<security:authorize access="hasRole('BROTHERHOOD')">
 			<li><a class="fNiv"><spring:message	code="master.page.brotherhood" /></a>
 				<ul>

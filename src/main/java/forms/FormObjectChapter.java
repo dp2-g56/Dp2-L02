@@ -10,6 +10,8 @@ import javax.validation.constraints.Size;
 import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.URL;
 
+import domain.Area;
+
 public class FormObjectChapter {
 
 	//USER ACCOUNT
@@ -31,6 +33,7 @@ public class FormObjectChapter {
 
 	//CHAPTER
 	private String	title;
+	private Area	area;
 
 
 	@NotBlank
@@ -147,6 +150,15 @@ public class FormObjectChapter {
 
 	public void setAddress(String address) {
 		this.address = address;
+	}
+
+	@Valid
+	public Area getArea() {
+		return this.area;
+	}
+
+	public void setArea(final Area area) {
+		this.area = area;
 	}
 
 }

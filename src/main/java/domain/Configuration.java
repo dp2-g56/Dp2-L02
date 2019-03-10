@@ -8,6 +8,8 @@ import javax.persistence.AccessType;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.validation.Valid;
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotBlank;
@@ -36,6 +38,8 @@ public class Configuration extends DomainEntity {
 	private String			welcomeMessageSpanish;
 	private String			systemName;
 	private String			imageURL;
+	private Integer			VAT;
+	private java.lang.Float	fare;
 
 
 	@Valid
@@ -185,6 +189,26 @@ public class Configuration extends DomainEntity {
 
 	public void setTimeFinder(final Integer timeFinder) {
 		this.timeFinder = timeFinder;
+	}
+
+	@NotNull
+	@Max(100)
+	public Integer getVAT() {
+		return this.VAT;
+	}
+
+	public void setVAT(Integer vAT) {
+		this.VAT = vAT;
+	}
+
+	@NotNull
+	@Digits(fraction = 2, integer = 9)
+	public java.lang.Float getFare() {
+		return this.fare;
+	}
+
+	public void setFare(java.lang.Float fare) {
+		this.fare = fare;
 	}
 
 }

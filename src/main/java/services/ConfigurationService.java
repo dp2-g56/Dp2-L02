@@ -323,6 +323,8 @@ public class ConfigurationService {
 		result.setImageURL(configuration.getImageURL());
 		result.setMaxTimeFinder(configuration.getMaxTimeFinder());
 		result.setMinTimeFinder(configuration.getMinTimeFinder());
+		result.setVAT(configuration.getVAT());
+		result.setFare(configuration.getFare());
 
 		this.validator.validate(result, binding);
 

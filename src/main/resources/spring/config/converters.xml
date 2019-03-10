@@ -67,6 +67,12 @@
 		<bean class="converters.PositionToStringConverter" />
 		<bean class="converters.StringToPositionConverter" />
 		
+		<bean class="converters.SponsorToStringConverter" />
+		<bean class="converters.StringToSponsorConverter" />
+		
+		<bean class="converters.SponsorshipToStringConverter" />
+		<bean class="converters.StringToSponsorshipConverter" />
+		
 	</util:list>
 	
 </beans>

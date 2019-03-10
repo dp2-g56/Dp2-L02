@@ -125,7 +125,6 @@ public class Actor extends DomainEntity {
 		this.email = email;
 	}
 
-	@Column(unique = true)
 	@Valid
 	public String getPhoneNumber() {
 		return this.phoneNumber;

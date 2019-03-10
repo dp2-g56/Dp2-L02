@@ -25,12 +25,14 @@ import services.ConfigurationService;
 import services.FloatService;
 import services.MemberService;
 import services.SocialProfileService;
+import services.SponsorService;
 import domain.Actor;
 import domain.Admin;
 import domain.Brotherhood;
 import domain.Configuration;
 import domain.Member;
 import domain.SocialProfile;
+import domain.Sponsor;
 
 @Controller
 @RequestMapping("/authenticated")
@@ -54,6 +56,9 @@ public class SocialProfileController extends AbstractController {
 
 	@Autowired
 	private ConfigurationService	configurationService;
+
+	@Autowired
+	private SponsorService			sponsorService;
 
 
 	//-------------------------------------------------------------------
@@ -197,10 +202,14 @@ public class SocialProfileController extends AbstractController {
 			Brotherhood brotherhood = this.brotherhoodService.loggedBrotherhood();
 			Assert.notNull(brotherhood);
 			result = this.createEditModelAndView(brotherhood);
-		} else {
+		} else if (authorities.get(0).toString().equals("MEMBER")) {
 			Member member = this.memberService.loggedMember();
 			Assert.notNull(member);
 			result = this.createEditModelAndView(member);
+		} else {
+			Sponsor sponsor = this.sponsorService.loggedSponsor();
+			Assert.notNull(sponsor);
+			result = this.createEditModelAndView(sponsor);
 		}
 
 		if (result == null)
@@ -308,6 +317,43 @@ public class SocialProfileController extends AbstractController {
 				result = new ModelAndView("redirect:/authenticated/showProfile.do");
 			} catch (Throwable oops) {
 				result = this.createEditModelAndView(brotherhood, "socialProfile.commit.error");
+			}
+		return result;
+	}
+
+	//Sponsor
+	@RequestMapping(value = "/editSponsor", method = RequestMethod.POST, params = "save")
+	public ModelAndView saveSponsor(Sponsor sponsor, BindingResult binding) {
+		ModelAndView result;
+
+		sponsor = this.sponsorService.reconstructSponsor(sponsor, binding);
+		Configuration configuration = this.configurationService.getConfiguration();
+
+		String prefix = configuration.getSpainTelephoneCode();
+
+		if (binding.hasErrors())
+			result = this.createEditModelAndView(sponsor);
+		else
+			try {
+				if (sponsor.getEmail().matches("[\\w.%-]+\\<[\\w.%-]+\\@+\\>|[\\w.%-]+")) {
+					if (LocaleContextHolder.getLocale().getLanguage().toUpperCase().contains("ES")) {
+						binding.addError(new FieldError("sponsor", "email", sponsor.getEmail(), false, null, null, "No sigue el patron ejemplo@dominio.asd o alias <ejemplo@dominio.asd>"));
+						return this.createEditModelAndView(sponsor);
+					} else {
+						binding.addError(new FieldError("sponsor", "email", sponsor.getEmail(), false, null, null, "Dont follow the pattern example@domain.asd or alias <example@domain.asd>"));
+						return this.createEditModelAndView(sponsor);
+					}
+
+				} else if (sponsor.getPhoneNumber().matches("(\\+[0-9]{1,3})(\\([0-9]{1,3}\\))([0-9]{4,})$") || sponsor.getPhoneNumber().matches("(\\+[0-9]{1,3})([0-9]{4,})$"))
+					this.sponsorService.save(sponsor);
+				else if (sponsor.getPhoneNumber().matches("([0-9]{4,})$")) {
+					sponsor.setPhoneNumber(prefix + sponsor.getPhoneNumber());
+					this.sponsorService.save(sponsor);
+				} else
+					this.sponsorService.save(sponsor);
+				result = new ModelAndView("redirect:/authenticated/showProfile.do");
+			} catch (Throwable oops) {
+				result = this.createEditModelAndView(sponsor, "socialProfile.commit.error");
 			}
 		return result;
 	}
@@ -459,4 +505,26 @@ public class SocialProfileController extends AbstractController {
 
 		return result;
 	}
+
+	//Sponsor
+	protected ModelAndView createEditModelAndView(Sponsor sponsor) {
+
+		ModelAndView result;
+
+		result = this.createEditModelAndView(sponsor, null);
+
+		return result;
+	}
+
+	protected ModelAndView createEditModelAndView(Sponsor sponsor, String messageCode) {
+
+		ModelAndView result;
+
+		result = new ModelAndView("authenticated/edit");
+		result.addObject("sponsor", sponsor);
+		result.addObject("message", messageCode);
+
+		return result;
+	}
+
 }

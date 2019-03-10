@@ -16,13 +16,16 @@ import services.BrotherhoodService;
 import services.ChapterService;
 import services.ConfigurationService;
 import services.MemberService;
+import services.SponsorService;
 import domain.Brotherhood;
 import domain.Chapter;
 import domain.Configuration;
 import domain.Member;
+import domain.Sponsor;
 import forms.FormObjectBrotherhood;
 import forms.FormObjectChapter;
 import forms.FormObjectMember;
+import forms.FormObjectSponsor;
 
 @Controller
 @RequestMapping("/anonymous")
@@ -36,6 +39,8 @@ public class AnonymousController extends AbstractController {
 	private BrotherhoodService		brotherhoodService;
 	@Autowired
 	private ConfigurationService	configurationService;
+	@Autowired
+	private SponsorService			sponsorService;
 
 
 	public AnonymousController() {
@@ -73,6 +78,7 @@ public class AnonymousController extends AbstractController {
 		String locale = LocaleContextHolder.getLocale().getLanguage().toUpperCase();
 
 		result = this.createEditModelAndView(formObjectChapter);
+		result.addObject("areas", this.chapterService.listFreeAreas());
 		result.addObject("locale", locale);
 
 		return result;
@@ -152,6 +158,7 @@ public class AnonymousController extends AbstractController {
 
 		result = this.createEditModelAndView(formObjectChapter, null);
 		result.addObject("locale", locale);
+		result.addObject("areas", this.chapterService.listFreeAreas());
 
 		return result;
 	}
@@ -163,6 +170,7 @@ public class AnonymousController extends AbstractController {
 
 		result = new ModelAndView("anonymous/createChapter");
 		result.addObject("formObjectChapter", formObjectChapter);
+		result.addObject("areas", this.chapterService.listFreeAreas());
 		result.addObject("message", messageCode);
 		result.addObject("locale", locale);
 
@@ -177,6 +185,7 @@ public class AnonymousController extends AbstractController {
 
 		result = this.createEditModelAndView(chapter, null);
 		result.addObject("locale", locale);
+		result.addObject("areas", this.chapterService.listFreeAreas());
 
 		return result;
 	}
@@ -188,6 +197,7 @@ public class AnonymousController extends AbstractController {
 
 		result = new ModelAndView("anonymous/createChapter");
 		result.addObject("chapter", chapter);
+		result.addObject("areas", this.chapterService.listFreeAreas());
 		result.addObject("message", messageCode);
 		result.addObject("locale", locale);
 
@@ -454,6 +464,140 @@ public class AnonymousController extends AbstractController {
 
 		result = new ModelAndView("anonymous/createBrotherhood");
 		result.addObject("brotherhood", brotherhood);
+		result.addObject("message", messageCode);
+		result.addObject("locale", locale);
+
+		return result;
+	}
+
+	//------------------------ SPONSOR -------------------------------------------------------------------------------------------	
+
+	//Create
+	@RequestMapping(value = "/createSponsor", method = RequestMethod.GET)
+	public ModelAndView createSponsor() {
+		ModelAndView result;
+
+		FormObjectSponsor formObjectSponsor = new FormObjectSponsor();
+		formObjectSponsor.setTermsAndConditions(false);
+
+		String locale = LocaleContextHolder.getLocale().getLanguage().toUpperCase();
+
+		result = this.createEditModelAndView(formObjectSponsor);
+		result.addObject("locale", locale);
+
+		return result;
+	}
+
+	//SAVE
+	@RequestMapping(value = "/createSponsor", method = RequestMethod.POST, params = "save")
+	public ModelAndView save(@Valid FormObjectSponsor formObjectSponsor, BindingResult binding) {
+
+		ModelAndView result;
+
+		Sponsor sponsor = new Sponsor();
+		sponsor = this.sponsorService.createSponsor();
+
+		Configuration configuration = this.configurationService.getConfiguration();
+		String prefix = configuration.getSpainTelephoneCode();
+
+		//Confirmacion contraseña
+		if (!formObjectSponsor.getPassword().equals(formObjectSponsor.getConfirmPassword()))
+			if (LocaleContextHolder.getLocale().getLanguage().toUpperCase().contains("ES")) {
+				binding.addError(new FieldError("formObjectSponsor", "password", formObjectSponsor.getPassword(), false, null, null, "Las contraseñas no coinciden"));
+				return this.createEditModelAndView(sponsor);
+			} else {
+				binding.addError(new FieldError("formObjectSponsor", "password", formObjectSponsor.getPassword(), false, null, null, "Passwords don't match"));
+				return this.createEditModelAndView(sponsor);
+			}
+
+		//Confirmacion terminos y condiciones
+		if (!formObjectSponsor.getTermsAndConditions())
+			if (LocaleContextHolder.getLocale().getLanguage().toUpperCase().contains("ES")) {
+				binding.addError(new FieldError("formObjectSponsor", "termsAndConditions", formObjectSponsor.getTermsAndConditions(), false, null, null, "Debe aceptar los terminos y condiciones"));
+				return this.createEditModelAndView(sponsor);
+			} else {
+				binding.addError(new FieldError("formObjectSponsor", "termsAndConditions", formObjectSponsor.getTermsAndConditions(), false, null, null, "You must accept the terms and conditions"));
+				return this.createEditModelAndView(sponsor);
+			}
+
+		//Reconstruccion
+		sponsor = this.sponsorService.reconstruct(formObjectSponsor, binding);
+
+		if (binding.hasErrors())
+			result = this.createEditModelAndView(sponsor);
+		else
+			try {
+
+				if (sponsor.getEmail().matches("[\\w.%-]+\\<[\\w.%-]+\\@+\\>|[\\w.%-]+")) {
+					if (LocaleContextHolder.getLocale().getLanguage().toUpperCase().contains("ES")) {
+						binding.addError(new FieldError("member", "email", sponsor.getEmail(), false, null, null, "No sigue el patron ejemplo@dominio.asd o alias <ejemplo@dominio.asd>"));
+						return this.createEditModelAndView(sponsor);
+					} else {
+						binding.addError(new FieldError("member", "email", sponsor.getEmail(), false, null, null, "Dont follow the pattern example@domain.asd or alias <example@domain.asd>"));
+						return this.createEditModelAndView(sponsor);
+					}
+
+				} else if (sponsor.getPhoneNumber().matches("(\\+[0-9]{1,3})(\\([0-9]{1,3}\\))([0-9]{4,})$") || sponsor.getPhoneNumber().matches("(\\+[0-9]{1,3})([0-9]{4,})$"))
+					this.sponsorService.saveCreate(sponsor);
+				else if (sponsor.getPhoneNumber().matches("([0-9]{4,})$")) {
+					sponsor.setPhoneNumber(prefix + sponsor.getPhoneNumber());
+					this.sponsorService.saveCreate(sponsor);
+				} else
+					this.sponsorService.saveCreate(sponsor);
+
+				result = new ModelAndView("redirect:/security/login.do");
+
+			} catch (Throwable oops) {
+				result = this.createEditModelAndView(sponsor, "brotherhood.commit.error");
+
+			}
+		return result;
+	}
+
+	//MODEL AND VIEW FORM OBJECT SPONSOR
+	protected ModelAndView createEditModelAndView(FormObjectSponsor formObjectSponsor) {
+		ModelAndView result;
+
+		String locale = LocaleContextHolder.getLocale().getLanguage().toUpperCase();
+
+		result = this.createEditModelAndView(formObjectSponsor, null);
+		result.addObject("locale", locale);
+
+		return result;
+	}
+
+	protected ModelAndView createEditModelAndView(FormObjectSponsor formObjectSponsor, String messageCode) {
+		ModelAndView result;
+
+		String locale = LocaleContextHolder.getLocale().getLanguage().toUpperCase();
+
+		result = new ModelAndView("anonymous/createSponsor");
+		result.addObject("formObjectSponsor", formObjectSponsor);
+		result.addObject("message", messageCode);
+		result.addObject("locale", locale);
+
+		return result;
+	}
+
+	//MODEL AND VIEW SPONSOR
+	protected ModelAndView createEditModelAndView(Sponsor sponsor) {
+		ModelAndView result;
+
+		String locale = LocaleContextHolder.getLocale().getLanguage().toUpperCase();
+
+		result = this.createEditModelAndView(sponsor, null);
+		result.addObject("locale", locale);
+
+		return result;
+	}
+
+	protected ModelAndView createEditModelAndView(Sponsor sponsor, String messageCode) {
+		ModelAndView result;
+
+		String locale = LocaleContextHolder.getLocale().getLanguage().toUpperCase();
+
+		result = new ModelAndView("anonymous/createSponsor");
+		result.addObject("sponsor", sponsor);
 		result.addObject("message", messageCode);
 		result.addObject("locale", locale);
 

@@ -7,7 +7,7 @@
 <%@taglib prefix="display" uri="http://displaytag.sf.net"%>
 <%@taglib prefix="acme" tagdir="/WEB-INF/tags" %>
 
-<p><spring:message code="anonymous.createChapter" /></p>
+<p><spring:message code="anonymous.createSponsor" /></p>
 
 <security:authorize access="isAnonymous()">
 
@@ -37,7 +37,7 @@
  
 }
    </script>
-<form:form modelAttribute="formObjectChapter" action="anonymous/createChapter.do">
+<form:form modelAttribute="formObjectSponsor" action="anonymous/createSponsor.do">
 
 	<!-- ELECCIÓN DEL FORMATO DE LA FECHA -->
 	<jstl:if test="${locale =='EN'}">
@@ -88,14 +88,8 @@
 	
 	<acme:textbox path="address" code="anonymous.address" />
 	<br />	
-	
-	<!-- chapter -->
-	<acme:textbox path="title" code="anonymous.title" />
-	<br />	
-	<acme:select code="brotherhood.area" path="area" items="${areas}" itemLabel="name" id="areas"/>
 	</fieldset>
 	<br />
-	
 	<br />
 	
 	<!-- TERMS AND CONDITIONS -->

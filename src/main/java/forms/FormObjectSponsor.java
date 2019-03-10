@@ -10,16 +10,14 @@ import javax.validation.constraints.Size;
 import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.URL;
 
-import domain.Area;
-
-public class FormObjectChapter {
+public class FormObjectSponsor {
 
 	//USER ACCOUNT
 	private String	username;
 	private String	password;
 	private String	confirmPassword;
 
-	//ACTOR	(EN COMUN CON MEMBER)
+	//ACTOR
 	private String	name;
 	private String	middleName;
 	private String	surname;
@@ -28,22 +26,9 @@ public class FormObjectChapter {
 	private String	phoneNumber;
 	private String	address;
 
-	//FORM (EN COMUN CON MEMBER)
+	//FORM
 	private Boolean	termsAndConditions;
 
-	//CHAPTER
-	private String	title;
-	private Area	area;
-
-
-	@NotBlank
-	public String getTitle() {
-		return this.title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
-	}
 
 	@NotNull
 	public Boolean getTermsAndConditions() {
@@ -150,15 +135,6 @@ public class FormObjectChapter {
 
 	public void setAddress(String address) {
 		this.address = address;
-	}
-
-	@Valid
-	public Area getArea() {
-		return this.area;
-	}
-
-	public void setArea(final Area area) {
-		this.area = area;
 	}
 
 }

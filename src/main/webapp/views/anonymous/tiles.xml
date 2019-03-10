@@ -21,6 +21,11 @@
 		<put-attribute name="body" value="/views/anonymous/createMember.jsp" />
 	</definition>
 	
+	<definition name="anonymous/createChapter" extends="master.page">	
+		<put-attribute name="title" value="Register as a Chapter" />
+		<put-attribute name="body" value="/views/anonymous/createChapter.jsp" />
+	</definition>
+	
 	<definition name="anonymous/createBrotherhood" extends="master.page">	
 		<put-attribute name="title" value="Register as Brotherhood" />
 		<put-attribute name="body" value="/views/anonymous/createBrotherhood.jsp" />

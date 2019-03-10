@@ -14,7 +14,7 @@ import domain.Parade;
 @Repository
 public interface FinderRepository extends JpaRepository<Finder, Integer> {
 
-	@Query("select p from Parade p where p.isDraftMode=FALSE")
+	@Query("select p from Parade p where p.paradeStatus='ACCEPTED'")
 	public List<Parade> getPublushedParades();
 
 	@Query("select p from Parade p where p.title like ?1 or p.description like ?1")

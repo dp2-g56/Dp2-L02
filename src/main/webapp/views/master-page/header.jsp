@@ -73,6 +73,7 @@
 					<li><a href="anonymous/createMember.do"><spring:message code="master.page.createMember" /> </a></li>
 					<li><a href="anonymous/createBrotherhood.do"><spring:message code="master.page.createBrotherhood" /> </a></li>
 					<li><a href="anonymous/createSponsor.do"><spring:message code="master.page.createSponsor" /> </a></li>
+					<li><a href="anonymous/createChapter.do"><spring:message code="master.page.createChapter" /> </a></li>
 				</ul>
 			</li>
 		</security:authorize>

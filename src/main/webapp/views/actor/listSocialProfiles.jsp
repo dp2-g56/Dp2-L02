@@ -8,7 +8,7 @@
 <%@taglib prefix="display" uri="http://displaytag.sf.net"%>
 
 <br/>
-<security:authorize access="hasAnyRole('ADMIN', 'MEMBER')">
+<security:authorize access="hasAnyRole('ADMIN', 'MEMBER', 'SPONSOR')">
 
 <table>
 	<tr>

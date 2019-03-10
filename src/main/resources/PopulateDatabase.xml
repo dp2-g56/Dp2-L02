@@ -241,6 +241,20 @@
 		<property name="isNotLocked" value="True" />
 	</bean> 
 	
+	<!-- chapter -->
+	<bean id="userAccount13" class="security.UserAccount">
+		<property name="username" value="chapter1" />
+		<property name="password" value="178494d73a41f7d68e80f685324d3662" />
+		<property name="authorities">
+			<list>
+				<bean class="security.Authority">
+					<property name="authority" value="CHAPTER" />
+				</bean>
+			</list>
+		</property>
+		<property name="isNotLocked" value="True" />
+	</bean> 
+	
 	<!-- FIN USER ACCOUNT -->
 	
 
@@ -346,7 +360,39 @@
 		<property name="polarity" value ="0.0"/>
 	</bean>
 	<!-- FIN ADMIN -->
+
+
+	<!-- CHAPTER -->
+		<!-- CHAPTER1 -->
+	<bean id="chapter1" class="domain.Chapter">
+		<property name="name" value="I" />
+		<property name="middleName" value="Am" />
+		<property name="surname" value="Chapter1" />
+		<property name="photo" value="https://www.url.com/example" />
+		<property name="email" value="chapter1@admin.com" />
+		<property name="phoneNumber" value="+34609235420" />
+		<property name="address" value="Fake Street 1234" />
+		<property name="socialProfiles">
+			<list>
+			</list>
+		</property>
+		<property name="boxes">
+			<list>
+				<ref bean="inBoxChapter1" />
+				<ref bean="outBoxChapter1" />
+				<ref bean="trashBoxChapter1" />
+				<ref bean="spamBoxChapter1" />
+				<ref bean="notificationBoxChapter1" />
+			</list>
+		</property>
+		<property name="userAccount" ref="userAccount13" />
+		<property name="hasSpam" value = "true"/>
+		<property name="polarity" value ="0.0"/>
+		<property name="title" value="Chapter1" />
+		<property name="area" ref="area1"/>
+	</bean>
 	
+	<!-- FIN CHAPTER -->	
 	
 	<!-- BROTHERHOOD -->
 		<!-- BROTHERHOOD1 -->
@@ -1069,6 +1115,57 @@
 			<!-- FIN ADMIN3 -->
 		<!-- FIN ADMIN -->
 		
+		<!-- CHAPTER -->
+			<!-- CHAPTER1 -->
+				
+				<bean class="domain.Box" id="inBoxChapter1">
+					<property value="INBOX" name="name" />
+					<property value="true" name="isSystem" />
+					<property name="messages">
+						<list>
+						</list>
+					</property>
+				</bean>
+				
+				<bean class="domain.Box" id="outBoxChapter1">
+					<property value="OUTBOX" name="name" />
+					<property value="true" name="isSystem" />
+					<property name="messages">
+						<list>
+						</list>
+					</property>
+				</bean>
+				
+				<bean class="domain.Box" id="trashBoxChapter1">
+					<property value="TRASHBOX" name="name" />
+					<property value="true" name="isSystem" />
+					<property name="messages">
+						<list>
+						</list>
+					</property>
+				</bean>
+				
+				<bean class="domain.Box" id="spamBoxChapter1">
+					<property value="SPAMBOX" name="name" />
+					<property value="true" name="isSystem" />
+					<property name="messages">
+						<list>
+						</list>
+					</property>
+				</bean>
+				
+				<bean class="domain.Box" id="notificationBoxChapter1">
+					<property value="NOTIFICATIONBOX" name="name" />
+					<property value="true" name="isSystem" />
+					<property name="messages">
+						<list>
+						</list>
+					</property>
+				</bean>
+			
+			<!-- FIN CHAPTER1 -->
+		<!-- FIN CHAPTER -->
+		
 		<!-- BROTHERHOOD -->
 			<!-- BROTHERHOOD1 -->
 				
@@ -1632,12 +1729,18 @@
 		<property value="true" name="isDraftMode" />
 		<property value="12" name="rowNumber" />
 		<property value="15" name="columnNumber" />
+		<property name="paradeStatus" value="DRAFTMODE" />
 		<property name="floats">
 			<list>
 				<ref bean="float1" />
 				<ref bean="float2" />
 			</list>
 		</property>	<!-- no hay request porque es draft -->	
+		<property name="paths">
+		<list>
+			<ref bean="path1" />
+		</list>
+		</property>
 	</bean>
 	
 	<bean id ="parade2" class="domain.Parade">
@@ -1648,6 +1751,7 @@
 		<property value="false" name="isDraftMode" />
 		<property value="3" name="rowNumber" />
 		<property value="12" name="columnNumber" />
+		<property name="paradeStatus" value="SUBMITTED" />
 		<property name="floats">
 			<list>
 				<ref bean="float1" />
@@ -1659,7 +1763,12 @@
 				<ref bean="request3"/>
 				<ref bean="request5"/> 
 			</list>
-		</property>			
+		</property>		
+		<property name="paths">
+		<list>
+			<ref bean="path2" />
+		</list>
+		</property>	
 	</bean>
 	
 	<bean id ="parade3" class="domain.Parade">
@@ -1670,6 +1779,7 @@
 		<property value="false" name="isDraftMode" />
 		<property value="5" name="rowNumber" />
 		<property value="1" name="columnNumber" />
+		<property name="paradeStatus" value="ACCEPTED" />
 		<property name="floats">
 			<list>
 				<ref bean="float2" />
@@ -1681,7 +1791,12 @@
 				<ref bean="request4"/>
 				<ref bean="request6"/>
 			</list>
-		</property>			
+		</property>	
+		<property name="paths">
+		<list>
+			<ref bean="path3" />
+		</list>
+		</property>		
 	</bean>
 	
 		<!-- BROTHERHOOD 2 -->
@@ -1693,10 +1808,17 @@
 		<property value="true" name="isDraftMode" />
 		<property value="5" name="rowNumber" />
 		<property value="1" name="columnNumber" />
+		<property name="paradeStatus" value="DRAFTMODE" />
 		<property name="floats">
+		
 			<list>
 			</list>
 		</property>		<!-- No hay Request porque es Draft -->
+		<property name="paths">
+		<list>
+			<ref bean="path4" />
+		</list>
+		</property>
 	</bean>
 	
 	<!-- FIN PARADE -->
@@ -1957,4 +2079,116 @@
 		<property name="titleEnglish" value="Officer" />
 		<property name="titleSpanish" value="Vocal"/>	
 	</bean>
+	
+	 <!-- END POSITIONS -->
+	 
+	 
+	 <!-- PATHS -->
+	 
+	 	
+	<bean id ="path1" class="domain.Path">
+		<property name="segments">
+		<list>
+				<ref bean="segment1" />
+				<ref bean="segment2" />
+		</list>
+		</property>
+	</bean>
+	
+	<bean id ="path2" class="domain.Path">
+		<property name="segments">
+		<list>
+				<ref bean="segment3" />
+				<ref bean="segment4" />
+		</list>
+		</property>
+	</bean>
+	
+	<bean id ="path3" class="domain.Path">
+		<property name="segments">
+		<list>
+				<ref bean="segment5" />
+				<ref bean="segment6" />
+		</list>
+		</property>
+	</bean>
+	
+	<bean id ="path4" class="domain.Path">
+		<property name="segments">
+		<list>
+				<ref bean="segment7" />
+				<ref bean="segment8" />
+		</list>
+		</property>
+	</bean>
+	
+	 <!--END OF PATHS -->
+	 
+	  <!--SEGMENTS -->
+	  
+	 <bean id ="segment1" class="domain.Segment">
+		<property name="originLatitude" value="38.8757819"/>
+		<property name="originLongitude" value="-6.976361"/>
+		<property name="destinationLatitude" value="38.876527166426115"/>
+		<property name="destinationLongitude" value="-6.9718042744465265"/>
+		<property name="time" value="30"/>
+	</bean>
+	
+	 <bean id ="segment2" class="domain.Segment">
+		<property name="originLatitude" value="38.876527166426115"/>
+		<property name="originLongitude" value="-6.9718042744465265"/>
+		<property name="destinationLatitude" value="38.87831038200503"/>
+		<property name="destinationLongitude" value="-6.97034247053341"/>
+		<property name="time" value="30"/>
+	</bean>
+	
+	 <bean id ="segment3" class="domain.Segment">
+		<property name="originLatitude" value="37.3886303"/>
+		<property name="originLongitude" value="-5.9953171"/>
+		<property name="destinationLatitude" value="37.39114596571453"/>
+		<property name="destinationLongitude" value="-6.002947044766188"/>
+		<property name="time" value="30"/>
+	</bean>
+	
+	 <bean id ="segment4" class="domain.Segment">
+		<property name="originLatitude" value="37.39114596571453"/>
+		<property name="originLongitude" value="-6.002947044766188"/>
+		<property name="destinationLatitude" value="37.39951738915108"/>
+		<property name="destinationLongitude" value="-5.999597765474846"/>
+		<property name="time" value="40"/>
+	</bean>
+	
+	 <bean id ="segment5" class="domain.Segment">
+		<property name="originLatitude" value="37.3597"/>
+		<property name="originLongitude" value="-5.9862399999999525"/>
+		<property name="destinationLatitude" value="37.36779605629796"/>
+		<property name="destinationLongitude" value="-5.986913563156122"/>
+		<property name="time" value="30"/>
+	</bean>
+	
+	
+	 <bean id ="segment6" class="domain.Segment">
+		<property name="originLatitude" value="37.36779605629796"/>
+		<property name="originLongitude" value="-5.986913563156122"/>
+		<property name="destinationLatitude" value="37.37550414327526"/>
+		<property name="destinationLongitude" value="-5.991644819741623"/>
+		<property name="time" value="40"/>
+	</bean>
+	
+	 <bean id ="segment7" class="domain.Segment">
+		<property name="originLatitude" value="37.37694394784984"/>
+		<property name="originLongitude" value="-5.987013529378828"/>
+		<property name="destinationLatitude" value="37.38232915782349"/>
+		<property name="destinationLongitude" value="-5.992993551460245"/>
+		<property name="time" value="20"/>
+	</bean>
+	
+	 <bean id ="segment8" class="domain.Segment">
+		<property name="originLatitude" value="37.38232915782349"/>
+		<property name="originLongitude" value="-5.992993551460245"/>
+		<property name="destinationLatitude" value="37.38536595295063"/>
+		<property name="destinationLongitude" value="-5.9930016886959265"/>
+		<property name="time" value="30"/>
+	</bean>
+	
 </beans>

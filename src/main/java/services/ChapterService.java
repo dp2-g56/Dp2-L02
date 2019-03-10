@@ -45,6 +45,8 @@ public class ChapterService {
 		//CHAPTER
 		//TODO Lista de Proclaim
 
+		chapter.setArea(null);
+
 		UserAccount userAccount = new UserAccount();
 		userAccount.setUsername("");
 		userAccount.setPassword("");
@@ -87,6 +89,7 @@ public class ChapterService {
 
 		//CHAPTER
 		//TODO Lista de Proclaim
+		chapter.setArea(null);
 
 		//Boxes
 		Box box1 = this.boxService.createSystem();

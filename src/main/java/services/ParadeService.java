@@ -4,6 +4,7 @@ package services;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -15,14 +16,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
 
-import repositories.ParadeRepository;
-import utilities.RandomString;
 import domain.Brotherhood;
 import domain.Float;
 import domain.Parade;
 import domain.Request;
 import forms.FormObjectParadeFloat;
 import forms.FormObjectParadeFloatCheckbox;
+import repositories.ParadeRepository;
+import utilities.RandomString;
 
 @Service
 @Transactional
@@ -31,17 +32,16 @@ public class ParadeService {
 	// Managed repository ------------------------------------------
 
 	@Autowired
-	private ParadeRepository	paradeRepository;
+	private ParadeRepository paradeRepository;
 	@Autowired
-	private BrotherhoodService	brotherhoodService;
-
+	private BrotherhoodService brotherhoodService;
 
 	// Simple CRUD methods ------------------------------------------
 
 	public Parade create() {
 
-		//Asegurar que está logueado como Brotherhood
-		//Asegurar que la Brotherhood logueada tiene un área
+		// Asegurar que está logueado como Brotherhood
+		// Asegurar que la Brotherhood logueada tiene un área
 		this.brotherhoodService.loggedAsBrotherhood();
 		Brotherhood loggedBrotherhood = this.brotherhoodService.loggedBrotherhood();
 		Assert.isTrue(!(loggedBrotherhood.getArea().equals(null)));
@@ -69,9 +69,10 @@ public class ParadeService {
 		return parade;
 	}
 
-	public Parade edit(Parade parade, int columnNumber, int rowNumber, String description, boolean isDraftMode, String title, Date moment) {
+	public Parade edit(Parade parade, int columnNumber, int rowNumber, String description, boolean isDraftMode,
+			String title, Date moment) {
 
-		//Security
+		// Security
 		this.brotherhoodService.loggedAsBrotherhood();
 		final Brotherhood loggedBrotherhood = this.brotherhoodService.loggedBrotherhood();
 		Assert.isTrue(!(loggedBrotherhood.getArea().equals(null)));
@@ -81,14 +82,14 @@ public class ParadeService {
 		List<Parade> parades = loggedBrotherhood.getParades();
 		parades.remove(parade);
 
-		//parade.setFloats(floats);
+		// parade.setFloats(floats);
 		parade.setColumnNumber(columnNumber);
 		parade.setDescription(description);
 		parade.setIsDraftMode(isDraftMode);
 		parade.setMoment(moment);
-		//parade.setRequests(requests);
+		// parade.setRequests(requests);
 		parade.setRowNumber(rowNumber);
-		//parade.setTicker(ticker);
+		// parade.setTicker(ticker);
 
 		parade.setTitle(title);
 
@@ -103,15 +104,16 @@ public class ParadeService {
 
 	public void deleteParade(Parade parade) {
 
-		//Security
+		// Security
 		this.brotherhoodService.loggedAsBrotherhood();
 		final Brotherhood loggedBrotherhood = this.brotherhoodService.loggedBrotherhood();
 		Assert.isTrue(!(loggedBrotherhood.getArea().equals(null)));
 		Assert.isTrue(parade.getIsDraftMode());
 		Assert.isTrue(loggedBrotherhood.getParades().contains(parade));
 
-		//No debería tener Request porque está en Draft mode
-		//Tampoco hay que preocuparse por el finder porque no se pueden buscar parades en Draft mode
+		// No debería tener Request porque está en Draft mode
+		// Tampoco hay que preocuparse por el finder porque no se pueden buscar parades
+		// en Draft mode
 
 		final List<Float> floats = new ArrayList<>();
 		parade.setFloats(floats);
@@ -124,7 +126,7 @@ public class ParadeService {
 		this.paradeRepository.delete(parade);
 	}
 
-	//Método auxiliar para generar el ticker-------------------------------
+	// Método auxiliar para generar el ticker-------------------------------
 	private String generateTicker() {
 		String res = "";
 		Date date = null;
@@ -158,6 +160,7 @@ public class ParadeService {
 	public Parade save(Parade parade) {
 		return this.paradeRepository.save(parade);
 	}
+
 	public void delete(Parade parade) {
 		this.paradeRepository.delete(parade);
 	}
@@ -175,12 +178,13 @@ public class ParadeService {
 
 		result.setTicker(this.generateTicker());
 
-		//		this.validator.validate(result, binding);
+		// this.validator.validate(result, binding);
 
 		return result;
 	}
 
-	public Parade reconstructCheckbox(FormObjectParadeFloatCheckbox formObjectParadeFloatCheckbox, BindingResult binding) {
+	public Parade reconstructCheckbox(FormObjectParadeFloatCheckbox formObjectParadeFloatCheckbox,
+			BindingResult binding) {
 		Parade result = new Parade();
 
 		if (formObjectParadeFloatCheckbox.getId() == 0)
@@ -195,7 +199,7 @@ public class ParadeService {
 		result.setRowNumber(formObjectParadeFloatCheckbox.getRowNumber());
 		result.setColumnNumber(formObjectParadeFloatCheckbox.getColumnNumber());
 
-		//		this.validator.validate(result, binding);		//YA VIENE VALIDADO
+		// this.validator.validate(result, binding); //YA VIENE VALIDADO
 
 		return result;
 	}
@@ -215,9 +219,9 @@ public class ParadeService {
 		return saved;
 	}
 
-	public Parade saveAssignList(Parade parade, List<domain.Float> floats) {	//TERMINADO
+	public Parade saveAssignList(Parade parade, List<domain.Float> floats) { // TERMINADO
 
-		//parade.getFloats().add(newFloat);
+		// parade.getFloats().add(newFloat);
 
 		parade.setFloats(floats);
 		Parade saved = new Parade();
@@ -225,7 +229,7 @@ public class ParadeService {
 
 		Brotherhood brotherhood = this.brotherhoodService.loggedBrotherhood();
 
-		brotherhood.getParades().remove(parade);		//NUEVO
+		brotherhood.getParades().remove(parade); // NUEVO
 		brotherhood.getParades().add(saved);
 		this.brotherhoodService.save(brotherhood);
 
@@ -279,6 +283,10 @@ public class ParadeService {
 
 		this.paradeRepository.delete(parade);
 
+	}
+
+	public Collection<Parade> getAcceptedParades() {
+		return this.paradeRepository.getAcceptedParades();
 	}
 
 }

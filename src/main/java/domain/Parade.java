@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Index;
@@ -24,22 +25,31 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Access(AccessType.PROPERTY)
-@Table(indexes = {
-	@Index(columnList = "isDraftMode, moment"), @Index(columnList = "title, description"), @Index(columnList = "moment"), @Index(columnList = "isDraftMode")
-})
+@Table(indexes = { @Index(columnList = "isDraftMode, moment"), @Index(columnList = "title, description"),
+		@Index(columnList = "moment"), @Index(columnList = "isDraftMode") })
 public class Parade extends DomainEntity {
 
-	private String			title;			//
-	private String			description;	//
-	private Date			moment;		//
-	private String			ticker;
-	private Boolean			isDraftMode;	//
-	private int				rowNumber;		//
-	private int				columnNumber;	//
+	private String title; //
+	private String description; //
+	private Date moment; //
+	private String ticker;
+	private Boolean isDraftMode; //
+	private int rowNumber; //
+	private int columnNumber; //
+	private ParadeStatus paradeStatus;
 
-	private List<Float>		floats;
-	private List<Request>	requests;
+	private List<Float> floats;
+	private List<Request> requests;
+	private List<Path> paths;
 
+	@NotNull
+	public ParadeStatus getParadeStatus() {
+		return this.paradeStatus;
+	}
+
+	public void setParadeStatus(ParadeStatus paradeStatus) {
+		this.paradeStatus = paradeStatus;
+	}
 
 	@NotBlank
 	public String getTitle() {
@@ -129,6 +139,16 @@ public class Parade extends DomainEntity {
 
 	public void setRequests(List<Request> requests) {
 		this.requests = requests;
+	}
+
+	@Valid
+	@OneToMany(cascade = CascadeType.ALL)
+	public List<Path> getPaths() {
+		return this.paths;
+	}
+
+	public void setPaths(List<Path> paths) {
+		this.paths = paths;
 	}
 
 }

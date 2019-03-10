@@ -69,6 +69,8 @@
 		
 		<property name="systemName" value="Acme Madrugá" />
 		<property name="imageURL" value="https://tinyurl.com/acme-madruga" />
+		<property name="VAT" value="21" />
+		<property name="fare" value="0.01" />
 		
 	</bean>
 	

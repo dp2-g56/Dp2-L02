@@ -33,6 +33,10 @@
 	
 	<display:column property="imageURL" titleKey="configuration.imageURL" />
 	
+	<display:column property="VAT" titleKey="configuration.VAT" />
+	
+	<display:column property="fare" titleKey="configuration.fare" />
+	
 	
 </display:table>
 

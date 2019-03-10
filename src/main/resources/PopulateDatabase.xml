@@ -241,6 +241,20 @@
 		<property name="isNotLocked" value="True" />
 	</bean> 
 	
+	<!-- chapter -->
+	<bean id="userAccount13" class="security.UserAccount">
+		<property name="username" value="chapter1" />
+		<property name="password" value="178494d73a41f7d68e80f685324d3662" />
+		<property name="authorities">
+			<list>
+				<bean class="security.Authority">
+					<property name="authority" value="CHAPTER" />
+				</bean>
+			</list>
+		</property>
+		<property name="isNotLocked" value="True" />
+	</bean> 
+	
 	<!-- FIN USER ACCOUNT -->
 	
 
@@ -346,7 +360,39 @@
 		<property name="polarity" value ="0.0"/>
 	</bean>
 	<!-- FIN ADMIN -->
+
+
+	<!-- CHAPTER -->
+		<!-- CHAPTER1 -->
+	<bean id="chapter1" class="domain.Chapter">
+		<property name="name" value="I" />
+		<property name="middleName" value="Am" />
+		<property name="surname" value="Chapter1" />
+		<property name="photo" value="https://www.url.com/example" />
+		<property name="email" value="chapter1@admin.com" />
+		<property name="phoneNumber" value="+34609235420" />
+		<property name="address" value="Fake Street 1234" />
+		<property name="socialProfiles">
+			<list>
+			</list>
+		</property>
+		<property name="boxes">
+			<list>
+				<ref bean="inBoxChapter1" />
+				<ref bean="outBoxChapter1" />
+				<ref bean="trashBoxChapter1" />
+				<ref bean="spamBoxChapter1" />
+				<ref bean="notificationBoxChapter1" />
+			</list>
+		</property>
+		<property name="userAccount" ref="userAccount13" />
+		<property name="hasSpam" value = "true"/>
+		<property name="polarity" value ="0.0"/>
+		<property name="title" value="Chapter1" />
+		<property name="area" ref="area1"/>
+	</bean>
 	
+	<!-- FIN CHAPTER -->	
 	
 	<!-- BROTHERHOOD -->
 		<!-- BROTHERHOOD1 -->
@@ -1068,6 +1114,57 @@
 				</bean>
 			<!-- FIN ADMIN3 -->
 		<!-- FIN ADMIN -->
+		
+		<!-- CHAPTER -->
+			<!-- CHAPTER1 -->
+				
+				<bean class="domain.Box" id="inBoxChapter1">
+					<property value="INBOX" name="name" />
+					<property value="true" name="isSystem" />
+					<property name="messages">
+						<list>
+						</list>
+					</property>
+				</bean>
+				
+				<bean class="domain.Box" id="outBoxChapter1">
+					<property value="OUTBOX" name="name" />
+					<property value="true" name="isSystem" />
+					<property name="messages">
+						<list>
+						</list>
+					</property>
+				</bean>
+				
+				<bean class="domain.Box" id="trashBoxChapter1">
+					<property value="TRASHBOX" name="name" />
+					<property value="true" name="isSystem" />
+					<property name="messages">
+						<list>
+						</list>
+					</property>
+				</bean>
+				
+				<bean class="domain.Box" id="spamBoxChapter1">
+					<property value="SPAMBOX" name="name" />
+					<property value="true" name="isSystem" />
+					<property name="messages">
+						<list>
+						</list>
+					</property>
+				</bean>
+				
+				<bean class="domain.Box" id="notificationBoxChapter1">
+					<property value="NOTIFICATIONBOX" name="name" />
+					<property value="true" name="isSystem" />
+					<property name="messages">
+						<list>
+						</list>
+					</property>
+				</bean>
+			
+			<!-- FIN CHAPTER1 -->
+		<!-- FIN CHAPTER -->
 		
 		<!-- BROTHERHOOD -->
 			<!-- BROTHERHOOD1 -->

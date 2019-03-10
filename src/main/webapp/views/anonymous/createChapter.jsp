@@ -92,8 +92,10 @@
 	<!-- chapter -->
 	<acme:textbox path="title" code="anonymous.title" />
 	<br />	
+	<acme:select code="brotherhood.area" path="area" items="${areas}" itemLabel="name" id="areas"/>
 	</fieldset>
 	<br />
+	
 	<br />
 	
 	<!-- TERMS AND CONDITIONS -->

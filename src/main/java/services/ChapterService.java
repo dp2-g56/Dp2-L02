@@ -14,6 +14,7 @@ import org.springframework.validation.BindingResult;
 import repositories.ChapterRepository;
 import security.Authority;
 import security.UserAccount;
+import domain.Area;
 import domain.Box;
 import domain.Chapter;
 import domain.SocialProfile;
@@ -89,7 +90,6 @@ public class ChapterService {
 
 		//CHAPTER
 		//TODO Lista de Proclaim
-		chapter.setArea(null);
 
 		//Boxes
 		Box box1 = this.boxService.createSystem();
@@ -132,6 +132,7 @@ public class ChapterService {
 		result.setAddress(formObjectChapter.getAddress());
 		result.setEmail(formObjectChapter.getEmail());
 		result.setHasSpam(false);
+		result.setArea(formObjectChapter.getArea());
 		result.setMiddleName(formObjectChapter.getMiddleName());
 		result.setName(formObjectChapter.getName());
 		result.setPhoneNumber(formObjectChapter.getPhoneNumber());
@@ -164,6 +165,10 @@ public class ChapterService {
 		result.setUserAccount(userAccount);
 
 		return result;
+	}
+
+	public List<Area> listFreeAreas() {
+		return this.chapterRepository.getFreeAreas();
 	}
 
 	public List<Chapter> findAll() {

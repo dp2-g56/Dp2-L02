@@ -78,6 +78,7 @@ public class AnonymousController extends AbstractController {
 		String locale = LocaleContextHolder.getLocale().getLanguage().toUpperCase();
 
 		result = this.createEditModelAndView(formObjectChapter);
+		result.addObject("areas", this.chapterService.listFreeAreas());
 		result.addObject("locale", locale);
 
 		return result;
@@ -157,6 +158,7 @@ public class AnonymousController extends AbstractController {
 
 		result = this.createEditModelAndView(formObjectChapter, null);
 		result.addObject("locale", locale);
+		result.addObject("areas", this.chapterService.listFreeAreas());
 
 		return result;
 	}
@@ -168,6 +170,7 @@ public class AnonymousController extends AbstractController {
 
 		result = new ModelAndView("anonymous/createChapter");
 		result.addObject("formObjectChapter", formObjectChapter);
+		result.addObject("areas", this.chapterService.listFreeAreas());
 		result.addObject("message", messageCode);
 		result.addObject("locale", locale);
 
@@ -182,6 +185,7 @@ public class AnonymousController extends AbstractController {
 
 		result = this.createEditModelAndView(chapter, null);
 		result.addObject("locale", locale);
+		result.addObject("areas", this.chapterService.listFreeAreas());
 
 		return result;
 	}
@@ -193,6 +197,7 @@ public class AnonymousController extends AbstractController {
 
 		result = new ModelAndView("anonymous/createChapter");
 		result.addObject("chapter", chapter);
+		result.addObject("areas", this.chapterService.listFreeAreas());
 		result.addObject("message", messageCode);
 		result.addObject("locale", locale);
 

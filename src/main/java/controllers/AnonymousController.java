@@ -90,7 +90,6 @@ public class AnonymousController extends AbstractController {
 		Configuration configuration = this.configurationService.getConfiguration();
 		String prefix = configuration.getSpainTelephoneCode();
 
-		//Confirmacion contraseï¿½a
 		chapter = this.chapterService.reconstruct(formObjectChapter, binding);
 		if (chapter.getPhoneNumber().matches("([0-9]{4,})$")) {
 			chapter.setPhoneNumber(prefix + chapter.getPhoneNumber());
@@ -192,7 +191,7 @@ public class AnonymousController extends AbstractController {
 		Configuration configuration = this.configurationService.getConfiguration();
 		String prefix = configuration.getSpainTelephoneCode();
 
-		//Confirmacion contraseña
+		//Confirmacion contrasena
 		if (!formObjectMember.getPassword().equals(formObjectMember.getConfirmPassword())) {
 			if (LocaleContextHolder.getLocale().getLanguage().toUpperCase().contains("ES")) {
 				binding.addError(new FieldError("formObjectMember", "password", formObjectMember.getPassword(), false, null, null, "Las contraseñas no coinciden"));
@@ -329,7 +328,7 @@ public class AnonymousController extends AbstractController {
 		Configuration configuration = this.configurationService.getConfiguration();
 		String prefix = configuration.getSpainTelephoneCode();
 
-		//Confirmacion contraseña
+		//Confirmacion contrasena
 		if (!formObjectBrotherhood.getPassword().equals(formObjectBrotherhood.getConfirmPassword())) {
 			if (LocaleContextHolder.getLocale().getLanguage().toUpperCase().contains("ES")) {
 				binding.addError(new FieldError("formObjectBrotherhood", "password", formObjectBrotherhood.getPassword(), false, null, null, "Las contraseñas no coinciden"));

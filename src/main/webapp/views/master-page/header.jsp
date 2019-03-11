@@ -47,6 +47,15 @@
 			</li>
 		</security:authorize>
 		
+		<security:authorize access="hasRole('CHAPTER')">
+			<li><a class="fNiv"><spring:message	code="master.page.chapter" /></a>
+				<ul>
+					<li class="arrow"></li>				
+					<li><a href="chapter/list.do"><spring:message code="master.page.sponsor.listProclaim" /></a></li>
+				</ul>
+			</li>
+		</security:authorize>
+		
 		<security:authorize access="hasRole('BROTHERHOOD')">
 			<li><a class="fNiv"><spring:message	code="master.page.brotherhood" /></a>
 				<ul>

@@ -9,14 +9,17 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
 
 import repositories.ChapterRepository;
 import security.Authority;
+import security.LoginService;
 import security.UserAccount;
 import domain.Area;
 import domain.Box;
 import domain.Chapter;
+import domain.Proclaim;
 import domain.SocialProfile;
 import forms.FormObjectChapter;
 
@@ -44,7 +47,7 @@ public class ChapterService {
 		List<Box> boxes = new ArrayList<>();
 
 		//CHAPTER
-		//TODO Lista de Proclaim
+		List<Proclaim> proclaims = new ArrayList<Proclaim>();
 
 		chapter.setArea(null);
 
@@ -54,6 +57,7 @@ public class ChapterService {
 
 		//Actor
 		chapter.setAddress("");
+		chapter.setProclaims(proclaims);
 		chapter.setBoxes(boxes);
 		chapter.setEmail("");
 		chapter.setHasSpam(false);
@@ -87,9 +91,6 @@ public class ChapterService {
 		//ACTOR
 		List<SocialProfile> socialProfiles = new ArrayList<>();
 		chapter.setSocialProfiles(socialProfiles);
-
-		//CHAPTER
-		//TODO Lista de Proclaim
 
 		//Boxes
 		Box box1 = this.boxService.createSystem();
@@ -184,6 +185,20 @@ public class ChapterService {
 	}
 	public void delete(Chapter chapter) {
 		this.chapterRepository.delete(chapter);
+	}
+
+	public void loggedAsChapter() {
+		UserAccount userAccount;
+		userAccount = LoginService.getPrincipal();
+		final List<Authority> authorities = (List<Authority>) userAccount.getAuthorities();
+		Assert.isTrue(authorities.get(0).toString().equals("CHAPTER"));
+	}
+
+	public Chapter loggedChapter() {
+		UserAccount userAccount;
+		userAccount = LoginService.getPrincipal();
+		return this.chapterRepository.getChapterByUsername(userAccount.getUsername());
+
 	}
 
 }

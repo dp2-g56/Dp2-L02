@@ -33,6 +33,7 @@ public class FormObjectSponsorshipCreditCard {
 
 	}
 
+	@URL
 	@NotBlank
 	public String getBanner() {
 		return this.banner;

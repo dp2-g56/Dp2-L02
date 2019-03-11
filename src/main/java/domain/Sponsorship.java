@@ -22,6 +22,7 @@ public class Sponsorship extends DomainEntity {
 	private CreditCard creditCard;
 	private Parade parade;
 
+	@URL
 	@NotBlank
 	public String getBanner() {
 		return this.banner;

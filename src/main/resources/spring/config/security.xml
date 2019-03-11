@@ -72,7 +72,7 @@
 		
 		<!-- Sponsor --> 
 		<security:intercept-url pattern="/parade/sponsor/**" access="hasRole('SPONSOR')" /> 
-		
+		<security:intercept-url pattern="/sponsorship/sponsor/**" access="hasRole('SPONSOR')" />
 		
 		<!-- Chapter --> 
 		<security:intercept-url pattern="/chapter/**" access="hasRole('CHAPTER')" /> 

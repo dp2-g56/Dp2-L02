@@ -28,7 +28,7 @@ public class ParadeSponsorController extends AbstractController {
 		super();
 	}
 
-	// List
+	// LIST
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public ModelAndView paradesList() {
 		ModelAndView result;

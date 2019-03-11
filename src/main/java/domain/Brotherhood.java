@@ -6,11 +6,13 @@ import java.util.List;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
+import javax.persistence.CascadeType;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Index;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.Valid;
 import javax.validation.constraints.Past;
@@ -20,21 +22,29 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Access(AccessType.PROPERTY)
-@Table(indexes = {
-	@Index(columnList = "area"), @Index(columnList = "polarity")
-})
+@Table(indexes = { @Index(columnList = "area"), @Index(columnList = "polarity") })
 public class Brotherhood extends Actor {
 
-	private String				title;
-	private Date				establishmentDate;
-	private List<String>		pictures;
+	private String title;
+	private Date establishmentDate;
+	private List<String> pictures;
 
-	//Relaciones
-	private Area				area;
-	private List<Float>			floats;
-	private List<Parade>	parades;
-	private List<Enrolment>		enrolments;
+	// Relaciones
+	private Area area;
+	private List<Float> floats;
+	private List<Parade> parades;
+	private List<Enrolment> enrolments;
+	private History history;
 
+	@OneToOne(optional = true, cascade = CascadeType.ALL)
+	@Valid
+	public History getHistory() {
+		return this.history;
+	}
+
+	public void setHistory(History history) {
+		this.history = history;
+	}
 
 	@NotBlank
 	public String getTitle() {

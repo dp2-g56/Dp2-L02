@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 
 <!-- 
  * PopulateDatabase.xml
@@ -2189,6 +2189,77 @@
 		<property name="destinationLatitude" value="37.38536595295063"/>
 		<property name="destinationLongitude" value="-5.9930016886959265"/>
 		<property name="time" value="30"/>
+	</bean>
+
+	<!-- HISTORY -->
+	<bean id="history1" class="domain.History">
+		<property name="miscellaneousRecords">
+			<list>
+				<ref bean="miscellaneousRecord1" />
+			</list>
+		</property>
+		<property name="periodRecords">
+			<list>
+				<ref bean="periodRecord1" />
+			</list>
+		</property>
+		<property name="legalRecords">
+			<list>
+				<ref bean="legalRecord1" />
+			</list>
+		</property>
+		<property name="linkRecords">
+			<list>
+				<ref bean="linkRecord1" />
+			</list>
+		</property>
+		<property name="inceptionRecord" ref="inceptionRecord1" />
+	</bean>
+	<!-- END OF HISTORY -->
+	
+	<bean id="miscellaneousRecord1" class="domain.MiscellaneousRecord">
+		<property name="title" value="Miscellaneous" />
+		<property name="description" value="Miscellaneous record" />
+	</bean>
+	
+	<bean id="inceptionRecord1" class="domain.InceptionRecord">
+		<property name="title" value="Inception" />
+		<property name="description" value="Inception record" />
+		<property name="photos">
+			<list>
+				<value>http://www.photo.com</value>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="periodRecord1" class="domain.PeriodRecord">
+		<property name="title" value="Period" />
+		<property name="description" value="Period record" />
+		<property name="startYear" value="2008" />
+		<property name="endYear" value="2010" />
+		<property name="photos">
+			<list>
+				<value>http://www.photo.com</value>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="legalRecord1" class="domain.LegalRecord">
+		<property name="title" value="Legal" />
+		<property name="description" value="Legal record" />
+		<property name="legalName" value="Legal Record S.L." />
+		<property name="vatNumber" value="ES85274196A" />
+		<property name="laws">
+			<list>
+				<value>Law1</value>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="linkRecord1" class="domain.LinkRecord">
+		<property name="title" value="Link" />
+		<property name="description" value="Link record" />
+		<property name="link" value="http://www.link.com" />
 	</bean>
 	
 </beans>

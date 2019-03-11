@@ -76,6 +76,9 @@
 		<bean class="converters.CreditCardToStringConverter" />
 		<bean class="converters.StringToCreditCardConverter" />
 		
+		<bean class="converters.ProclaimToStringConverter" />
+		<bean class="converters.StringToProclaimConverter" />
+		
 	</util:list>
 	
 </beans>

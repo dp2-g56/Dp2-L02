@@ -73,6 +73,10 @@
 		<!-- Sponsor --> 
 		<security:intercept-url pattern="/parade/sponsor/**" access="hasRole('SPONSOR')" /> 
 		
+		
+		<!-- Chapter --> 
+		<security:intercept-url pattern="/chapter/**" access="hasRole('CHAPTER')" /> 
+		
 		<!-- Authenticated -->
 		 <security:intercept-url pattern="/authenticated/**" access="isAuthenticated()" /> 
 		 <security:intercept-url pattern="/box/actor/**" access="isAuthenticated()" /> 

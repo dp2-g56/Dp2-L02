@@ -13,28 +13,27 @@ import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
 
+import domain.Chapter;
+import domain.Proclaim;
 import repositories.ProclaimRepository;
 import security.LoginService;
 import security.UserAccount;
-import domain.Chapter;
-import domain.Proclaim;
 
 @Service
 @Transactional
 public class ProclaimService {
 
 	@Autowired
-	ProclaimRepository	proclaimRepository;
+	ProclaimRepository proclaimRepository;
 
 	@Autowired
-	ChapterService		chapterService;
+	ChapterService chapterService;
 
 	@Autowired
-	ActorService		actorService;
+	ActorService actorService;
 
-	@Autowired
-	Validator			validator;
-
+	@Autowired(required = false)
+	Validator validator;
 
 	public Proclaim findOne(int id) {
 		return this.proclaimRepository.findOne(id);

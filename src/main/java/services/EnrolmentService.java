@@ -13,29 +13,28 @@ import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
 
-import repositories.EnrolmentRepository;
 import domain.Brotherhood;
 import domain.Enrolment;
 import domain.Member;
 import domain.Position;
 import domain.StatusEnrolment;
+import repositories.EnrolmentRepository;
 
 @Service
 @Transactional
 public class EnrolmentService {
 
 	@Autowired
-	private EnrolmentRepository	enrolmentRepository;
+	private EnrolmentRepository enrolmentRepository;
 
 	@Autowired
-	private MemberService		memberService;
+	private MemberService memberService;
 
 	@Autowired
-	private BrotherhoodService	brotherhoodService;
+	private BrotherhoodService brotherhoodService;
 
-	@Autowired
-	private Validator			validator;
-
+	@Autowired(required = false)
+	private Validator validator;
 
 	public List<Enrolment> findAll() {
 		return this.enrolmentRepository.findAll();
@@ -118,8 +117,8 @@ public class EnrolmentService {
 
 		Enrolment result = this.enrolmentRepository.findOne(enrolment.getId());
 
-		//result.setId(enrolment.getId());
-		//result.setVersion(enrolment.getVersion());
+		// result.setId(enrolment.getId());
+		// result.setVersion(enrolment.getVersion());
 		result.setPosition(enrolment.getPosition());
 
 		if (result.getPosition() == null)

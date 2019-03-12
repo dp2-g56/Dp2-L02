@@ -16,10 +16,6 @@ import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
 
-import repositories.AdminRepository;
-import security.Authority;
-import security.LoginService;
-import security.UserAccount;
 import domain.Actor;
 import domain.Admin;
 import domain.Area;
@@ -30,44 +26,47 @@ import domain.Parade;
 import domain.Position;
 import domain.SocialProfile;
 import forms.FormObjectMember;
+import repositories.AdminRepository;
+import security.Authority;
+import security.LoginService;
+import security.UserAccount;
 
 @Service
 @Transactional
 public class AdminService {
 
 	@Autowired
-	private AdminRepository	adminRepository;
+	private AdminRepository adminRepository;
 
 	@Autowired
-	private MessageService	messageService;
+	private MessageService messageService;
 
 	@Autowired
-	private ActorService	actorService;
+	private ActorService actorService;
 
 	@Autowired
-	private BoxService		boxService;
+	private BoxService boxService;
 
 	@Autowired
-	private ParadeService	paradeService;
+	private ParadeService paradeService;
 
 	@Autowired
-	private RequestService	requestService;
+	private RequestService requestService;
 
 	@Autowired
-	private AreaService		areaService;
+	private AreaService areaService;
 
 	@Autowired
-	private PositionService	positionService;
+	private PositionService positionService;
+
+	@Autowired(required = false)
+	private Validator validator;
 
 	@Autowired
-	private Validator		validator;
+	private FinderService finderService;
 
 	@Autowired
-	private FinderService	finderService;
-
-	@Autowired
-	private MemberService	memberService;
-
+	private MemberService memberService;
 
 	// 1. Create user accounts for new administrators.
 	public void loggedAsAdmin() {
@@ -83,8 +82,8 @@ public class AdminService {
 
 		Admin admin = new Admin();
 
-		//Se crean las listas vacías
-		//ACTOR
+		// Se crean las listas vacías
+		// ACTOR
 		List<SocialProfile> socialProfiles = new ArrayList<>();
 		List<Box> boxes = new ArrayList<>();
 
@@ -92,7 +91,7 @@ public class AdminService {
 		userAccount.setUsername("");
 		userAccount.setPassword("");
 
-		//Actor
+		// Actor
 		admin.setAddress("");
 		admin.setBoxes(boxes);
 		admin.setEmail("");
@@ -119,7 +118,9 @@ public class AdminService {
 		return admin;
 	}
 
-	public Admin createAdmin(final String name, final String middleName, final String surname, final String photo, final String email, final String phoneNumber, final String address, final String userName, final String password) {
+	public Admin createAdmin(final String name, final String middleName, final String surname, final String photo,
+			final String email, final String phoneNumber, final String address, final String userName,
+			final String password) {
 
 		final Admin admin = new Admin();
 
@@ -187,12 +188,12 @@ public class AdminService {
 
 		List<Box> boxes = new ArrayList<>();
 
-		//Se crean las listas vacías
-		//ACTOR
+		// Se crean las listas vacías
+		// ACTOR
 		List<SocialProfile> socialProfiles = new ArrayList<>();
 		admin.setSocialProfiles(socialProfiles);
 
-		//Boxes
+		// Boxes
 		Box box1 = this.boxService.createSystem();
 		box1.setName("INBOX");
 		Box saved1 = this.boxService.saveSystem(box1);
@@ -231,37 +232,37 @@ public class AdminService {
 		Admin result = new Admin();
 
 		result.setAddress(formObjectMember.getAddress());
-		//result.setBoxes(boxes);
+		// result.setBoxes(boxes);
 		result.setEmail(formObjectMember.getEmail());
-		//result.setEnrolments(enrolments)
-		//result.setFinder(finder)
+		// result.setEnrolments(enrolments)
+		// result.setFinder(finder)
 		result.setHasSpam(false);
 		result.setMiddleName(formObjectMember.getMiddleName());
 		result.setName(formObjectMember.getName());
 		result.setPhoneNumber(formObjectMember.getPhoneNumber());
 		result.setPhoto(formObjectMember.getPhoto());
-		//		result.setRequests(requests);
-		//		result.setPolarity(polarity);
-		//		result.setSocialProfiles(socialProfiles);
+		// result.setRequests(requests);
+		// result.setPolarity(polarity);
+		// result.setSocialProfiles(socialProfiles);
 		result.setSurname(formObjectMember.getSurname());
 
-		//USER ACCOUNT
+		// USER ACCOUNT
 		UserAccount userAccount = new UserAccount();
 
-		//Authorities
+		// Authorities
 		List<Authority> authorities = new ArrayList<Authority>();
 		Authority authority = new Authority();
 		authority.setAuthority(Authority.ADMIN);
 		authorities.add(authority);
 		userAccount.setAuthorities(authorities);
 
-		//locked
+		// locked
 		userAccount.setIsNotLocked(true);
 
-		//Username
+		// Username
 		userAccount.setUsername(formObjectMember.getUsername());
 
-		//Password
+		// Password
 		Md5PasswordEncoder encoder;
 		encoder = new Md5PasswordEncoder();
 		userAccount.setPassword(encoder.encodePassword(formObjectMember.getPassword(), null));
@@ -277,60 +278,53 @@ public class AdminService {
 
 	// SERVICIO 1
 	/*
-	 * public Map<String, Double[]> computeStatistics() {
-	 * this.loggedAsAdmin();
-	 * 
-	 * final Map<String, Double[]> result;
-	 * Double[] calculations1;
-	 * Double[] calculations2;
-	 * Double[] calculations3;
-	 * Double[] calculations4;
-	 * Double[] calculations5;
-	 * Double[] calculations6;
-	 * 
-	 * calculations1 = this.adminRepository.fixUpTaskPerUser();
-	 * calculations2 = this.adminRepository.applicationPerFixUpTask();
-	 * calculations3 = this.adminRepository.maxPricePerFixUpTask();
-	 * calculations4 = this.adminRepository.priceOferredPerApplication();
-	 * calculations5 = this.adminRepository.numberComplaintsPerFixUpTask();
-	 * calculations6 = this.adminRepository.notesPerReferee();
-	 * 
-	 * result = new HashMap<String, Double[]>();
-	 * result.put("fixUpTaskPerUser", calculations1);
-	 * result.put("applicationPerFixUpTask", calculations2);
+	 * public Map<String, Double[]> computeStatistics() { this.loggedAsAdmin();
+	 *
+	 * final Map<String, Double[]> result; Double[] calculations1; Double[]
+	 * calculations2; Double[] calculations3; Double[] calculations4; Double[]
+	 * calculations5; Double[] calculations6;
+	 *
+	 * calculations1 = this.adminRepository.fixUpTaskPerUser(); calculations2 =
+	 * this.adminRepository.applicationPerFixUpTask(); calculations3 =
+	 * this.adminRepository.maxPricePerFixUpTask(); calculations4 =
+	 * this.adminRepository.priceOferredPerApplication(); calculations5 =
+	 * this.adminRepository.numberComplaintsPerFixUpTask(); calculations6 =
+	 * this.adminRepository.notesPerReferee();
+	 *
+	 * result = new HashMap<String, Double[]>(); result.put("fixUpTaskPerUser",
+	 * calculations1); result.put("applicationPerFixUpTask", calculations2);
 	 * result.put("maxPricePerFixUpTask", calculations3);
 	 * result.put("priceOferredPerApplication", calculations4);
 	 * result.put("numberComplaintsPerFixUpTask", calculations5);
 	 * result.put("notesPerReferee", calculations6);
-	 * 
-	 * return result;
-	 * }
-	 * 
-	 * 
-	 * 
-	 * // SERVICIO 2
-	 * public Map<String, Double> computeStatisticsRatios() {
+	 *
+	 * return result; }
+	 *
+	 *
+	 *
+	 * // SERVICIO 2 public Map<String, Double> computeStatisticsRatios() {
 	 * this.loggedAsAdmin();
-	 * 
-	 * Double ratioPendingApplications, ratioAcceptedApplications, ratioRejectedApplications, ratioPendingElapsedApplications;
-	 * Double fixUpTaskWithComplain;
-	 * final Map<String, Double> result;
-	 * 
+	 *
+	 * Double ratioPendingApplications, ratioAcceptedApplications,
+	 * ratioRejectedApplications, ratioPendingElapsedApplications; Double
+	 * fixUpTaskWithComplain; final Map<String, Double> result;
+	 *
 	 * ratioPendingApplications = this.adminRepository.ratioPendingApplications();
 	 * ratioAcceptedApplications = this.adminRepository.ratioAcceptedApplications();
 	 * ratioRejectedApplications = this.adminRepository.ratioRejectedApplications();
-	 * ratioPendingElapsedApplications = this.adminRepository.ratioPendingElapsedApplications();
-	 * fixUpTaskWithComplain = this.adminRepository.fixUpTaskWithComplain();
-	 * 
+	 * ratioPendingElapsedApplications =
+	 * this.adminRepository.ratioPendingElapsedApplications(); fixUpTaskWithComplain
+	 * = this.adminRepository.fixUpTaskWithComplain();
+	 *
 	 * result = new HashMap<String, Double>();
 	 * result.put("ratioPendingApplications", ratioPendingApplications);
 	 * result.put("ratioAcceptedApplications", ratioAcceptedApplications);
 	 * result.put("ratioRejectedApplications", ratioRejectedApplications);
-	 * result.put("ratioPendingElapsedApplications", ratioPendingElapsedApplications);
-	 * result.put("fixUpTaskWithComplain", fixUpTaskWithComplain);
-	 * 
-	 * return result;
-	 * }
+	 * result.put("ratioPendingElapsedApplications",
+	 * ratioPendingElapsedApplications); result.put("fixUpTaskWithComplain",
+	 * fixUpTaskWithComplain);
+	 *
+	 * return result; }
 	 */
 
 	public void broadcastMessage(Message message) {
@@ -370,9 +364,8 @@ public class AdminService {
 	}
 
 	/*
-	 * public Admin getAdminByUsername(final String a) {
-	 * return this.adminRepository.getAdminByUserName(a);
-	 * }
+	 * public Admin getAdminByUsername(final String a) { return
+	 * this.adminRepository.getAdminByUserName(a); }
 	 */
 
 	public Admin findOne(final int adminId) {
@@ -470,16 +463,19 @@ public class AdminService {
 		return this.adminRepository.largestBrotherhoods();
 
 	}
+
 	public List<String> smallestBrotherhoods() {
 		return this.adminRepository.smallestBrotherhoods();
 
 	}
+
 	public Map<String, Float> ratioBrotherhoodPerArea() {
 		if (this.areaService.findAll().isEmpty())
 			return new HashMap<String, Float>();
 		else
 			return this.nameStatisticsArea(this.adminRepository.ratioBrotherhoodPerArea());
 	}
+
 	public Map<String, Float> ratioRequestApprovedByParade() {
 		return this.nameStatisticsParade(this.noZeroDivision(this.adminRepository.ratioApprovedRequestsByParades()));
 	}
@@ -578,9 +574,7 @@ public class AdminService {
 		return this.adminRepository.getSystem();
 	}
 	/*
-	 * public List<Admin> findAll2() {
-	 * return this.adminRepository.findAll2();
-	 * }
+	 * public List<Admin> findAll2() { return this.adminRepository.findAll2(); }
 	 */
 
 	public Message reconstruct(Message message, BindingResult binding) {
@@ -640,10 +634,8 @@ public class AdminService {
 		result.setPolarity(pururu.getPolarity());
 
 		/*
-		 * result.setName(admin.getName());
-		 * result.setMiddleName(admin.getMiddleName());
-		 * result.setSurname(admin.getSurname());
-		 * result.setPhoto(admin.getPhoto());
+		 * result.setName(admin.getName()); result.setMiddleName(admin.getMiddleName());
+		 * result.setSurname(admin.getSurname()); result.setPhoto(admin.getPhoto());
 		 * result.setEmail(admin.getEmail());
 		 * result.setPhoneNumber(admin.getPhoneNumber());
 		 * result.setAddress(admin.getAddress());
@@ -652,13 +644,10 @@ public class AdminService {
 		this.validator.validate(result, binding);
 		/*
 		 * try {
-		 * 
-		 * } catch (Throwable oops) {
-		 * System.out.println("LOL EKISDE");
-		 * }
-		 * 
-		 * System.out.println(binding);
-		 * System.out.println("LOL");
+		 *
+		 * } catch (Throwable oops) { System.out.println("LOL EKISDE"); }
+		 *
+		 * System.out.println(binding); System.out.println("LOL");
 		 */
 
 		return result;

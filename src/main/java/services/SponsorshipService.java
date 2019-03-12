@@ -26,7 +26,7 @@ public class SponsorshipService {
 	private SponsorshipRepository sponsorshipRepository;
 	@Autowired
 	private ConfigurationService configurationService;
-	@Autowired
+	@Autowired(required = false)
 	private Validator validator;
 	@Autowired
 	private SponsorService sponsorService;

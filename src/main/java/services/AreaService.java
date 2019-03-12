@@ -14,12 +14,12 @@ import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
 
+import domain.Area;
+import domain.Brotherhood;
 import repositories.AreaRepository;
 import security.Authority;
 import security.LoginService;
 import security.UserAccount;
-import domain.Area;
-import domain.Brotherhood;
 
 @Service
 @Transactional
@@ -28,11 +28,10 @@ public class AreaService {
 	// Managed repository ------------------------------------------
 
 	@Autowired
-	private AreaRepository	areaRepository;
+	private AreaRepository areaRepository;
 
-	@Autowired
-	private Validator		validator;
-
+	@Autowired(required = false)
+	private Validator validator;
 
 	// Simple CRUD methods ------------------------------------------
 
@@ -57,11 +56,12 @@ public class AreaService {
 	public Area save(Area area) {
 		return this.areaRepository.save(area);
 	}
+
 	public void delete(Area area) {
 		this.areaRepository.delete(area);
 	}
 
-	// Other methods  ------------------------------------------------
+	// Other methods ------------------------------------------------
 
 	public Boolean hasArea(Brotherhood brotherhood) {
 		try {
@@ -84,6 +84,7 @@ public class AreaService {
 		this.validator.validate(result, binding);
 		return result;
 	}
+
 	public List<String> listUrlsArea(List<String> list) {
 		List<String> pic = new ArrayList<String>();
 

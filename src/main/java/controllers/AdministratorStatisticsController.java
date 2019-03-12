@@ -1,8 +1,8 @@
 /*
  * AdministratorController.java
- * 
+ *
  * Copyright (C) 2018 Universidad de Sevilla
- * 
+ *
  * The use of this project is hereby constrained to the conditions of the
  * TDG Licence, a copy of which you may download from
  * http://www.tdg-seville.info/License.html
@@ -21,17 +21,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
-import services.AdminService;
+import domain.Brotherhood;
 import domain.Member;
 import domain.Position;
+import services.AdminService;
 
 @Controller
 @RequestMapping("/statistics/administrator")
 public class AdministratorStatisticsController extends AbstractController {
 
 	@Autowired
-	private AdminService	adminService;
-
+	private AdminService adminService;
 
 	// Constructors -----------------------------------------------------------
 
@@ -39,7 +39,7 @@ public class AdministratorStatisticsController extends AbstractController {
 		super();
 	}
 
-	// Action-1 ---------------------------------------------------------------		
+	// Action-1 ---------------------------------------------------------------
 
 	@RequestMapping(value = "/show", method = RequestMethod.GET)
 	public ModelAndView statistics() {
@@ -48,6 +48,8 @@ public class AdministratorStatisticsController extends AbstractController {
 		String locale = LocaleContextHolder.getLocale().getLanguage().toUpperCase();
 
 		List<Float> statistics = this.adminService.showStatistics();
+		String broLargestHistory = this.adminService.broLargestHistory().getName();
+		List<Brotherhood> broHistoryLargerThanAvg = this.adminService.broHistoryLargerThanAvg();
 		List<Member> membersTenPercent = this.adminService.membersAtLeastTenPercentRequestsApproved();
 		List<String> largestBrotherhoods = this.adminService.largestBrotherhoods();
 		List<String> smallestBrotherhoods = this.adminService.smallestBrotherhoods();
@@ -67,6 +69,8 @@ public class AdministratorStatisticsController extends AbstractController {
 		result = new ModelAndView("statistics/administrator/show");
 
 		result.addObject("statistics", statistics);
+		result.addObject("broLargestHistory", broLargestHistory);
+		result.addObject("broHistoryLargerThanAvg", broHistoryLargerThanAvg);
 		result.addObject("membersTenPercent", membersTenPercent);
 		result.addObject("largestBrotherhoods", largestBrotherhoods);
 		result.addObject("smallestBrotherhoods", smallestBrotherhoods);

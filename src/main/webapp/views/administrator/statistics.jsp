@@ -370,18 +370,56 @@ new Chartist.Bar('.ct-chart-minMaxAvgStdvMembersPerBrotherhood', data, {
 <table style="width: 100%">
 	<tr>
 		<jstl:choose> 
-			<jstl:when test="${statistics.get(15) == -1}">
+			<jstl:when test="${statistics.get(19) == -1}">
 				<td><strong><spring:message code="statistics.ratioNonEmptyVsEmpty" />:</strong></td>
 				<td><spring:message code="statistics.infinite" /></td>
 			</jstl:when>
 			<jstl:otherwise>
 				<td><strong><spring:message code="statistics.ratioNonEmptyVsEmpty" />:</strong></td>
-				<td><jstl:out value="${statistics.get(15)}" /> </td>
+				<td><jstl:out value="${statistics.get(19)}" /> </td>
 			</jstl:otherwise>
 		</jstl:choose>
 	</tr>
 </table>
 
- 
+<strong><spring:message code="statistics.history" />:</strong>
+<br />
+<table style="width: 100%">
+	<tr>
+		<td><b><spring:message code="statistics.minimum"/></b></td> 
+		<td><jstl:out value="${statistics.get(15)}" /> </td>
+	</tr>
+	<tr>
+		<td><b><spring:message code="statistics.maximum"/></b></td> 
+		<td><jstl:out value="${statistics.get(16)}" /> </td>
+	</tr>
+	<tr> 
+		<td><b><spring:message code="statistics.average" /></b></td> 
+		<td><jstl:out value="${statistics.get(17)}" /> </td>
+	</tr>
+	<tr>
+		<td><b><spring:message code="statistics.standardDeviation"/></b></td> 
+		<td><jstl:out value="${statistics.get(18)}" /> </td>
+	</tr>
+</table>
+<br />
+
+<table style="width: 100%">
+	<tr>
+		<td><b><spring:message code="statistics.broLargestHistory"/></b></td>
+		<td><jstl:out value="${broLargestHistory}"></jstl:out>
+	</tr>
+</table>
+
+<strong><spring:message code="statistics.broHistoryLargerThanAvg" />:</strong>
+<br />
+<table style="width:100%">
+   	<jstl:forEach items="${broHistoryLargerThanAvg}" var="bro">
+  		<tr>
+  			<td><jstl:out value="${bro.name}"/></td>
+ 		</tr>
+ 	</jstl:forEach>
+</table>
+<br />
 
 </security:authorize>

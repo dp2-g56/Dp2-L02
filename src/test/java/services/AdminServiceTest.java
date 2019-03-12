@@ -1,25 +1,33 @@
 
 package services;
 
+import java.util.List;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
+import domain.History;
+import repositories.AdminRepository;
 import utilities.AbstractTest;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {
-	"classpath:spring/datasource.xml", "classpath:spring/config/packages.xml"
-})
+@ContextConfiguration(locations = { "classpath:spring/datasource.xml", "classpath:spring/config/packages.xml" })
 @Transactional
 public class AdminServiceTest extends AbstractTest {
 
 	@Autowired
-	private AdminService	adminService;
+	private AdminService adminService;
 
+	@Autowired
+	private AdminRepository adminRepository;
+
+	@Autowired
+	private HistoryService historyService;
 
 	@Test
 	public void testCreate() {
@@ -54,6 +62,19 @@ public class AdminServiceTest extends AbstractTest {
 		System.out.println("Ratio de Hermandades por Area");
 		System.out.println(this.adminService.ratioBrotherhoodPerArea());
 
+	}
+
+	@Test
+	public void testMinRecordsPerHistory() {
+		Float res = this.adminRepository.minNumberRecordsPerHistory();
+		Float com = Float.MAX_VALUE;
+		List<History> h = this.historyService.findAll();
+		for (History a : h)
+			if ((1 + a.getLegalRecords().size() + a.getLinkRecords().size() + a.getMiscellaneousRecords().size()
+					+ a.getPeriodRecords().size()) < com)
+				com = (float) (1 + a.getLegalRecords().size() + a.getLinkRecords().size()
+						+ a.getMiscellaneousRecords().size() + a.getPeriodRecords().size());
+		Assert.isTrue(com.equals(res));
 	}
 
 }

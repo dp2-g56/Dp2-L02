@@ -129,12 +129,15 @@ public class ChapterService {
 
 		Chapter saved = new Chapter();
 		Assert.isTrue(chapter.getArea() == null || this.listFreeAreas().contains(chapter.getArea()));
-		Assert.isTrue(!chapter.getName().trim().isEmpty());
-		Assert.isTrue(!chapter.getUserAccount().getUsername().trim().isEmpty());
-		Assert.isTrue(!chapter.getTitle().trim().isEmpty());
-		Assert.isTrue(!chapter.getSurname().trim().isEmpty());
-		Assert.isTrue(chapter.getPhoto().isEmpty() || this.isUrl(chapter.getPhoto()));
-		Assert.isTrue(chapter.getEmail().matches("[\\w.%-]+\\@[-.\\w]+\\.[A-Za-z]{2,4}|[\\w.%-]+\\<+[\\w.%-]+\\@[-.\\w]+\\.[A-Za-z]{2,4}|[\\w.%-]+\\<[\\w.%-]+\\@+\\>|[\\w.%-]+"));
+
+		//The Asserts done for the alternative workaround driver are commented (or uncommented) below, and "replace" the otherwise expected Domain tag errors.
+
+		//Assert.isTrue(!chapter.getName().trim().isEmpty());
+		//Assert.isTrue(!chapter.getUserAccount().getUsername().trim().isEmpty());
+		//Assert.isTrue(!chapter.getTitle().trim().isEmpty());
+		//Assert.isTrue(!chapter.getSurname().trim().isEmpty());
+		//Assert.isTrue(chapter.getPhoto().isEmpty() || this.isUrl(chapter.getPhoto()));
+		//Assert.isTrue(chapter.getEmail().matches("[\\w.%-]+\\@[-.\\w]+\\.[A-Za-z]{2,4}|[\\w.%-]+\\<+[\\w.%-]+\\@[-.\\w]+\\.[A-Za-z]{2,4}|[\\w.%-]+\\<[\\w.%-]+\\@+\\>|[\\w.%-]+"));
 
 		saved = this.chapterRepository.save(chapter);
 

@@ -191,7 +191,7 @@ public class AnonymousController extends AbstractController {
 		Configuration configuration = this.configurationService.getConfiguration();
 		String prefix = configuration.getSpainTelephoneCode();
 
-		//Confirmacion contrasena
+		//Confirmacion contraseña
 		if (!formObjectMember.getPassword().equals(formObjectMember.getConfirmPassword())) {
 			if (LocaleContextHolder.getLocale().getLanguage().toUpperCase().contains("ES")) {
 				binding.addError(new FieldError("formObjectMember", "password", formObjectMember.getPassword(), false, null, null, "Las contraseñas no coinciden"));
@@ -328,7 +328,7 @@ public class AnonymousController extends AbstractController {
 		Configuration configuration = this.configurationService.getConfiguration();
 		String prefix = configuration.getSpainTelephoneCode();
 
-		//Confirmacion contrasena
+		//Confirmacion contraseña
 		if (!formObjectBrotherhood.getPassword().equals(formObjectBrotherhood.getConfirmPassword())) {
 			if (LocaleContextHolder.getLocale().getLanguage().toUpperCase().contains("ES")) {
 				binding.addError(new FieldError("formObjectBrotherhood", "password", formObjectBrotherhood.getPassword(), false, null, null, "Las contraseñas no coinciden"));

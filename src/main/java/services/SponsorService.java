@@ -197,7 +197,10 @@ public class SponsorService {
 		UserAccount userAccount = LoginService.getPrincipal();
 		String username = userAccount.getUsername();
 
+		Assert.notNull(this.SponsorRepository.getSponsorByUsername(username));
+
 		Sponsor loggedSponsor = this.SponsorRepository.getSponsorByUsername(username);
+
 		List<Authority> authorities = (List<Authority>) loggedSponsor.getUserAccount().getAuthorities();
 		Assert.isTrue(authorities.get(0).toString().equals("SPONSOR"));
 

@@ -76,4 +76,8 @@ public class CreditCardService {
 		return res;
 	}
 
+	public boolean validateCvvCreditCard(CreditCard creditCard) {
+		return creditCard.getCvvCode() >= 100 && creditCard.getCvvCode() <= 999;
+	}
+
 }

@@ -127,7 +127,7 @@ public class ParadeService {
 	}
 
 	// Método auxiliar para generar el ticker-------------------------------
-	private String generateTicker() {
+	public String generateTicker() {
 		String res = "";
 		Date date = null;
 		String date1;
@@ -287,6 +287,10 @@ public class ParadeService {
 
 	public Collection<Parade> getAcceptedParades() {
 		return this.paradeRepository.getAcceptedParades();
+	}
+
+	public Collection<Parade> getDraftParades() {
+		return this.paradeRepository.getDraftParades();
 	}
 
 }

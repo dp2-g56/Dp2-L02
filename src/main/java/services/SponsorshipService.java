@@ -13,6 +13,7 @@ import org.springframework.validation.Validator;
 
 import domain.CreditCard;
 import domain.Parade;
+import domain.ParadeStatus;
 import domain.Sponsor;
 import domain.Sponsorship;
 import forms.FormObjectSponsorshipCreditCard;
@@ -47,6 +48,10 @@ public class SponsorshipService {
 
 	public Sponsorship findOne(int id) {
 		return this.sponsorshipRepository.findOne(id);
+	}
+
+	public void flush() {
+		this.sponsorshipRepository.flush();
 	}
 
 	public Sponsorship createSponsorship() {
@@ -88,6 +93,11 @@ public class SponsorshipService {
 		List<String> cardType = this.configurationService.getConfiguration().getCardType();
 
 		Assert.isTrue(cardType.contains(sponsorship.getCreditCard().getBrandName()));
+		Assert.isTrue(!sponsorship.getParade().getIsDraftMode()
+				&& sponsorship.getParade().getParadeStatus().equals(ParadeStatus.ACCEPTED));
+		Assert.isTrue(this.creditCardService.validateNumberCreditCard(sponsorship.getCreditCard()));
+		Assert.isTrue(this.creditCardService.validateDateCreditCard(sponsorship.getCreditCard()));
+		Assert.isTrue(this.creditCardService.validateCvvCreditCard(sponsorship.getCreditCard()));
 
 		Sponsor sponsor = this.sponsorService.securityAndSponsor();
 

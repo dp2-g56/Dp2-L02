@@ -15,4 +15,7 @@ public interface ParadeRepository extends JpaRepository<Parade, Integer> {
 	@Query("select p from Parade p where paradeStatus = 2")
 	public Collection<Parade> getAcceptedParades();
 
+	@Query("select p from Parade p where isDraftMode = true")
+	public Collection<Parade> getDraftParades();
+
 }

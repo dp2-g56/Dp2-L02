@@ -9,7 +9,7 @@
 
 <security:authorize access="hasRole('SPONSOR')">
 
-<form:form action="sponsor/sponsorship/create.do" modelAttribute="formObject" >
+<form:form action="sponsorship/sponsor/create.do" modelAttribute="formObject" >
 
 <fieldset>
   <legend> <spring:message code="sponsorship.data" /> </legend>
@@ -22,7 +22,7 @@
 	<acme:input code="sponsorship.targetURL" path="targetURL"/>	
 	<br />
 	
-	<acme:hidden value="${parade}" path="parade"/>	
+	<input type="text" hidden = "true" name="paradeId" value="${paradeId}"/>
 	
 </fieldset>
 

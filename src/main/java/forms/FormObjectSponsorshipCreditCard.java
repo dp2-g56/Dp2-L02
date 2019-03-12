@@ -1,13 +1,10 @@
 
 package forms;
 
-import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.URL;
-
-import domain.Parade;
 
 public class FormObjectSponsorshipCreditCard {
 
@@ -19,7 +16,6 @@ public class FormObjectSponsorshipCreditCard {
 	// No extiende a Domain Entity
 	private String banner;
 	private String targetURL;
-	private Parade parade;
 
 	// Atributos de la credit card
 	private String holderName;
@@ -51,16 +47,6 @@ public class FormObjectSponsorshipCreditCard {
 
 	public void setTargetURL(String targetURL) {
 		this.targetURL = targetURL;
-	}
-
-	@NotNull
-	@ManyToOne(optional = false)
-	public Parade getParade() {
-		return this.parade;
-	}
-
-	public void setParade(Parade parade) {
-		this.parade = parade;
 	}
 
 	@NotBlank

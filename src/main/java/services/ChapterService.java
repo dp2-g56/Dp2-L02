@@ -1,16 +1,19 @@
 
 package services;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 
 import repositories.ChapterRepository;
 import security.Authority;
@@ -31,8 +34,12 @@ public class ChapterService {
 
 	@Autowired
 	private ChapterRepository	chapterRepository;
+
 	@Autowired
 	private BoxService			boxService;
+
+	@Autowired
+	private AreaService			areaService;
 
 
 	// Simple CRUD methods ------------------------------------------
@@ -121,11 +128,21 @@ public class ChapterService {
 		chapter.setBoxes(boxes);
 
 		Chapter saved = new Chapter();
+		Assert.isTrue(chapter.getArea() == null || this.listFreeAreas().contains(chapter.getArea()));
+
+		//The Asserts done for the alternative workaround driver are commented (or uncommented) below, and "replace" the otherwise expected Domain tag errors.
+
+		//Assert.isTrue(!chapter.getName().trim().isEmpty());
+		//Assert.isTrue(!chapter.getUserAccount().getUsername().trim().isEmpty());
+		//Assert.isTrue(!chapter.getTitle().trim().isEmpty());
+		//Assert.isTrue(!chapter.getSurname().trim().isEmpty());
+		//Assert.isTrue(chapter.getPhoto().isEmpty() || this.isUrl(chapter.getPhoto()));
+		//Assert.isTrue(chapter.getEmail().matches("[\\w.%-]+\\@[-.\\w]+\\.[A-Za-z]{2,4}|[\\w.%-]+\\<+[\\w.%-]+\\@[-.\\w]+\\.[A-Za-z]{2,4}|[\\w.%-]+\\<[\\w.%-]+\\@+\\>|[\\w.%-]+"));
+
 		saved = this.chapterRepository.save(chapter);
 
 		return saved;
 	}
-
 	public Chapter reconstruct(FormObjectChapter formObjectChapter, BindingResult binding) {
 
 		Chapter result = new Chapter();
@@ -165,13 +182,46 @@ public class ChapterService {
 
 		result.setUserAccount(userAccount);
 
+		if (formObjectChapter.getEmail().matches("[\\w.%-]+\\<[\\w.%-]+\\@+\\>|[\\w.%-]+")) {
+			if (LocaleContextHolder.getLocale().getLanguage().toUpperCase().contains("ES")) {
+				binding.addError(new FieldError("chapter", "email", formObjectChapter.getEmail(), false, null, null, "No sigue el patron ejemplo@dominio.asd o alias <ejemplo@dominio.asd>"));
+			} else {
+				binding.addError(new FieldError("chapter", "email", formObjectChapter.getEmail(), false, null, null, "Dont follow the pattern example@domain.asd or alias <example@domain.asd>"));
+			}
+		}
+
+		if (!formObjectChapter.getTermsAndConditions()) {
+			if (LocaleContextHolder.getLocale().getLanguage().toUpperCase().contains("ES")) {
+				binding.addError(new FieldError("formObjectChapter", "termsAndConditions", formObjectChapter.getTermsAndConditions(), false, null, null, "Debe aceptar los terminos y condiciones"));
+			} else {
+				binding.addError(new FieldError("formObjectChapter", "termsAndConditions", formObjectChapter.getTermsAndConditions(), false, null, null, "You must accept the terms and conditions"));
+			}
+		}
+
+		if (!formObjectChapter.getPassword().equals(formObjectChapter.getConfirmPassword())) {
+			if (LocaleContextHolder.getLocale().getLanguage().toUpperCase().contains("ES")) {
+				binding.addError(new FieldError("formObjectChapter", "password", formObjectChapter.getPassword(), false, null, null, "Las contraseñas no coinciden"));
+			} else {
+				binding.addError(new FieldError("formObjectChapter", "password", formObjectChapter.getPassword(), false, null, null, "Passwords don't match"));
+			}
+		}
+
 		return result;
+	}
+	public void flush() {
+		this.chapterRepository.flush();
 	}
 
 	public List<Area> listFreeAreas() {
 		return this.chapterRepository.getFreeAreas();
 	}
 
+	public List<Area> listOccupiedAreas() {
+
+		List<Area> areas = this.areaService.findAll();
+		areas.removeAll(this.chapterRepository.getFreeAreas());
+		return areas;
+	}
 	public List<Chapter> findAll() {
 		return this.chapterRepository.findAll();
 	}
@@ -198,7 +248,15 @@ public class ChapterService {
 		UserAccount userAccount;
 		userAccount = LoginService.getPrincipal();
 		return this.chapterRepository.getChapterByUsername(userAccount.getUsername());
+	}
 
+	public Boolean isUrl(String url) {
+		try {
+			new URL(url).toURI();
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
 	}
 
 }

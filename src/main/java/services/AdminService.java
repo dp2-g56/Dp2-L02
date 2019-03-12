@@ -20,6 +20,7 @@ import domain.Actor;
 import domain.Admin;
 import domain.Area;
 import domain.Box;
+import domain.Brotherhood;
 import domain.Member;
 import domain.Message;
 import domain.Parade;
@@ -67,6 +68,9 @@ public class AdminService {
 
 	@Autowired
 	private MemberService memberService;
+
+	@Autowired
+	private HistoryService historyService;
 
 	// 1. Create user accounts for new administrators.
 	public void loggedAsAdmin() {
@@ -418,6 +422,20 @@ public class AdminService {
 		statistics.add(this.adminRepository.maxResultFinders());
 		statistics.add(this.adminRepository.avgResultFinders());
 		statistics.add(this.adminRepository.stddevResultFinders());
+
+		if (this.historyService.findAll().isEmpty()) {
+			statistics.add((float) 0);
+			statistics.add((float) 0);
+			statistics.add((float) 0);
+			statistics.add((float) 0);
+
+		} else {
+			statistics.add(this.adminRepository.minNumberRecordsPerHistory());
+			statistics.add(this.adminRepository.maxNumberRecordsPerHistory());
+			statistics.add(this.adminRepository.avgRecordsPerHistory());
+			statistics.add(this.adminRepository.stddevRecordsPerHistory());
+		}
+
 		if (this.adminRepository.numberNonEmptyFinders() == 0)
 			statistics.add((float) -1);
 		else
@@ -437,6 +455,14 @@ public class AdminService {
 			statistics.add(this.adminRepository.avgBrotherhoodPolarity() + 1);
 
 		return statistics;
+	}
+
+	public Brotherhood broLargestHistory() {
+		return this.adminRepository.broLargestHistory();
+	}
+
+	public List<Brotherhood> broHistoryLargerThanAvg() {
+		return this.adminRepository.broHistoryLargerThanAvg();
 	}
 
 	public Float maxMembersBrotherhood() {

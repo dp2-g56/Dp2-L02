@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 
 <!-- 
  * PopulateDatabase.xml
@@ -2354,11 +2354,104 @@
 			</list>
 		</property>
 	</bean>
-	
+
 	<bean id="linkRecord1" class="domain.LinkRecord">
 		<property name="title" value="Link" />
 		<property name="description" value="Link record" />
 		<property name="link" value="http://www.link.com" />
 	</bean>
 	
+	<bean id="inceptionRecord2" class="domain.InceptionRecord">
+		<property name="title" value="Inception" />
+		<property name="description" value="Inception record" />
+		<property name="photos">
+			<list>
+				<value>http://www.photo.com</value>
+			</list>
+		</property>
+	</bean>	
+	
+	<bean id="history2" class="domain.History">
+		<property name="miscellaneousRecords">
+			<list>
+			</list>
+		</property>
+		<property name="periodRecords">
+			<list>
+				<ref bean="periodRecord2" />
+			</list>
+		</property>
+		<property name="legalRecords">
+			<list>
+				<ref bean="legalRecord2" />
+			</list>
+		</property>
+		<property name="linkRecords">
+			<list>
+				<ref bean="linkRecord2" />
+			</list>
+		</property>
+		<property name="inceptionRecord" ref="inceptionRecord2" />
+	</bean>
+	
+	<bean id="periodRecord2" class="domain.PeriodRecord">
+		<property name="title" value="Period" />
+		<property name="description" value="Period record" />
+		<property name="startYear" value="2008" />
+		<property name="endYear" value="2010" />
+		<property name="photos">
+			<list>
+				<value>http://www.photo.com</value>
+			</list>
+		</property>
+	</bean>
+		
+	<bean id="legalRecord2" class="domain.LegalRecord">
+		<property name="title" value="Legal" />
+		<property name="description" value="Legal record" />
+		<property name="legalName" value="Legal Record S.L." />
+		<property name="vatNumber" value="ES85274196A" />
+		<property name="laws">
+			<list>
+				<value>Law1</value>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="linkRecord2" class="domain.LinkRecord">
+		<property name="title" value="Link" />
+		<property name="description" value="Link record" />
+		<property name="link" value="http://www.link.com" />
+	</bean>
+	
+	<bean id="history3" class="domain.History">
+		<property name="miscellaneousRecords">
+			<list>
+			</list>
+		</property>
+		<property name="periodRecords">
+			<list>
+			</list>
+		</property>
+		<property name="legalRecords">
+			<list>
+			</list>
+		</property>
+		<property name="linkRecords">
+			<list>
+			</list>
+		</property>
+		<property name="inceptionRecord" ref="inceptionRecord3" />
+	</bean>
+	
+	<bean id="inceptionRecord3" class="domain.InceptionRecord">
+		<property name="title" value="Inception" />
+		<property name="description" value="Inception record" />
+		<property name="photos">
+			<list>
+				<value>http://www.photo.com</value>
+			</list>
+		</property>
+	</bean>
+
 </beans>

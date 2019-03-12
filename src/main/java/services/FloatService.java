@@ -32,7 +32,7 @@ public class FloatService {
 	private BrotherhoodService	brotherhoodService;
 	@Autowired
 	private ParadeService		paradeService;
-	@Autowired
+	@Autowired(required = false)
 	private Validator			validator;
 
 

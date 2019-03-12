@@ -24,16 +24,16 @@ import domain.Proclaim;
 public class ProclaimService {
 
 	@Autowired
-	ProclaimRepository	proclaimRepository;
+	private ProclaimRepository	proclaimRepository;
 
 	@Autowired
-	ChapterService		chapterService;
+	private ChapterService		chapterService;
 
 	@Autowired
-	ActorService		actorService;
+	private ActorService		actorService;
 
-	@Autowired
-	Validator			validator;
+	@Autowired(required = false)
+	private Validator			validator;
 
 
 	public Proclaim findOne(int id) {

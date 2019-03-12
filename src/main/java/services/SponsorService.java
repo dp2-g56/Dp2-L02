@@ -33,7 +33,7 @@ public class SponsorService {
 	@Autowired
 	private BoxService			boxService;
 
-	@Autowired
+	@Autowired(required = false)
 	private Validator			validator;
 
 
@@ -230,6 +230,10 @@ public class SponsorService {
 		this.validator.validate(result, binding);
 
 		return result;
+	}
+
+	public void flush() {
+		this.SponsorRepository.flush();
 	}
 
 }

@@ -32,7 +32,7 @@ public class BoxService {
 	@Autowired
 	private ActorService	actorService;
 
-	@Autowired
+	@Autowired(required = false)
 	private Validator		validator;
 
 

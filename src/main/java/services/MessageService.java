@@ -8,48 +8,48 @@ import java.util.List;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
 
+import repositories.MessageRepository;
+import security.LoginService;
+import security.UserAccount;
 import domain.Actor;
 import domain.Admin;
 import domain.Box;
 import domain.Brotherhood;
 import domain.Member;
 import domain.Message;
-import repositories.MessageRepository;
-import security.LoginService;
-import security.UserAccount;
 
 @Service
 @Transactional
 public class MessageService {
 
 	@Autowired
-	private MessageRepository messageRepository;
+	private MessageRepository		messageRepository;
 
 	@Autowired
-	private ActorService actorService;
+	private ActorService			actorService;
 
 	@Autowired
-	private BoxService boxService;
+	private BoxService				boxService;
 
 	@Autowired
-	private ConfigurationService configurationService;
+	private ConfigurationService	configurationService;
 
 	@Autowired
-	private MemberService memberService;
+	private MemberService			memberService;
 
 	@Autowired
-	private AdminService adminService;
+	private AdminService			adminService;
 
 	@Autowired
-	private BrotherhoodService brotherhoodService;
+	private BrotherhoodService		brotherhoodService;
 
-	@Autowired
-	private Validator validator;
+	@Autowired(required = false)
+	private Validator				validator;
+
 
 	// Actualizar caja que tiene el mensaje EN ESTE ORDEN
 	// ACTUALIZAR CAJA SIN EL MENSAJE

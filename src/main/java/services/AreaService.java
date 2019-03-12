@@ -30,7 +30,7 @@ public class AreaService {
 	@Autowired
 	private AreaRepository	areaRepository;
 
-	@Autowired
+	@Autowired(required = false)
 	private Validator		validator;
 
 

@@ -38,7 +38,7 @@ public class ConfigurationService {
 	@Autowired
 	private AdminService			adminService;
 
-	@Autowired
+	@Autowired(required = false)
 	private Validator				validator;
 
 

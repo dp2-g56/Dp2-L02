@@ -33,7 +33,7 @@ public class EnrolmentService {
 	@Autowired
 	private BrotherhoodService	brotherhoodService;
 
-	@Autowired
+	@Autowired(required = false)
 	private Validator			validator;
 
 

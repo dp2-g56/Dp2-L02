@@ -37,6 +37,7 @@
 	
 	<display:column property="fare" titleKey="configuration.fare" />
 	
+	<display:column property="cardType" titleKey="configuration.cardType" />
 	
 </display:table>
 

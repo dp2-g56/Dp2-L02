@@ -34,7 +34,7 @@
 	<acme:input code="creditCard.holderName" path="holderName"/>	
 	<br />
 	
-	<acme:input code="creditCard.brandName" path="brandName"/>	
+	<acme:selectString code="creditCard.brandName" path="brandName" items="${cardType}" itemsName="${cardType}"/>	
 	<br />
 	
 	<acme:input code="creditCard.number" path="number"/>	

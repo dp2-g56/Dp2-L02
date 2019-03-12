@@ -4,6 +4,8 @@ package domain;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Embeddable;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotBlank;
@@ -12,13 +14,12 @@ import org.hibernate.validator.constraints.NotBlank;
 @Access(AccessType.PROPERTY)
 public class CreditCard {
 
-	private String	holderName;
-	private String	brandName;
-	private Long	number;
-	private Integer	expirationMonth;
-	private Integer	expirationYear;
-	private Integer	cvvCode;
-
+	private String holderName;
+	private String brandName;
+	private Long number;
+	private Integer expirationMonth;
+	private Integer expirationYear;
+	private Integer cvvCode;
 
 	public CreditCard() {
 
@@ -51,6 +52,8 @@ public class CreditCard {
 		this.number = number;
 	}
 
+	@Max(12)
+	@Min(1)
 	@NotNull
 	public Integer getExpirationMonth() {
 		return this.expirationMonth;
@@ -60,6 +63,8 @@ public class CreditCard {
 		this.expirationMonth = expirationMonth;
 	}
 
+	@Min(0)
+	@Max(99)
 	@NotNull
 	public Integer getExpirationYear() {
 		return this.expirationYear;
@@ -69,6 +74,8 @@ public class CreditCard {
 		this.expirationYear = expirationYear;
 	}
 
+	@Min(100)
+	@Max(999)
 	@NotNull
 	public Integer getCvvCode() {
 		return this.cvvCode;

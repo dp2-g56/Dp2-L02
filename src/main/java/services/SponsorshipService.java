@@ -7,11 +7,13 @@ import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
 
 import domain.CreditCard;
 import domain.Parade;
+import domain.Sponsor;
 import domain.Sponsorship;
 import forms.FormObjectSponsorshipCreditCard;
 import repositories.SponsorshipRepository;
@@ -26,6 +28,10 @@ public class SponsorshipService {
 	private ConfigurationService configurationService;
 	@Autowired
 	private Validator validator;
+	@Autowired
+	private SponsorService sponsorService;
+	@Autowired
+	private CreditCardService creditCardService;
 
 	public List<Sponsorship> findAll() {
 		return this.sponsorshipRepository.findAll();
@@ -69,10 +75,29 @@ public class SponsorshipService {
 		spo.setParade(parade);
 		spo.setGain(0f);
 		spo.setCreditCard(creditCard);
+		spo.setIsActivated(true);
 
 		// this.validator.validate(spo, binding);
 
 		return spo;
+	}
+
+	public Sponsorship addSponsorship(Sponsorship sponsorship) {
+		Sponsorship result;
+
+		List<String> cardType = this.configurationService.getConfiguration().getCardType();
+
+		Assert.isTrue(cardType.contains(sponsorship.getCreditCard().getBrandName()));
+
+		Sponsor sponsor = this.sponsorService.securityAndSponsor();
+
+		Sponsorship spon = this.save(sponsorship);
+		List<Sponsorship> sps = sponsor.getSponsorships();
+		sps.add(spon);
+		this.sponsorService.save(sponsor);
+		result = spon;
+
+		return result;
 	}
 
 }

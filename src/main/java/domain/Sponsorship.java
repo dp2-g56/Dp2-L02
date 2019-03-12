@@ -18,6 +18,7 @@ public class Sponsorship extends DomainEntity {
 	private String banner;
 	private String targetURL;
 	private java.lang.Float gain;
+	private Boolean isActivated;
 
 	private CreditCard creditCard;
 	private Parade parade;
@@ -71,10 +72,13 @@ public class Sponsorship extends DomainEntity {
 		this.parade = parade;
 	}
 
-	/*
-	 * public Parade getParade() { return this.parade; }
-	 *
-	 * public void setParade(Parade parade) { this.parade = parade; }
-	 */
+	@NotNull
+	public Boolean getIsActivated() {
+		return this.isActivated;
+	}
+
+	public void setIsActivated(Boolean isActivated) {
+		this.isActivated = isActivated;
+	}
 
 }

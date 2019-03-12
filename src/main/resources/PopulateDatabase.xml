@@ -48,6 +48,14 @@
 				<value>LOW</value>
 			</list>
 		</property>
+		<property name="cardType">
+			<list>
+				<value>VISA</value>
+				<value>MASTER</value>
+				<value>DINNERS</value>
+				<value>AMEX</value>
+			</list>
+		</property>
 		<property name="priorityLvlSpa">
 			<list>
 				<value>ALTA</value>

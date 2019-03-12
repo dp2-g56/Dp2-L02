@@ -1,6 +1,8 @@
 
 package services;
 
+import java.util.Calendar;
+
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,13 +35,10 @@ public class CreditCardService {
 		return card;
 	}
 
-	public boolean validateCreditCard(CreditCard creditCard) {
+	public boolean validateNumberCreditCard(CreditCard creditCard) {
 		String str = creditCard.getNumber().toString();
 
-		if (Long.toString(creditCard.getNumber()).length() != 16
-				|| Integer.toString(creditCard.getExpirationMonth()).length() > 2
-				|| Integer.toString(creditCard.getExpirationYear()).length() > 2
-				|| Integer.toString(creditCard.getCvvCode()).length() != 3 || creditCard.getExpirationMonth() > 12)
+		if (str.length() != 16)
 			return false;
 		else {
 			int[] ints = new int[str.length()];
@@ -60,6 +59,21 @@ public class CreditCardService {
 			else
 				return false;
 		}
+	}
+
+	public boolean validateDateCreditCard(CreditCard creditCard) {
+		boolean res = true;
+
+		Calendar c = Calendar.getInstance();
+		Integer month = c.get(Calendar.MONTH) + 1;
+		Integer year = c.get(Calendar.YEAR);
+
+		if (creditCard.getExpirationYear() + 2000 < year)
+			res = false;
+		else if (creditCard.getExpirationMonth() < month)
+			res = false;
+
+		return res;
 	}
 
 }

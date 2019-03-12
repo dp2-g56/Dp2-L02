@@ -19,28 +19,28 @@ import org.hibernate.validator.constraints.URL;
 @Access(AccessType.PROPERTY)
 public class Configuration extends DomainEntity {
 
-	private List<String>	spamWords;
-	private String			spainTelephoneCode;
-	private Integer			minFinderResults;
-	private Integer			maxFinderResults;
-	private Integer			finderResult;
-	private Integer			minTimeFinder;
-	private Integer			maxTimeFinder;
-	private Integer			timeFinder;
-	private List<String>	priorityLvl;
-	private List<String>	priorityLvlSpa;
+	private List<String> spamWords;
+	private String spainTelephoneCode;
+	private Integer minFinderResults;
+	private Integer maxFinderResults;
+	private Integer finderResult;
+	private Integer minTimeFinder;
+	private Integer maxTimeFinder;
+	private Integer timeFinder;
+	private List<String> priorityLvl;
+	private List<String> priorityLvlSpa;
 
-	private String			goodWords;
-	private String			badWords;
+	private String goodWords;
+	private String badWords;
 
-	//New parameters
-	private String			welcomeMessageEnglish;
-	private String			welcomeMessageSpanish;
-	private String			systemName;
-	private String			imageURL;
-	private Integer			VAT;
-	private java.lang.Float	fare;
-
+	// New parameters
+	private String welcomeMessageEnglish;
+	private String welcomeMessageSpanish;
+	private String systemName;
+	private String imageURL;
+	private Integer VAT;
+	private java.lang.Float fare;
+	private List<String> cardType;
 
 	@Valid
 	@ElementCollection(targetClass = String.class)
@@ -62,9 +62,9 @@ public class Configuration extends DomainEntity {
 		this.priorityLvl = priorityLvl;
 	}
 
-	//Name of the System
-	//Banner
-	//Message at the welcome page
+	// Name of the System
+	// Banner
+	// Message at the welcome page
 	@NotBlank
 	@URL
 	public String getImageURL() {
@@ -173,6 +173,7 @@ public class Configuration extends DomainEntity {
 	public void setBadWords(final String badWords) {
 		this.badWords = badWords;
 	}
+
 	@NotNull
 	public Integer getFinderResult() {
 		return this.finderResult;
@@ -209,6 +210,15 @@ public class Configuration extends DomainEntity {
 
 	public void setFare(java.lang.Float fare) {
 		this.fare = fare;
+	}
+
+	@ElementCollection(targetClass = String.class)
+	public List<String> getCardType() {
+		return this.cardType;
+	}
+
+	public void setCardType(List<String> cardType) {
+		this.cardType = cardType;
 	}
 
 }

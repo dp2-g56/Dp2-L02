@@ -1,6 +1,8 @@
 
 package forms;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotBlank;
@@ -76,6 +78,8 @@ public class FormObjectSponsorshipCreditCard {
 		this.number = number;
 	}
 
+	@Max(12)
+	@Min(1)
 	@NotNull
 	public Integer getExpirationMonth() {
 		return this.expirationMonth;
@@ -85,6 +89,8 @@ public class FormObjectSponsorshipCreditCard {
 		this.expirationMonth = expirationMonth;
 	}
 
+	@Min(0)
+	@Max(99)
 	@NotNull
 	public Integer getExpirationYear() {
 		return this.expirationYear;
@@ -94,6 +100,8 @@ public class FormObjectSponsorshipCreditCard {
 		this.expirationYear = expirationYear;
 	}
 
+	@Min(100)
+	@Max(999)
 	@NotNull
 	public Integer getCvvCode() {
 		return this.cvvCode;

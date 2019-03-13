@@ -1,0 +1,19 @@
+diff a/src/main/java/services/ChapterService.java b/src/main/java/services/ChapterService.java	(rejected hunks)
+@@ -54,13 +54,13 @@
+ 
+ 		Chapter chapter = new Chapter();
+ 
+-		//Se crean las listas vac�as
+-		//ACTOR
++		// Se crean las listas vac�as
++		// ACTOR
+ 		List<SocialProfile> socialProfiles = new ArrayList<>();
+ 		List<Box> boxes = new ArrayList<>();
+ 
+-		//CHAPTER
+-		List<Proclaim> proclaims = new ArrayList<Proclaim>();
++		// CHAPTER
++		// TODO Lista de Proclaim
+ 
+ 		chapter.setArea(null);
+ 

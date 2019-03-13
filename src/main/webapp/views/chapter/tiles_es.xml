@@ -20,28 +20,25 @@
 		<put-attribute name="title" value="Lista de declaraciones" />
 		<put-attribute name="body" value="/views/chapter/listProclaim.jsp" />
 	</definition>
-	
 
 	<definition name="chapter/create" extends="master.page">	
 		<put-attribute name="title" value="Crear una nueva declaracion" />
 		<put-attribute name="body" value="/views/chapter/createProclaim.jsp" />
+	</definition>
   
 	<definition name="parade/chapter/list" extends="master.page">	
 		<put-attribute name="title" value="Desfiles de mi area" />
 		<put-attribute name="body" value="/views/chapter/paradeList.jsp" />
 	</definition>
-	
-	
-	
-	
-	
-	
 
-	
-
-		<definition name="parade/chapter/changeStatus" extends="master.page">	
+	<definition name="parade/chapter/changeStatus" extends="master.page">	
 		<put-attribute name="title" value="Cambiar el estado" />
 		<put-attribute name="body" value="/views/chapter/changeStatus.jsp" />
+	</definition>
+	
+	<definition name="parade/chapter/selectArea" extends="master.page">	
+		<put-attribute name="title" value="Seleccionar un Area" />
+		<put-attribute name="body" value="/views/chapter/selectArea.jsp" />
 	</definition>
 	
 </tiles-definitions>

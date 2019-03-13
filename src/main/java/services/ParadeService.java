@@ -4,6 +4,7 @@ package services;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -15,8 +16,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
 
+import repositories.ParadeRepository;
+import utilities.RandomString;
 import domain.Area;
 import domain.Brotherhood;
+import domain.Chapter;
 import domain.Float;
 import domain.Parade;
 import domain.ParadeStatus;
@@ -309,4 +313,15 @@ public class ParadeService {
 		return rParade;
 	}
 
+	public Collection<Parade> getAcceptedParades() {
+		return this.paradeRepository.getAcceptedParades();
+	}
+
+	public Collection<Parade> getDraftParades() {
+		return this.paradeRepository.getDraftParades();
+	}
+
+	public Boolean hasArea(Chapter chapter) {
+		return chapter.getArea() != null;
+	}
 }

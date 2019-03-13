@@ -14,23 +14,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.Validator;
 
 import repositories.ChapterRepository;
+import repositories.FinderRepository;
 import security.Authority;
 import security.LoginService;
 import security.UserAccount;
 import domain.Area;
 import domain.Box;
 import domain.Chapter;
-import domain.Proclaim;
 import domain.Parade;
+import domain.Proclaim;
 import domain.SocialProfile;
 import forms.FormObjectChapter;
-import repositories.ChapterRepository;
-import repositories.FinderRepository;
-import security.Authority;
-import security.LoginService;
-import security.UserAccount;
 
 @Service
 @Transactional
@@ -42,10 +39,19 @@ public class ChapterService {
 	private ChapterRepository	chapterRepository;
 
 	@Autowired
+	private FinderRepository	finderRepository;
+
+	@Autowired
 	private BoxService			boxService;
 
 	@Autowired
 	private AreaService			areaService;
+
+	@Autowired
+	private ParadeService		paradeService;
+
+	@Autowired
+	private Validator			validator;
 
 
 	// Simple CRUD methods ------------------------------------------
@@ -58,6 +64,7 @@ public class ChapterService {
 		// ACTOR
 		List<SocialProfile> socialProfiles = new ArrayList<>();
 		List<Box> boxes = new ArrayList<>();
+		List<Proclaim> proclaims = new ArrayList<Proclaim>();
 
 		// CHAPTER
 		// TODO Lista de Proclaim
@@ -139,14 +146,16 @@ public class ChapterService {
 		Chapter saved = new Chapter();
 		Assert.isTrue(chapter.getArea() == null || this.listFreeAreas().contains(chapter.getArea()));
 
-		//The Asserts done for the alternative workaround driver are commented (or uncommented) below, and "replace" the otherwise expected Domain tag errors.
+		/** The Asserts done for the alternative workaround driver are commented (or uncommented) below, and "replace" the otherwise expected Domain tag errors. **/
 
-		//Assert.isTrue(!chapter.getName().trim().isEmpty());
-		//Assert.isTrue(!chapter.getUserAccount().getUsername().trim().isEmpty());
-		//Assert.isTrue(!chapter.getTitle().trim().isEmpty());
-		//Assert.isTrue(!chapter.getSurname().trim().isEmpty());
-		//Assert.isTrue(chapter.getPhoto().isEmpty() || this.isUrl(chapter.getPhoto()));
-		//Assert.isTrue(chapter.getEmail().matches("[\\w.%-]+\\@[-.\\w]+\\.[A-Za-z]{2,4}|[\\w.%-]+\\<+[\\w.%-]+\\@[-.\\w]+\\.[A-Za-z]{2,4}|[\\w.%-]+\\<[\\w.%-]+\\@+\\>|[\\w.%-]+"));
+		/*
+		 * Assert.isTrue(!chapter.getName().trim().isEmpty());
+		 * Assert.isTrue(!chapter.getUserAccount().getUsername().trim().isEmpty());
+		 * Assert.isTrue(!chapter.getTitle().trim().isEmpty());
+		 * Assert.isTrue(!chapter.getSurname().trim().isEmpty());
+		 * Assert.isTrue(chapter.getPhoto().isEmpty() || this.isUrl(chapter.getPhoto()));
+		 * Assert.isTrue(chapter.getEmail().matches("[\\w.%-]+\\@[-.\\w]+\\.[A-Za-z]{2,4}|[\\w.%-]+\\<+[\\w.%-]+\\@[-.\\w]+\\.[A-Za-z]{2,4}|[\\w.%-]+\\<[\\w.%-]+\\@+\\>|[\\w.%-]+"));
+		 */
 
 		saved = this.chapterRepository.save(chapter);
 
@@ -281,4 +290,38 @@ public class ChapterService {
 		return !draftMode && paradeIsInArea;
 	}
 
+	public Chapter reconstructArea(Chapter chapter, BindingResult binding) {
+		Chapter result;
+		Chapter result2 = this.createChapter();
+
+		result = this.chapterRepository.findOne(chapter.getId());
+
+		result2.setAddress(result.getAddress());
+		result2.setArea(chapter.getArea());
+		result2.setBoxes(result.getBoxes());
+		result2.setEmail(result.getEmail());
+		result2.setHasSpam(result.getHasSpam());
+		result2.setMiddleName(result.getMiddleName());
+		result2.setName(result.getName());
+		result2.setPhoneNumber(result.getPhoneNumber());
+		result2.setPhoto(result.getPhoto());
+		result2.setPolarity(result.getPolarity());
+		result2.setProclaims(result.getProclaims());
+		result2.setSocialProfiles(result.getSocialProfiles());
+		result2.setSurname(result.getSurname());
+		result2.setTitle(result.getTitle());
+		result2.setUserAccount(result.getUserAccount());
+		result2.setVersion(result.getVersion());
+		result2.setId(result.getId());
+
+		this.validator.validate(result2, binding);
+
+		return result2;
+	}
+
+	public Chapter updateChapterArea(Chapter chapter) {
+		Chapter c = this.loggedChapter();
+		Assert.isTrue(chapter.getId() != 0 && c.getId() == chapter.getId() && c.getArea() == null && (this.listFreeAreas().contains(chapter.getArea()) || chapter.getArea() == null));
+		return this.chapterRepository.save(chapter);
+	}
 }

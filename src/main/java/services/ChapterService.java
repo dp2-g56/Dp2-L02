@@ -42,10 +42,16 @@ public class ChapterService {
 	private ChapterRepository	chapterRepository;
 
 	@Autowired
+	private FinderRepository	finderRepository;
+
+	@Autowired
 	private BoxService			boxService;
 
 	@Autowired
 	private AreaService			areaService;
+
+	@Autowired
+	private ParadeService		paradeService;
 
 
 	// Simple CRUD methods ------------------------------------------

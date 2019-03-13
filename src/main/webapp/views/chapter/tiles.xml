@@ -25,7 +25,7 @@
 	<definition name="chapter/create" extends="master.page">	
 		<put-attribute name="title" value="Create a new proclaim" />
 		<put-attribute name="body" value="/views/chapter/createProclaim.jsp" />
-  
+  	</definition>
   
   
 	<definition name="parade/chapter/list" extends="master.page">	

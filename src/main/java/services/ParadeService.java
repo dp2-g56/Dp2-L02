@@ -4,6 +4,7 @@ package services;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -307,6 +308,14 @@ public class ParadeService {
 		rParade.setRejectedReason(parade.getRejectedReason());
 
 		return rParade;
+	}
+
+	public Collection<Parade> getAcceptedParades() {
+		return this.paradeRepository.getAcceptedParades();
+	}
+
+	public Collection<Parade> getDraftParades() {
+		return this.paradeRepository.getDraftParades();
 	}
 
 }

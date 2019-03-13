@@ -23,8 +23,14 @@ import domain.Area;
 import domain.Box;
 import domain.Chapter;
 import domain.Proclaim;
+import domain.Parade;
 import domain.SocialProfile;
 import forms.FormObjectChapter;
+import repositories.ChapterRepository;
+import repositories.FinderRepository;
+import security.Authority;
+import security.LoginService;
+import security.UserAccount;
 
 @Service
 @Transactional
@@ -48,13 +54,13 @@ public class ChapterService {
 
 		Chapter chapter = new Chapter();
 
-		//Se crean las listas vacías
-		//ACTOR
+		// Se crean las listas vacías
+		// ACTOR
 		List<SocialProfile> socialProfiles = new ArrayList<>();
 		List<Box> boxes = new ArrayList<>();
 
-		//CHAPTER
-		List<Proclaim> proclaims = new ArrayList<Proclaim>();
+		// CHAPTER
+		// TODO Lista de Proclaim
 
 		chapter.setArea(null);
 
@@ -94,12 +100,15 @@ public class ChapterService {
 
 		List<Box> boxes = new ArrayList<>();
 
-		//Se crean las listas vacías
-		//ACTOR
+		// Se crean las listas vacías
+		// ACTOR
 		List<SocialProfile> socialProfiles = new ArrayList<>();
 		chapter.setSocialProfiles(socialProfiles);
 
-		//Boxes
+		// CHAPTER
+		// TODO Lista de Proclaim
+
+		// Boxes
 		Box box1 = this.boxService.createSystem();
 		box1.setName("INBOX");
 		Box saved1 = this.boxService.saveSystem(box1);
@@ -200,7 +209,7 @@ public class ChapterService {
 
 		if (!formObjectChapter.getPassword().equals(formObjectChapter.getConfirmPassword())) {
 			if (LocaleContextHolder.getLocale().getLanguage().toUpperCase().contains("ES")) {
-				binding.addError(new FieldError("formObjectChapter", "password", formObjectChapter.getPassword(), false, null, null, "Las contraseñas no coinciden"));
+				binding.addError(new FieldError("formObjectChapter", "password", formObjectChapter.getPassword(), false, null, null, "Las contraseï¿½as no coinciden"));
 			} else {
 				binding.addError(new FieldError("formObjectChapter", "password", formObjectChapter.getPassword(), false, null, null, "Passwords don't match"));
 			}
@@ -233,9 +242,12 @@ public class ChapterService {
 	public Chapter save(Chapter chapter) {
 		return this.chapterRepository.save(chapter);
 	}
+
 	public void delete(Chapter chapter) {
 		this.chapterRepository.delete(chapter);
 	}
+
+	// Auxiliar Methods
 
 	public void loggedAsChapter() {
 		UserAccount userAccount;
@@ -257,6 +269,16 @@ public class ChapterService {
 		} catch (Exception e) {
 			return false;
 		}
+	public boolean paradeSecurity(Integer paradeId) {
+		Parade parade = this.paradeService.findOne(paradeId);
+		Boolean draftMode = parade.getIsDraftMode();
+
+		Chapter chapter = this.loggedChapter();
+		List<Parade> paradesArea = this.finderRepository.getParadesByArea(chapter.getArea().getName());
+
+		Boolean paradeIsInArea = paradesArea.contains(parade);
+
+		return !draftMode && paradeIsInArea;
 	}
 
 }

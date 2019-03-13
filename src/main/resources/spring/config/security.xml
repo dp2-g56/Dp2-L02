@@ -76,6 +76,7 @@
 		
 		<!-- Chapter --> 
 		<security:intercept-url pattern="/chapter/**" access="hasRole('CHAPTER')" /> 
+		<security:intercept-url pattern="/parade/chapter/**" access="hasRole('CHAPTER')" /> 
 		
 		<!-- Authenticated -->
 		 <security:intercept-url pattern="/authenticated/**" access="isAuthenticated()" /> 

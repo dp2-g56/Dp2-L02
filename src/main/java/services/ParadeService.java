@@ -4,7 +4,6 @@ package services;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -16,9 +15,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
 
+import domain.Area;
 import domain.Brotherhood;
 import domain.Float;
 import domain.Parade;
+import domain.ParadeStatus;
+import domain.Path;
 import domain.Request;
 import forms.FormObjectParadeFloat;
 import forms.FormObjectParadeFloatCheckbox;
@@ -49,6 +51,9 @@ public class ParadeService {
 		final Parade parade = new Parade();
 
 		final List<Float> floats = new ArrayList<>();
+		List<Path> paths = new ArrayList<>();
+
+		parade.setPaths(paths);
 		parade.setFloats(floats);
 
 		parade.setColumnNumber(0);
@@ -127,7 +132,7 @@ public class ParadeService {
 	}
 
 	// Método auxiliar para generar el ticker-------------------------------
-	public String generateTicker() {
+	private String generateTicker() {
 		String res = "";
 		Date date = null;
 		String date1;
@@ -175,6 +180,8 @@ public class ParadeService {
 		result.setRowNumber(formObjectParadeCoach.getRowNumber());
 		result.setColumnNumber(formObjectParadeCoach.getColumnNumber());
 		result.setId(0);
+		if (!formObjectParadeCoach.getIsDraftMode())
+			result.setParadeStatus(ParadeStatus.SUBMITTED);
 
 		result.setTicker(this.generateTicker());
 
@@ -198,6 +205,8 @@ public class ParadeService {
 		result.setIsDraftMode(formObjectParadeFloatCheckbox.getIsDraftMode());
 		result.setRowNumber(formObjectParadeFloatCheckbox.getRowNumber());
 		result.setColumnNumber(formObjectParadeFloatCheckbox.getColumnNumber());
+		if (!formObjectParadeFloatCheckbox.getIsDraftMode())
+			result.setParadeStatus(ParadeStatus.SUBMITTED);
 
 		// this.validator.validate(result, binding); //YA VIENE VALIDADO
 
@@ -285,12 +294,19 @@ public class ParadeService {
 
 	}
 
-	public Collection<Parade> getAcceptedParades() {
-		return this.paradeRepository.getAcceptedParades();
+	public List<Parade> getParadesByArea(Area area) {
+		return this.paradeRepository.getParadesByArea(area);
 	}
 
-	public Collection<Parade> getDraftParades() {
-		return this.paradeRepository.getDraftParades();
+	public Parade reconstrucParadeStatus(Parade parade) {
+		Parade rParade = new Parade();
+
+		rParade = this.findOne(parade.getId());
+
+		rParade.setParadeStatus(parade.getParadeStatus());
+		rParade.setRejectedReason(parade.getRejectedReason());
+
+		return rParade;
 	}
 
 }

@@ -10,24 +10,23 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
 
-import repositories.SocialProfileRepository;
-import security.LoginService;
 import domain.Actor;
 import domain.SocialProfile;
+import repositories.SocialProfileRepository;
+import security.LoginService;
 
 @Service
 @Transactional
 public class SocialProfileService {
 
 	@Autowired
-	private SocialProfileRepository	socialProfileRepository;
+	private SocialProfileRepository socialProfileRepository;
 
 	@Autowired
-	private ActorService			actorService;
+	private ActorService actorService;
 
-	@Autowired
-	private Validator				validator;
-
+	@Autowired(required = false)
+	private Validator validator;
 
 	public SocialProfile save(SocialProfile socialProfile) {
 		return this.socialProfileRepository.save(socialProfile);
@@ -79,11 +78,11 @@ public class SocialProfileService {
 
 		SocialProfile result;
 		SocialProfile copy;
-		//result = this.create();
+		// result = this.create();
 		if (socialProfile.getId() == 0)
 			result = socialProfile;
 		else
-			//copy = this.socialProfileRepository.findOne(socialProfile.getId());
+			// copy = this.socialProfileRepository.findOne(socialProfile.getId());
 			result = socialProfile;
 
 		this.validator.validate(result, binding);

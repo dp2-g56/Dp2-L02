@@ -4,6 +4,9 @@ package domain;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.URL;
@@ -12,14 +15,15 @@ import org.hibernate.validator.constraints.URL;
 @Access(AccessType.PROPERTY)
 public class Sponsorship extends DomainEntity {
 
-	private String	banner;
-	private String	targetURL;
+	private String banner;
+	private String targetURL;
+	private java.lang.Float gain;
+	private Boolean isActivated;
 
+	private CreditCard creditCard;
+	private Parade parade;
 
-	//TODO: Credit card 
-	//private CreditCard	creditCard;
-	//private Parade	parade;	//Only accepted parades
-
+	@URL
 	@NotBlank
 	public String getBanner() {
 		return this.banner;
@@ -39,14 +43,42 @@ public class Sponsorship extends DomainEntity {
 		this.targetURL = targetURL;
 	}
 
-	/*
-	 * public Parade getParade() {
-	 * return this.parade;
-	 * }
-	 * 
-	 * public void setParade(Parade parade) {
-	 * this.parade = parade;
-	 * }
-	 */
+	@NotNull
+	@Digits(integer = 9, fraction = 2)
+	public java.lang.Float getGain() {
+		return this.gain;
+	}
+
+	public void setGain(java.lang.Float gain) {
+		this.gain = gain;
+	}
+
+	@NotNull
+	public CreditCard getCreditCard() {
+		return this.creditCard;
+	}
+
+	public void setCreditCard(CreditCard creditCard) {
+		this.creditCard = creditCard;
+	}
+
+	@NotNull
+	@ManyToOne(optional = false)
+	public Parade getParade() {
+		return this.parade;
+	}
+
+	public void setParade(Parade parade) {
+		this.parade = parade;
+	}
+
+	@NotNull
+	public Boolean getIsActivated() {
+		return this.isActivated;
+	}
+
+	public void setIsActivated(Boolean isActivated) {
+		this.isActivated = isActivated;
+	}
 
 }

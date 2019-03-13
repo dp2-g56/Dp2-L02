@@ -43,6 +43,7 @@
 				<ul>
 					<li class="arrow"></li>				
 					<li><a href="parade/sponsor/list.do"><spring:message code="master.page.sponsor.listParades" /></a></li>
+					<li><a href="sponsorship/sponsor/list.do"><spring:message code="master.page.sponsor.listSponsorships" /></a></li>
 				</ul>
 			</li>
 		</security:authorize>

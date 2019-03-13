@@ -2,5 +2,5 @@
 package domain;
 
 public enum ParadeStatus {
-	SUBMITTED, ACCEPTED, REJECTED, DRAFTMODE
+	SUBMITTED, ACCEPTED, REJECTED
 }

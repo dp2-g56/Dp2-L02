@@ -1,3 +1,4 @@
+
 package controllers;
 
 import java.util.ArrayList;
@@ -14,11 +15,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import services.ChapterService;
+import services.ParadeService;
+import domain.Area;
 import domain.Chapter;
 import domain.Parade;
 import domain.ParadeStatus;
-import services.ChapterService;
-import services.ParadeService;
 
 @Controller
 @RequestMapping("/parade/chapter")
@@ -27,10 +29,11 @@ public class ParadesChapterController extends AbstractController {
 	// Services
 
 	@Autowired
-	private ParadeService paradeService;
+	private ParadeService	paradeService;
 
 	@Autowired
-	private ChapterService chapterService;
+	private ChapterService	chapterService;
+
 
 	// Constructor
 
@@ -51,13 +54,24 @@ public class ParadesChapterController extends AbstractController {
 
 		Chapter logguedChapter = this.chapterService.loggedChapter();
 
-		if (logguedChapter.getArea() == null)
-			result = new ModelAndView("redirect:");
-		else {
-			parades = this.paradeService.getParadesByArea(logguedChapter.getArea());
-			result = new ModelAndView("parade/chapter/list");
-			result.addObject("parades", parades);
-		}
+		parades = this.paradeService.getParadesByArea(logguedChapter.getArea());
+		result = new ModelAndView("parade/chapter/list");
+		result.addObject("parades", parades);
+		result.addObject("hasArea", this.paradeService.hasArea(logguedChapter));
+
+		return result;
+	}
+
+	//Select Area
+	@RequestMapping(value = "/selectArea", method = RequestMethod.GET)
+	public ModelAndView selectArea() {
+		ModelAndView result;
+		Chapter logguedChapter = this.chapterService.loggedChapter();
+		List<Area> areas = this.chapterService.listFreeAreas();
+
+		result = new ModelAndView("parade/chapter/selectArea");
+		result.addObject("chapter", logguedChapter);
+		result.addObject("areas", areas);
 
 		return result;
 	}
@@ -120,6 +134,47 @@ public class ParadesChapterController extends AbstractController {
 			}
 
 		return null;
+	}
+
+	@RequestMapping(value = "/selectArea", method = RequestMethod.POST, params = "edit")
+	public ModelAndView selectArea(Chapter chapter, BindingResult binding) {
+		ModelAndView result;
+		Chapter cha;
+		cha = this.chapterService.reconstructArea(chapter, binding);
+
+		if (binding.hasErrors())
+			result = this.createEditModelAndViewB(cha);
+		else
+			try {
+				this.chapterService.updateChapterArea(cha);
+				result = new ModelAndView("redirect:list.do");
+
+			} catch (Throwable oops) {
+				result = this.createEditModelAndViewB(cha, "area.commit.error");
+			}
+		return result;
+	}
+
+	protected ModelAndView createEditModelAndViewB(Chapter chapter) {
+		ModelAndView result;
+
+		result = this.createEditModelAndViewB(chapter, null);
+
+		return result;
+	}
+
+	protected ModelAndView createEditModelAndViewB(Chapter chapter, String messageCode) {
+		ModelAndView result;
+
+		List<Area> areas = this.chapterService.listFreeAreas();
+
+		result = new ModelAndView("parade/chapter/selectArea");
+		result.addObject("chapter", chapter);
+		result.addObject("areas", areas);
+
+		result.addObject("message", messageCode);
+
+		return result;
 	}
 
 }

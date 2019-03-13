@@ -16,8 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
 
-import repositories.ParadeRepository;
-import utilities.RandomString;
 import domain.Area;
 import domain.Brotherhood;
 import domain.Chapter;
@@ -308,6 +306,10 @@ public class ParadeService {
 		rParade = this.findOne(parade.getId());
 
 		rParade.setParadeStatus(parade.getParadeStatus());
+		if (parade.getParadeStatus().equals(ParadeStatus.REJECTED)) {
+			Assert.notNull(parade.getRejectedReason());
+			Assert.isTrue(!parade.getRejectedReason().trim().equals(""));
+		}
 		rParade.setRejectedReason(parade.getRejectedReason());
 
 		return rParade;

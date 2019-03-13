@@ -278,6 +278,8 @@ public class ChapterService {
 		} catch (Exception e) {
 			return false;
 		}
+	}
+
 	public boolean paradeSecurity(Integer paradeId) {
 		Parade parade = this.paradeService.findOne(paradeId);
 		Boolean draftMode = parade.getIsDraftMode();

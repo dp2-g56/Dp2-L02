@@ -15,12 +15,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import services.ChapterService;
-import services.ParadeService;
 import domain.Area;
 import domain.Chapter;
 import domain.Parade;
 import domain.ParadeStatus;
+import services.ChapterService;
+import services.ParadeService;
 
 @Controller
 @RequestMapping("/parade/chapter")
@@ -29,11 +29,10 @@ public class ParadesChapterController extends AbstractController {
 	// Services
 
 	@Autowired
-	private ParadeService	paradeService;
+	private ParadeService paradeService;
 
 	@Autowired
-	private ChapterService	chapterService;
-
+	private ChapterService chapterService;
 
 	// Constructor
 
@@ -62,7 +61,7 @@ public class ParadesChapterController extends AbstractController {
 		return result;
 	}
 
-	//Select Area
+	// Select Area
 	@RequestMapping(value = "/selectArea", method = RequestMethod.GET)
 	public ModelAndView selectArea() {
 		ModelAndView result;
@@ -111,20 +110,40 @@ public class ParadesChapterController extends AbstractController {
 	@RequestMapping(value = "/changeStatus", method = RequestMethod.POST, params = "save")
 	public ModelAndView changeStatus(Parade parade, BindingResult binding) {
 		ModelAndView result;
+		boolean errorString = false;
+		List<ParadeStatus> paradeStatus = Arrays.asList(ParadeStatus.values());
+		List<String> statusName = new ArrayList<>();
 
+		// Security
 		this.chapterService.loggedAsChapter();
 		Assert.isTrue(this.chapterService.paradeSecurity(parade.getId()));
-		parade = this.paradeService.reconstrucParadeStatus(parade);
 
-		if (binding.hasErrors()) {
+		if (parade.getParadeStatus().equals(ParadeStatus.REJECTED)
+				&& (parade.getRejectedReason().trim().equals("") || parade.getRejectedReason() == null)) {
+			String locale = LocaleContextHolder.getLocale().getLanguage();
+			if (locale == "es") {
+				statusName.add("PRESENTADO");
+				statusName.add("ACEPTADO");
+				statusName.add("RECHAZADO");
+			} else if (locale == "en") {
+				statusName.add("SUBMITTED");
+				statusName.add("ACCEPTED");
+				statusName.add("REJECTED");
+			}
+			errorString = true;
+		}
+
+		if (binding.hasErrors() || errorString) {
 			result = new ModelAndView("parade/chapter/changeStatus");
 			result.addObject("parade", parade);
-		} else
+			result.addObject("message", "parade.status.error");
+			result.addObject("paradeStatus", paradeStatus);
+			result.addObject("statusName", statusName);
+		} else {
+			// Reconstruct
+			parade = this.paradeService.reconstrucParadeStatus(parade);
 			try {
-				if (parade.getParadeStatus().equals(ParadeStatus.REJECTED)) {
-					Assert.notNull(parade.getRejectedReason());
-					Assert.isTrue(!parade.getRejectedReason().trim().equals(""));
-				}
+
 				this.paradeService.save(parade);
 
 				result = new ModelAndView("redirect:list.do");
@@ -132,8 +151,8 @@ public class ParadesChapterController extends AbstractController {
 				result = new ModelAndView("parade/chapter/changeStatus");
 				result.addObject("parade", parade);
 			}
-
-		return null;
+		}
+		return result;
 	}
 
 	@RequestMapping(value = "/selectArea", method = RequestMethod.POST, params = "edit")

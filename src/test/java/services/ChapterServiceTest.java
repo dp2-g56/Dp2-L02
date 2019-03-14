@@ -228,6 +228,34 @@ public class ChapterServiceTest extends AbstractTest {
 		}
 	}
 
+	@Test
+	public void driverEditPersonalData() {
+		Object testingData[][] = {
+
+			{
+				"Chapter1", "Chapter1", "name1", "surname1", "emailTest@gmail.com", "titleTest1", "https://www.example.com/", null
+			}, {
+				"Chapter1", "Chapter1", "", "surname1", "emailTest@gmail.com", "titleTest1", "https://www.example.com/", ConstraintViolationException.class
+			}, {
+				"Chapter1", "Chapter1", "name1", "", "emailTest@gmail.com", "titleTest1", "https://www.example.com/", ConstraintViolationException.class
+			}, {
+				"Chapter1", "Chapter1", "name1", "surname1", "", "titleTest1", "https://www.example.com/", ConstraintViolationException.class
+			}, {
+				"Chapter1", "Chapter1", "name1", "surname1", "invalid email", "titleTest1", "https://www.example.com/", ConstraintViolationException.class
+			}, {
+				"Chapter1", "Chapter1", "name1", "surname1", "emailTest@gmail.com", "", "https://www.example.com/", ConstraintViolationException.class
+			}, {
+				"Chapter1", "Chapter1", "name1", "surname1", "emailTest@gmail.com", "titleTest1", "invalid url", ConstraintViolationException.class
+			}, {
+				"Chapter2", "Chapter1", "name1", "surname1", "emailTest@gmail.com", "titleTest1", "https://www.example.com/", IllegalArgumentException.class
+			}
+		};
+
+		for (int i = 0; i < testingData.length; i++) {
+			this.templateEditPersonalData((String) testingData[i][0], (String) testingData[i][1], (String) testingData[i][2], (String) testingData[i][3], (String) testingData[i][4], (String) testingData[i][5], (String) testingData[i][6],
+				(Class<?>) testingData[i][7]);
+		}
+	}
 
 	/**
 	 * This is the template method used to process the data contained inside the
@@ -443,4 +471,54 @@ public class ChapterServiceTest extends AbstractTest {
 
 	}
 
+	protected void templateEditPersonalData(String username, String usernameEdit, String name, String surname, String email, String title, String photo, Class<?> expected) {
+		this.startTransaction();
+		super.authenticate(username);
+		Chapter editChapter = this.chapterService.getChapterByUsername(usernameEdit);
+
+		Class<?> caught = null;
+
+		Chapter c = new Chapter();
+
+		c.setAddress(editChapter.getAddress());
+		c.setArea(editChapter.getArea());
+		c.setBoxes(editChapter.getBoxes());
+		c.setHasSpam(editChapter.getHasSpam());
+		c.setMiddleName(editChapter.getMiddleName());
+		c.setPhoneNumber(editChapter.getPhoneNumber());
+		c.setPolarity(editChapter.getPolarity());
+		c.setProclaims(editChapter.getProclaims());
+		c.setSocialProfiles(editChapter.getSocialProfiles());
+		c.setUserAccount(editChapter.getUserAccount());
+		c.setVersion(editChapter.getVersion());
+
+		c.setSurname(surname);
+		c.setPhoto(photo);
+		c.setTitle(title);
+		c.setName(name);
+		c.setEmail(email);
+		c.setId(editChapter.getId());
+
+		/**
+		 * This is the first command used to force to rollback the database, it initialise a Transaction in this point, before we add the entity
+		 * in order to set the rollback to this point.
+		 **/
+
+		/** End of first command. **/
+
+		try {
+			this.chapterService.update(c);
+			this.chapterService.flush();
+		} catch (Throwable oops) {
+			caught = oops.getClass();
+		}
+		super.checkExceptions(expected, caught);
+
+		/** This is the second command, it forces the database to rollback to the last transaction point that was set, in this case before we add the new entity. **/
+		this.unauthenticate();
+		this.rollbackTransaction();
+
+		/** End of second command. **/
+
+	}
 }

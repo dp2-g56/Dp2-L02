@@ -9,11 +9,12 @@
 
 <security:authorize access="hasRole('SPONSOR')">
 
-<form:form action="sponsorship/sponsor/create.do" modelAttribute="formObject" >
+<form:form action="sponsorship/sponsor/save.do" modelAttribute="formObject" >
 
 <fieldset>
   <legend> <spring:message code="sponsorship.data" /> </legend>
-  
+  	<form:input path="id" hidden="true"/>
+  	
   	<br />
 
 	<acme:input code="sponsorship.banner" path="banner"/>	
@@ -53,7 +54,12 @@
 
 	<br />
 	
-	<acme:submit code="sponsorship.createButton" name="save" />
+	<jstl:if test="${paradeId>0}">
+		<acme:submit code="sponsorship.createButton" name="save" />
+	</jstl:if>
+	<jstl:if test="${paradeId==0}">
+		<acme:submit code="sponsorship.update" name="save" />
+	</jstl:if>
 	<acme:cancel url="/parade/sponsor/list.do" code="sponsorship.cancel" /> 
 	
 </form:form> 

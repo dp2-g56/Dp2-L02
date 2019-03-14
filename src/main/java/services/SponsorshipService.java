@@ -74,14 +74,18 @@ public class SponsorshipService {
 
 	public Sponsorship reconstruct(FormObjectSponsorshipCreditCard formObject, BindingResult binding,
 			CreditCard creditCard, Parade parade) {
-		Sponsorship spo = new Sponsorship();
+		Sponsorship spo;
+		if (formObject.getId() == 0 && parade != null) {
+			spo = new Sponsorship();
+			spo.setIsActivated(true);
+			spo.setGain(0f);
+			spo.setParade(parade);
+		} else
+			spo = this.findOne(formObject.getId());
 
 		spo.setBanner(formObject.getBanner());
 		spo.setTargetURL(formObject.getTargetURL());
-		spo.setParade(parade);
-		spo.setGain(0f);
 		spo.setCreditCard(creditCard);
-		spo.setIsActivated(true);
 
 		// this.validator.validate(spo, binding);
 
@@ -103,10 +107,13 @@ public class SponsorshipService {
 		Sponsor sponsor = this.sponsorService.securityAndSponsor();
 
 		Sponsorship spon = this.save(sponsorship);
-		List<Sponsorship> sps = sponsor.getSponsorships();
-		sps.add(spon);
-		this.sponsorService.save(sponsor);
 		result = spon;
+
+		if (sponsorship.getId() == 0) {
+			List<Sponsorship> sps = sponsor.getSponsorships();
+			sps.add(result);
+			this.sponsorService.save(sponsor);
+		}
 
 		return result;
 	}

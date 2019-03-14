@@ -54,6 +54,12 @@
 		</display:column>
 		
 		<display:column titleKey="action">
+				<spring:url var="updateSponsorship" value="/sponsorship/sponsor/edit.do">
+					<spring:param name="sponsorshipId" value="${row.id}" />
+				</spring:url>
+				<a href="${updateSponsorship}">
+					<spring:message code="sponsorship.update" />				
+				</a>
 			<jstl:if test="${row.isActivated==true}">
 			<%-- 
 				<spring:url var="deleteRequest" value="/request/member/delete.do">

@@ -59,7 +59,25 @@ public class SponsorshipSponsorController extends AbstractController {
 		return result;
 	}
 
-	@RequestMapping(value = "/create", method = RequestMethod.POST, params = "save")
+	// EDIT Sponsorship with Credit Card
+	@RequestMapping(value = "/edit", method = RequestMethod.GET)
+	public ModelAndView editSponsorship(@RequestParam int sponsorshipId) {
+		ModelAndView result;
+
+		Sponsorship sponsorship = this.sponsorshipService.findOne(sponsorshipId);
+
+		FormObjectSponsorshipCreditCard formObject = new FormObjectSponsorshipCreditCard();
+
+		formObject.setId(sponsorship.getId());
+		formObject.setBanner(sponsorship.getBanner());
+		formObject.setTargetURL(sponsorship.getTargetURL());
+
+		result = this.createEditModelAndView("sponsor/editSponsorship", formObject, 0);
+
+		return result;
+	}
+
+	@RequestMapping(value = "/save", method = RequestMethod.POST, params = "save")
 	public ModelAndView saveSponsorship(@ModelAttribute("formObject") @Valid FormObjectSponsorshipCreditCard formObject,
 			BindingResult binding, @RequestParam int paradeId) {
 		ModelAndView result;
@@ -67,7 +85,11 @@ public class SponsorshipSponsorController extends AbstractController {
 		Sponsorship sponsorship = new Sponsorship();
 		CreditCard creditCard = new CreditCard();
 
-		Parade parade = this.paradeService.findOne(paradeId);
+		Parade parade;
+		if (paradeId > 0)
+			parade = this.paradeService.findOne(paradeId);
+		else
+			parade = null;
 
 		creditCard = this.creditCardService.reconstruct(formObject, binding);
 		sponsorship = this.sponsorshipService.reconstruct(formObject, binding, creditCard, parade);

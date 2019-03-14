@@ -21,11 +21,25 @@
 		<put-attribute name="body" value="/views/chapter/listProclaim.jsp" />
 	</definition>
 	
-
 	<definition name="chapter/create" extends="master.page">	
 		<put-attribute name="title" value="Create a new proclaim" />
 		<put-attribute name="body" value="/views/chapter/createProclaim.jsp" />
+  	</definition>
+  
+  
+	<definition name="parade/chapter/list" extends="master.page">	
+		<put-attribute name="title" value="My Area's Parade" />
+		<put-attribute name="body" value="/views/chapter/paradeList.jsp" />
 	</definition>
 	
+	<definition name="parade/chapter/changeStatus" extends="master.page">	
+		<put-attribute name="title" value="Change Status" />
+		<put-attribute name="body" value="/views/chapter/changeStatus.jsp" />
+	</definition>
 	
+	<definition name="parade/chapter/selectArea" extends="master.page">	
+		<put-attribute name="title" value="Select an Area" />
+		<put-attribute name="body" value="/views/chapter/selectArea.jsp" />
+	</definition>
+
 </tiles-definitions>

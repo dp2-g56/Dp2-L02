@@ -69,6 +69,8 @@
 		
 		<bean class="converters.SponsorToStringConverter" />
 		<bean class="converters.StringToSponsorConverter" />
+		<bean class="converters.PathToStringConverter" />
+		<bean class="converters.StringToPathConverter" />
 		
 		<bean class="converters.SponsorshipToStringConverter" />
 		<bean class="converters.StringToSponsorshipConverter" />
@@ -78,6 +80,8 @@
 		
 		<bean class="converters.ProclaimToStringConverter" />
 		<bean class="converters.StringToProclaimConverter" />
+		<bean class="converters.SegmentToStringConverter" />
+		<bean class="converters.StringToSegmentConverter" />
 		
 	</util:list>
 	

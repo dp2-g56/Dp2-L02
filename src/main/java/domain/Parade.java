@@ -37,12 +37,22 @@ public class Parade extends DomainEntity {
 	private int rowNumber; //
 	private int columnNumber; //
 	private ParadeStatus paradeStatus;
+	private String rejectedReason;
 
 	private List<Float> floats;
 	private List<Request> requests;
 	private List<Path> paths;
 
-	@NotNull
+	@Valid
+	public String getRejectedReason() {
+		return this.rejectedReason;
+	}
+
+	public void setRejectedReason(String rejectedReason) {
+		this.rejectedReason = rejectedReason;
+	}
+
+	@Valid
 	public ParadeStatus getParadeStatus() {
 		return this.paradeStatus;
 	}

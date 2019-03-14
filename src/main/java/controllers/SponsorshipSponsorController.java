@@ -126,7 +126,7 @@ public class SponsorshipSponsorController extends AbstractController {
 			result = this.createEditModelAndView("sponsor/createSponsorship", formObject, paradeId);
 		else
 			try {
-				this.sponsorshipService.addSponsorship(sponsorship);
+				this.sponsorshipService.addOrUpdateSponsorship(sponsorship);
 
 				result = new ModelAndView("redirect:/sponsorship/sponsor/list.do");
 			} catch (Throwable oops) {

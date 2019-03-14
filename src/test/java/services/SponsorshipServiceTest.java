@@ -64,13 +64,13 @@ public class SponsorshipServiceTest extends AbstractTest {
 						24, 778, parade2, "sponsor1", IllegalArgumentException.class } };
 
 		for (int i = 0; i < testingData.length; i++)
-			this.templateAddSponsorship((String) testingData[i][0], (String) testingData[i][1],
+			this.templateAddOrUpdateSponsorship((String) testingData[i][0], (String) testingData[i][1],
 					(String) testingData[i][2], (String) testingData[i][3], (Long) testingData[i][4],
 					(Integer) testingData[i][5], (Integer) testingData[i][6], (Integer) testingData[i][7],
 					(Parade) testingData[i][8], (String) testingData[i][9], (Class<?>) testingData[i][10]);
 	}
 
-	private void templateAddSponsorship(String banner, String targetURL, String holderName, String brandName,
+	private void templateAddOrUpdateSponsorship(String banner, String targetURL, String holderName, String brandName,
 			Long number, Integer expirationMonth, Integer expirationYear, Integer cvvCode, Parade parade,
 			String username, Class<?> expected) {
 
@@ -96,7 +96,7 @@ public class SponsorshipServiceTest extends AbstractTest {
 
 		try {
 			super.authenticate(username);
-			this.sponsorshipService.addSponsorship(spo);
+			this.sponsorshipService.addOrUpdateSponsorship(spo);
 			this.sponsorshipService.flush();
 			super.unauthenticate();
 		} catch (Throwable oops) {

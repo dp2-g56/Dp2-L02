@@ -92,7 +92,7 @@ public class SponsorshipService {
 		return spo;
 	}
 
-	public Sponsorship addSponsorship(Sponsorship sponsorship) {
+	public Sponsorship addOrUpdateSponsorship(Sponsorship sponsorship) {
 		Sponsorship result;
 
 		List<String> cardType = this.configurationService.getConfiguration().getCardType();

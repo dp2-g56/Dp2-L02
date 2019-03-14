@@ -305,12 +305,10 @@ public class ParadeService {
 
 		rParade = this.findOne(parade.getId());
 
-		rParade.setParadeStatus(parade.getParadeStatus());
-		if (parade.getParadeStatus().equals(ParadeStatus.REJECTED)) {
-			Assert.notNull(parade.getRejectedReason());
-			Assert.isTrue(!parade.getRejectedReason().trim().equals(""));
-		}
+		Assert.isTrue(rParade.getParadeStatus().equals(ParadeStatus.SUBMITTED) && !rParade.getIsDraftMode());
+
 		rParade.setRejectedReason(parade.getRejectedReason());
+		rParade.setParadeStatus(parade.getParadeStatus());
 
 		return rParade;
 	}
@@ -326,4 +324,9 @@ public class ParadeService {
 	public Boolean hasArea(Chapter chapter) {
 		return chapter.getArea() != null;
 	}
+
+	public void flush() {
+		this.paradeRepository.flush();
+	}
+
 }

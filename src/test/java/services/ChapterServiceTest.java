@@ -196,6 +196,39 @@ public class ChapterServiceTest extends AbstractTest {
 					(Area) testingData[i][6], (Class<?>) testingData[i][7]);
 	}
 
+	@Test
+	public void driverSelectArea() {
+		Area areaTest = this.chapterService.listFreeAreas().get(0);
+		Area areaTest2 = this.chapterService.listOccupiedAreas().get(0);
+		Object testingData[][] = {
+
+			{
+				"Chapter2", "Chapter2", null, null
+			}, {
+				"Chapter2", "Chapter2", areaTest, null
+			}, {
+				"Chapter2", "Chapter2", areaTest2, IllegalArgumentException.class
+			}, {
+				"Chapter1", "Chapter1", null, IllegalArgumentException.class
+			}, {
+				"Chapter1", "Chapter1", areaTest, IllegalArgumentException.class
+			}, {
+				"Chapter1", "Chapter1", areaTest2, IllegalArgumentException.class
+			}, {
+				"Chapter1", "Chapter2", null, IllegalArgumentException.class
+			}, {
+				"Chapter1", "Chapter2", areaTest, IllegalArgumentException.class
+			}, {
+				"Chapter1", "Chapter2", areaTest2, IllegalArgumentException.class
+			}
+		};
+
+		for (int i = 0; i < testingData.length; i++) {
+			this.templateSelectArea((String) testingData[i][0], (String) testingData[i][1], (Area) testingData[i][2], (Class<?>) testingData[i][3]);
+		}
+	}
+
+
 	/**
 	 * This is the template method used to process the data contained inside the
 	 * drivers, the forced rollback is also located in here.
@@ -267,6 +300,56 @@ public class ChapterServiceTest extends AbstractTest {
 		/** End of second command. **/
 
 	}
+
+	protected void templateSelectArea(String username, String usernameEdit, Area area, Class<?> expected) {
+		this.startTransaction();
+		super.authenticate(username);
+		Chapter editChapter = this.chapterService.getChapterByUsername(usernameEdit);
+
+		Class<?> caught = null;
+
+		Chapter c = new Chapter();
+
+		c.setAddress(editChapter.getAddress());
+		c.setArea(area);
+		c.setBoxes(editChapter.getBoxes());
+		c.setEmail(editChapter.getEmail());
+		c.setHasSpam(editChapter.getHasSpam());
+		c.setMiddleName(editChapter.getMiddleName());
+		c.setName(editChapter.getName());
+		c.setPhoneNumber(editChapter.getPhoneNumber());
+		c.setPhoto(editChapter.getPhoto());
+		c.setPolarity(editChapter.getPolarity());
+		c.setProclaims(editChapter.getProclaims());
+		c.setSocialProfiles(editChapter.getSocialProfiles());
+		c.setSurname(editChapter.getSurname());
+		c.setTitle(editChapter.getTitle());
+		c.setUserAccount(editChapter.getUserAccount());
+		c.setVersion(editChapter.getVersion());
+		c.setId(editChapter.getId());
+
+		/**
+		 * This is the first command used to force to rollback the database, it initialise a Transaction in this point, before we add the entity
+		 * in order to set the rollback to this point.
+		 **/
+
+		/** End of first command. **/
+
+		try {
+			this.chapterService.updateChapterArea(c);
+		} catch (Throwable oops) {
+			caught = oops.getClass();
+		}
+		super.checkExceptions(expected, caught);
+
+		/** This is the second command, it forces the database to rollback to the last transaction point that was set, in this case before we add the new entity. **/
+		this.unauthenticate();
+		this.rollbackTransaction();
+
+		/** End of second command. **/
+
+	}
+
 
 	/**
 	 * This test will tests the Requirment 2.2 of the level B: An actor who is

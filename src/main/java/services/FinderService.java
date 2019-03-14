@@ -35,7 +35,7 @@ public class FinderService {
 
 	@Autowired
 	private MemberService memberRepository;
-	@Autowired(required = false)
+	@Autowired
 	private Validator validator;
 	@Autowired
 	private ConfigurationService configurationService;

@@ -37,7 +37,7 @@ public class MemberService {
 	private FinderService finderService;
 	@Autowired
 	private BoxService boxService;
-	@Autowired(required = false)
+	@Autowired
 	private Validator validator;
 
 	// Simple CRUD methods ------------------------------------------

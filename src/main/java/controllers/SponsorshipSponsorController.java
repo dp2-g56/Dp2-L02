@@ -1,6 +1,7 @@
 
 package controllers;
 
+import java.util.Collection;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -105,7 +106,7 @@ public class SponsorshipSponsorController extends AbstractController {
 			try {
 				this.sponsorshipService.addSponsorship(sponsorship);
 
-				result = new ModelAndView("redirect:/parade/sponsor/list.do");
+				result = new ModelAndView("redirect:/sponsorship/sponsor/list.do");
 			} catch (Throwable oops) {
 				result = this.createEditModelAndView("sponsor/createSponsorship", formObject, paradeId,
 						"sponsorship.commit.error");
@@ -133,6 +134,42 @@ public class SponsorshipSponsorController extends AbstractController {
 		ModelAndView result = this.createEditModelAndView(tiles, formObject, paradeId);
 
 		result.addObject("message", message);
+
+		return result;
+	}
+
+	@RequestMapping(value = "/list", method = RequestMethod.GET)
+	public ModelAndView paradeList() {
+		ModelAndView result;
+
+		Collection<Sponsorship> sponsorships = this.sponsorshipService.getSponsorships(null);
+
+		result = new ModelAndView("sponsor/sponsorships");
+
+		result.addObject("sponsorships", sponsorships);
+
+		return result;
+	}
+
+	@RequestMapping(value = "/filter", method = RequestMethod.POST, params = "refresh")
+	public ModelAndView requestsFilter(@Valid String fselect) {
+		ModelAndView result;
+
+		if (fselect.equals("ALL") || (!fselect.equals("ACTIVATED") && !fselect.equals("DEACTIVATED")))
+			result = new ModelAndView("redirect:list.do");
+		else {
+			Boolean isActivated;
+			if (fselect.equals("ACTIVATED"))
+				isActivated = true;
+			else
+				isActivated = false;
+
+			Collection<Sponsorship> sponsorships = this.sponsorshipService.getSponsorships(isActivated);
+
+			result = new ModelAndView("sponsor/sponsorships");
+
+			result.addObject("sponsorships", sponsorships);
+		}
 
 		return result;
 	}

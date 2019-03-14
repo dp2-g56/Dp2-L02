@@ -32,7 +32,7 @@ public class BoxService {
 	@Autowired
 	private ActorService actorService;
 
-	@Autowired(required = false)
+	@Autowired
 	private Validator validator;
 
 	public Box flushSave(Box box) {

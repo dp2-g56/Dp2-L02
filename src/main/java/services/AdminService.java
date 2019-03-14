@@ -60,7 +60,7 @@ public class AdminService {
 	@Autowired
 	private PositionService positionService;
 
-	@Autowired(required = false)
+	@Autowired
 	private Validator validator;
 
 	@Autowired

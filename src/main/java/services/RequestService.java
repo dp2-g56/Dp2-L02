@@ -36,7 +36,7 @@ public class RequestService {
 	private MemberService memberService;
 	@Autowired
 	private ParadeService paradeService;
-	@Autowired(required = false)
+	@Autowired
 	private Validator validator;
 	@Autowired
 	private BrotherhoodService brotherhoodService;

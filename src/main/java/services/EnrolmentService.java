@@ -33,7 +33,7 @@ public class EnrolmentService {
 	@Autowired
 	private BrotherhoodService brotherhoodService;
 
-	@Autowired(required = false)
+	@Autowired
 	private Validator validator;
 
 	public List<Enrolment> findAll() {

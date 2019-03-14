@@ -32,7 +32,7 @@ public class FloatService {
 	private BrotherhoodService brotherhoodService;
 	@Autowired
 	private ParadeService paradeService;
-	@Autowired(required = false)
+	@Autowired
 	private Validator validator;
 
 	public domain.Float reconstruct(domain.Float floatt, BindingResult binding) {

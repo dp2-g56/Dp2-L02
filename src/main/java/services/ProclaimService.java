@@ -32,7 +32,7 @@ public class ProclaimService {
 	@Autowired
 	ActorService actorService;
 
-	@Autowired(required = false)
+	@Autowired
 	Validator validator;
 
 	public Proclaim findOne(int id) {

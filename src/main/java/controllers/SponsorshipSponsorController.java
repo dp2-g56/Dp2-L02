@@ -155,7 +155,7 @@ public class SponsorshipSponsorController extends AbstractController {
 	public ModelAndView requestsFilter(@Valid String fselect) {
 		ModelAndView result;
 
-		if (fselect.equals("ALL") || !fselect.equals("ACTIVATED") || !fselect.equals("DEACTIVATED"))
+		if (fselect.equals("ALL") || (!fselect.equals("ACTIVATED") && !fselect.equals("DEACTIVATED")))
 			result = new ModelAndView("redirect:list.do");
 		else {
 			Boolean isActivated;

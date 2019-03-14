@@ -17,7 +17,7 @@ import forms.FormObjectSponsorshipCreditCard;
 @Transactional
 public class CreditCardService {
 
-	@Autowired(required = false)
+	@Autowired
 	private Validator validator;
 
 	public CreditCard reconstruct(FormObjectSponsorshipCreditCard formObject, BindingResult binding) {

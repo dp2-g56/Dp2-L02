@@ -30,7 +30,7 @@ public class AreaService {
 	@Autowired
 	private AreaRepository areaRepository;
 
-	@Autowired(required = false)
+	@Autowired
 	private Validator validator;
 
 	// Simple CRUD methods ------------------------------------------

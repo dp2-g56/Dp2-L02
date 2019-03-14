@@ -1,6 +1,7 @@
 
 package services;
 
+import java.util.Collection;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -27,7 +28,7 @@ public class SponsorshipService {
 	private SponsorshipRepository sponsorshipRepository;
 	@Autowired
 	private ConfigurationService configurationService;
-	@Autowired(required = false)
+	@Autowired
 	private Validator validator;
 	@Autowired
 	private SponsorService sponsorService;
@@ -108,6 +109,20 @@ public class SponsorshipService {
 		result = spon;
 
 		return result;
+	}
+
+	public Collection<Sponsorship> getSponsorships(Boolean isActivated) {
+		Sponsor sponsor = this.sponsorService.securityAndSponsor();
+
+		Collection<Sponsorship> sponsorships;
+		if (isActivated == null)
+			sponsorships = this.sponsorshipRepository.getAllSponsorshipsOfSponsor(sponsor.getId());
+		else if (isActivated == true)
+			sponsorships = this.sponsorshipRepository.getActivatedSponsorshipsOfSponsor(sponsor.getId());
+		else
+			sponsorships = this.sponsorshipRepository.getDeactivatedSponsorshipsOfSponsor(sponsor.getId());
+
+		return sponsorships;
 	}
 
 }

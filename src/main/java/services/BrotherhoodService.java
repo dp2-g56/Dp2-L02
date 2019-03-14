@@ -39,7 +39,7 @@ public class BrotherhoodService {
 	@Autowired
 	private BoxService boxService;
 
-	@Autowired(required = false)
+	@Autowired
 	private Validator validator;
 
 	public List<Brotherhood> findAll() {

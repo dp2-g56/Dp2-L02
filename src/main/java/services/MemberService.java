@@ -13,10 +13,6 @@ import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
 
-import repositories.MemberRepository;
-import security.Authority;
-import security.LoginService;
-import security.UserAccount;
 import domain.Box;
 import domain.Enrolment;
 import domain.Finder;
@@ -24,6 +20,10 @@ import domain.Member;
 import domain.Request;
 import domain.SocialProfile;
 import forms.FormObjectMember;
+import repositories.MemberRepository;
+import security.Authority;
+import security.LoginService;
+import security.UserAccount;
 
 @Service
 @Transactional
@@ -32,14 +32,13 @@ public class MemberService {
 	// Managed repository ------------------------------------------
 
 	@Autowired
-	private MemberRepository	memberRepository;
+	private MemberRepository memberRepository;
 	@Autowired
-	private FinderService		finderService;
+	private FinderService finderService;
 	@Autowired
-	private BoxService			boxService;
+	private BoxService boxService;
 	@Autowired
-	private Validator			validator;
-
+	private Validator validator;
 
 	// Simple CRUD methods ------------------------------------------
 
@@ -47,12 +46,12 @@ public class MemberService {
 
 		Member member = new Member();
 
-		//Se crean las listas vacías
-		//ACTOR
+		// Se crean las listas vacías
+		// ACTOR
 		List<SocialProfile> socialProfiles = new ArrayList<>();
 		List<Box> boxes = new ArrayList<>();
 
-		//MEMBER
+		// MEMBER
 		Finder finder = this.finderService.createFinder();
 		List<Enrolment> enrolments = new ArrayList<>();
 		List<Request> requests = new ArrayList<>();
@@ -61,7 +60,7 @@ public class MemberService {
 		userAccount.setUsername("");
 		userAccount.setPassword("");
 
-		//Actor
+		// Actor
 		member.setAddress("");
 		member.setBoxes(boxes);
 		member.setEmail("");
@@ -95,18 +94,18 @@ public class MemberService {
 
 		List<Box> boxes = new ArrayList<>();
 
-		//Se crean las listas vacías
-		//ACTOR
+		// Se crean las listas vacías
+		// ACTOR
 		List<SocialProfile> socialProfiles = new ArrayList<>();
 		member.setSocialProfiles(socialProfiles);
 
-		//MEMBER
+		// MEMBER
 		List<Enrolment> enrolments = new ArrayList<>();
 		member.setEnrolments(enrolments);
 		List<Request> requests = new ArrayList<>();
 		member.setRequests(requests);
 
-		//Boxes
+		// Boxes
 		Box box1 = this.boxService.createSystem();
 		box1.setName("INBOX");
 		Box saved1 = this.boxService.saveSystem(box1);
@@ -151,37 +150,37 @@ public class MemberService {
 		Member result = new Member();
 
 		result.setAddress(formObjectMember.getAddress());
-		//result.setBoxes(boxes);
+		// result.setBoxes(boxes);
 		result.setEmail(formObjectMember.getEmail());
-		//result.setEnrolments(enrolments)
-		//result.setFinder(finder)
+		// result.setEnrolments(enrolments)
+		// result.setFinder(finder)
 		result.setHasSpam(false);
 		result.setMiddleName(formObjectMember.getMiddleName());
 		result.setName(formObjectMember.getName());
 		result.setPhoneNumber(formObjectMember.getPhoneNumber());
 		result.setPhoto(formObjectMember.getPhoto());
-		//		result.setRequests(requests);
-		//		result.setPolarity(polarity);
-		//		result.setSocialProfiles(socialProfiles);
+		// result.setRequests(requests);
+		// result.setPolarity(polarity);
+		// result.setSocialProfiles(socialProfiles);
 		result.setSurname(formObjectMember.getSurname());
 
-		//USER ACCOUNT
+		// USER ACCOUNT
 		UserAccount userAccount = new UserAccount();
 
-		//Authorities
+		// Authorities
 		List<Authority> authorities = new ArrayList<Authority>();
 		Authority authority = new Authority();
 		authority.setAuthority(Authority.MEMBER);
 		authorities.add(authority);
 		userAccount.setAuthorities(authorities);
 
-		//locked
+		// locked
 		userAccount.setIsNotLocked(true);
 
-		//Username
+		// Username
 		userAccount.setUsername(formObjectMember.getUsername());
 
-		//Password
+		// Password
 		Md5PasswordEncoder encoder;
 		encoder = new Md5PasswordEncoder();
 		userAccount.setPassword(encoder.encodePassword(formObjectMember.getPassword(), null));
@@ -202,11 +201,12 @@ public class MemberService {
 	public Member save(Member member) {
 		return this.memberRepository.save(member);
 	}
+
 	public void delete(Member member) {
 		this.memberRepository.delete(member);
 	}
 
-	// Other methods  ------------------------------------------------
+	// Other methods ------------------------------------------------
 
 	public Member getMemberByUsername(String username) {
 		return this.memberRepository.getMemberByUsername(username);

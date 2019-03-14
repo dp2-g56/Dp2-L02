@@ -8,7 +8,6 @@ import java.util.List;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
@@ -335,7 +334,8 @@ public class MessageService {
 		Actor receiver = new Actor();
 		message.setMoment(thisMoment);
 		message.setSubject("Error de seguridad / Security Breach");
-		message.setBody("Esto es un mensaje para informar que ha habido una brecha de seguridad // This is a message to inform about a security breach");
+		message.setBody(
+				"Esto es un mensaje para informar que ha habido una brecha de seguridad // This is a message to inform about a security breach");
 		message.setPriority("");
 		message.setReceiver(receiver);
 		message.setTags("Security, Breach, Notification, Urgent, Important");

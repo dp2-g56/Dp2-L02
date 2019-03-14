@@ -16,31 +16,30 @@ import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
 
-import repositories.ConfigurationRepository;
-import security.Authority;
-import security.LoginService;
-import security.UserAccount;
 import domain.Actor;
 import domain.Box;
 import domain.Configuration;
 import domain.Message;
+import repositories.ConfigurationRepository;
+import security.Authority;
+import security.LoginService;
+import security.UserAccount;
 
 @Service
 @Transactional
 public class ConfigurationService {
 
 	@Autowired
-	private ConfigurationRepository	configurationRepository;
+	private ConfigurationRepository configurationRepository;
 
 	@Autowired
-	private ActorService			actorService;
+	private ActorService actorService;
 
 	@Autowired
-	private AdminService			adminService;
+	private AdminService adminService;
 
 	@Autowired
-	private Validator				validator;
-
+	private Validator validator;
 
 	public Configuration getConfiguration() {
 		return this.configurationRepository.findAll().get(0);
@@ -60,7 +59,7 @@ public class ConfigurationService {
 		List<String> trimmedString = new ArrayList<String>();
 		trimmedString = Arrays.asList(s.split("\\+|(?=[,.¿?;!¡])"));
 
-		//("\\s*(=>|,|\\s)\\s*"));
+		// ("\\s*(=>|,|\\s)\\s*"));
 		for (final String g : spamWords)
 			for (final String c : trimmedString)
 				if (g.equals(c) || g.equalsIgnoreCase(c)) {
@@ -70,6 +69,7 @@ public class ConfigurationService {
 
 		return result;
 	}
+
 	public Boolean isActorSuspicious(final Actor a) {
 		boolean result = false;
 		List<String> spamWords = new ArrayList<String>();
@@ -82,7 +82,8 @@ public class ConfigurationService {
 		for (Box b : a.getBoxes()) {
 			messagesCount += b.getMessages().size();
 			for (Message g : b.getMessages())
-				if (g.getSender().equals(a) && (this.isStringSpam(g.getBody(), spamWords) || this.isStringSpam(g.getSubject(), spamWords)))
+				if (g.getSender().equals(a)
+						&& (this.isStringSpam(g.getBody(), spamWords) || this.isStringSpam(g.getSubject(), spamWords)))
 					spamCount++;
 		}
 		spamPorcent = spamCount / messagesCount * 100.;
@@ -92,6 +93,7 @@ public class ConfigurationService {
 
 		return result;
 	}
+
 	public String showGoodWords() {
 		return this.configurationRepository.goodWords();
 	}
@@ -280,6 +282,7 @@ public class ConfigurationService {
 
 		return res;
 	}
+
 	public Map<Actor, Double> computeAllScores(List<Actor> actors) {
 		Map<Actor, Double> result = new HashMap<Actor, Double>();
 
@@ -323,12 +326,16 @@ public class ConfigurationService {
 		result.setImageURL(configuration.getImageURL());
 		result.setMaxTimeFinder(configuration.getMaxTimeFinder());
 		result.setMinTimeFinder(configuration.getMinTimeFinder());
+		result.setVAT(configuration.getVAT());
+		result.setFare(configuration.getFare());
+		result.setCardType(configuration.getCardType());
 
 		this.validator.validate(result, binding);
 
 		return result;
 
 	}
+
 	public void loggedAsAdmin() {
 		UserAccount userAccount;
 		userAccount = LoginService.getPrincipal();

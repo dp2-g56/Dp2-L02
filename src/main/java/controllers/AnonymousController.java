@@ -87,7 +87,6 @@ public class AnonymousController extends AbstractController {
 	//SAVE
 	@RequestMapping(value = "/createChapter", method = RequestMethod.POST, params = "save")
 	public ModelAndView save(@Valid FormObjectChapter formObjectChapter, BindingResult binding) {
-
 		ModelAndView result;
 
 		Chapter chapter = new Chapter();
@@ -96,57 +95,21 @@ public class AnonymousController extends AbstractController {
 		Configuration configuration = this.configurationService.getConfiguration();
 		String prefix = configuration.getSpainTelephoneCode();
 
-		//Confirmacion contraseña
-		if (!formObjectChapter.getPassword().equals(formObjectChapter.getConfirmPassword()))
-			if (LocaleContextHolder.getLocale().getLanguage().toUpperCase().contains("ES")) {
-				binding.addError(new FieldError("formObjectChapter", "password", formObjectChapter.getPassword(), false, null, null, "Las contraseñas no coinciden"));
-				return this.createEditModelAndView(chapter);
-			} else {
-				binding.addError(new FieldError("formObjectChapter", "password", formObjectChapter.getPassword(), false, null, null, "Passwords don't match"));
-				return this.createEditModelAndView(chapter);
-			}
-
-		//Confirmacion terminos y condiciones
-		if (!formObjectChapter.getTermsAndConditions())
-			if (LocaleContextHolder.getLocale().getLanguage().toUpperCase().contains("ES")) {
-				binding.addError(new FieldError("formObjectChapter", "termsAndConditions", formObjectChapter.getTermsAndConditions(), false, null, null, "Debe aceptar los terminos y condiciones"));
-				return this.createEditModelAndView(chapter);
-			} else {
-				binding.addError(new FieldError("formObjectChapter", "termsAndConditions", formObjectChapter.getTermsAndConditions(), false, null, null, "You must accept the terms and conditions"));
-				return this.createEditModelAndView(chapter);
-			}
-
-		//Reconstruccion
 		chapter = this.chapterService.reconstruct(formObjectChapter, binding);
+		if (chapter.getPhoneNumber().matches("([0-9]{4,})$")) {
+			chapter.setPhoneNumber(prefix + chapter.getPhoneNumber());
+		}
 
-		if (binding.hasErrors())
+		if (binding.hasErrors()) {
 			result = this.createEditModelAndView(chapter);
-		else
+		} else {
 			try {
-
-				if (chapter.getEmail().matches("[\\w.%-]+\\<[\\w.%-]+\\@+\\>|[\\w.%-]+")) {
-					if (LocaleContextHolder.getLocale().getLanguage().toUpperCase().contains("ES")) {
-						binding.addError(new FieldError("chapter", "email", chapter.getEmail(), false, null, null, "No sigue el patron ejemplo@dominio.asd o alias <ejemplo@dominio.asd>"));
-						return this.createEditModelAndView(chapter);
-					} else {
-						binding.addError(new FieldError("chapter", "email", chapter.getEmail(), false, null, null, "Dont follow the pattern example@domain.asd or alias <example@domain.asd>"));
-						return this.createEditModelAndView(chapter);
-					}
-
-				} else if (chapter.getPhoneNumber().matches("(\\+[0-9]{1,3})(\\([0-9]{1,3}\\))([0-9]{4,})$") || chapter.getPhoneNumber().matches("(\\+[0-9]{1,3})([0-9]{4,})$"))
-					this.chapterService.saveCreate(chapter);
-				else if (chapter.getPhoneNumber().matches("([0-9]{4,})$")) {
-					chapter.setPhoneNumber(prefix + chapter.getPhoneNumber());
-					this.chapterService.saveCreate(chapter);
-				} else
-					this.chapterService.saveCreate(chapter);
-
+				this.chapterService.saveCreate(chapter);
 				result = new ModelAndView("redirect:/security/login.do");
-
 			} catch (Throwable oops) {
 				result = this.createEditModelAndView(chapter, "brotherhood.commit.error");
-
 			}
+		}
 		return result;
 	}
 
@@ -234,7 +197,7 @@ public class AnonymousController extends AbstractController {
 		String prefix = configuration.getSpainTelephoneCode();
 
 		//Confirmacion contraseña
-		if (!formObjectMember.getPassword().equals(formObjectMember.getConfirmPassword()))
+		if (!formObjectMember.getPassword().equals(formObjectMember.getConfirmPassword())) {
 			if (LocaleContextHolder.getLocale().getLanguage().toUpperCase().contains("ES")) {
 				binding.addError(new FieldError("formObjectMember", "password", formObjectMember.getPassword(), false, null, null, "Las contraseñas no coinciden"));
 				return this.createEditModelAndView(member);
@@ -242,9 +205,10 @@ public class AnonymousController extends AbstractController {
 				binding.addError(new FieldError("formObjectMember", "password", formObjectMember.getPassword(), false, null, null, "Passwords don't match"));
 				return this.createEditModelAndView(member);
 			}
+		}
 
 		//Confirmacion terminos y condiciones
-		if (!formObjectMember.getTermsAndConditions())
+		if (!formObjectMember.getTermsAndConditions()) {
 			if (LocaleContextHolder.getLocale().getLanguage().toUpperCase().contains("ES")) {
 				binding.addError(new FieldError("formObjectMember", "termsAndConditions", formObjectMember.getTermsAndConditions(), false, null, null, "Debe aceptar los terminos y condiciones"));
 				return this.createEditModelAndView(member);
@@ -252,13 +216,14 @@ public class AnonymousController extends AbstractController {
 				binding.addError(new FieldError("formObjectMember", "termsAndConditions", formObjectMember.getTermsAndConditions(), false, null, null, "You must accept the terms and conditions"));
 				return this.createEditModelAndView(member);
 			}
+		}
 
 		//Reconstruccion
 		member = this.memberService.reconstruct(formObjectMember, binding);
 
-		if (binding.hasErrors())
+		if (binding.hasErrors()) {
 			result = this.createEditModelAndView(member);
-		else
+		} else {
 			try {
 
 				if (member.getEmail().matches("[\\w.%-]+\\<[\\w.%-]+\\@+\\>|[\\w.%-]+")) {
@@ -270,13 +235,14 @@ public class AnonymousController extends AbstractController {
 						return this.createEditModelAndView(member);
 					}
 
-				} else if (member.getPhoneNumber().matches("(\\+[0-9]{1,3})(\\([0-9]{1,3}\\))([0-9]{4,})$") || member.getPhoneNumber().matches("(\\+[0-9]{1,3})([0-9]{4,})$"))
+				} else if (member.getPhoneNumber().matches("(\\+[0-9]{1,3})(\\([0-9]{1,3}\\))([0-9]{4,})$") || member.getPhoneNumber().matches("(\\+[0-9]{1,3})([0-9]{4,})$")) {
 					this.memberService.saveCreate(member);
-				else if (member.getPhoneNumber().matches("([0-9]{4,})$")) {
+				} else if (member.getPhoneNumber().matches("([0-9]{4,})$")) {
 					member.setPhoneNumber(prefix + member.getPhoneNumber());
 					this.memberService.saveCreate(member);
-				} else
+				} else {
 					this.memberService.saveCreate(member);
+				}
 
 				result = new ModelAndView("redirect:/security/login.do");
 
@@ -284,6 +250,7 @@ public class AnonymousController extends AbstractController {
 				result = this.createEditModelAndView(member, "brotherhood.commit.error");
 
 			}
+		}
 		return result;
 	}
 
@@ -367,7 +334,7 @@ public class AnonymousController extends AbstractController {
 		String prefix = configuration.getSpainTelephoneCode();
 
 		//Confirmacion contraseña
-		if (!formObjectBrotherhood.getPassword().equals(formObjectBrotherhood.getConfirmPassword()))
+		if (!formObjectBrotherhood.getPassword().equals(formObjectBrotherhood.getConfirmPassword())) {
 			if (LocaleContextHolder.getLocale().getLanguage().toUpperCase().contains("ES")) {
 				binding.addError(new FieldError("formObjectBrotherhood", "password", formObjectBrotherhood.getPassword(), false, null, null, "Las contraseñas no coinciden"));
 				return this.createEditModelAndView(brotherhood);
@@ -375,9 +342,10 @@ public class AnonymousController extends AbstractController {
 				binding.addError(new FieldError("formObjectBrotherhood", "password", formObjectBrotherhood.getPassword(), false, null, null, "Passwords don't match"));
 				return this.createEditModelAndView(brotherhood);
 			}
+		}
 
 		//Confirmacion terminos y condiciones
-		if (!formObjectBrotherhood.getTermsAndConditions())
+		if (!formObjectBrotherhood.getTermsAndConditions()) {
 			if (LocaleContextHolder.getLocale().getLanguage().toUpperCase().contains("ES")) {
 				binding.addError(new FieldError("formObjectBrotherhood", "termsAndConditions", formObjectBrotherhood.getTermsAndConditions(), false, null, null, "Debe aceptar los terminos y condiciones"));
 				return this.createEditModelAndView(formObjectBrotherhood);
@@ -385,13 +353,14 @@ public class AnonymousController extends AbstractController {
 				binding.addError(new FieldError("formObjectBrotherhood", "termsAndConditions", formObjectBrotherhood.getTermsAndConditions(), false, null, null, "You must accept the terms and conditions"));
 				return this.createEditModelAndView(formObjectBrotherhood);
 			}
+		}
 
 		//Reconstruccion 
 		brotherhood = this.brotherhoodService.reconstruct(formObjectBrotherhood, binding);
 
-		if (binding.hasErrors())
+		if (binding.hasErrors()) {
 			result = this.createEditModelAndView(brotherhood);
-		else
+		} else {
 			try {
 
 				if (brotherhood.getEmail().matches("[\\w.%-]+\\<[\\w.%-]+\\@+\\>|[\\w.%-]+")) {
@@ -403,13 +372,14 @@ public class AnonymousController extends AbstractController {
 						return this.createEditModelAndView(brotherhood);
 					}
 
-				} else if (brotherhood.getPhoneNumber().matches("(\\+[0-9]{1,3})(\\([0-9]{1,3}\\))([0-9]{4,})$") || brotherhood.getPhoneNumber().matches("(\\+[0-9]{1,3})([0-9]{4,})$"))
+				} else if (brotherhood.getPhoneNumber().matches("(\\+[0-9]{1,3})(\\([0-9]{1,3}\\))([0-9]{4,})$") || brotherhood.getPhoneNumber().matches("(\\+[0-9]{1,3})([0-9]{4,})$")) {
 					this.brotherhoodService.saveCreate(brotherhood);
-				else if (brotherhood.getPhoneNumber().matches("([0-9]{4,})$")) {
+				} else if (brotherhood.getPhoneNumber().matches("([0-9]{4,})$")) {
 					brotherhood.setPhoneNumber(prefix + brotherhood.getPhoneNumber());
 					this.brotherhoodService.saveCreate(brotherhood);
-				} else
+				} else {
 					this.brotherhoodService.saveCreate(brotherhood);
+				}
 
 				result = new ModelAndView("redirect:/security/login.do");
 
@@ -417,6 +387,7 @@ public class AnonymousController extends AbstractController {
 				result = this.createEditModelAndView(brotherhood, "brotherhood.commit.error");
 
 			}
+		}
 		return result;
 	}
 

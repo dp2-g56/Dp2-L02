@@ -1,9 +1,12 @@
 
 package domain;
 
+import java.util.List;
+
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.validation.Valid;
 
@@ -13,12 +16,10 @@ import org.hibernate.validator.constraints.NotBlank;
 @Access(AccessType.PROPERTY)
 public class Chapter extends Actor {
 
-	private String	title;
-	private Area	area;
+	private String			title;
+	private Area			area;
+	private List<Proclaim>	proclaims;
 
-
-	//Relaciones
-	//TODO Meter la lista de Proclaim
 
 	@NotBlank
 	public String getTitle() {
@@ -37,6 +38,15 @@ public class Chapter extends Actor {
 
 	public void setArea(final Area area) {
 		this.area = area;
+	}
+
+	@OneToMany
+	public List<Proclaim> getProclaims() {
+		return this.proclaims;
+	}
+
+	public void setProclaims(List<Proclaim> proclaims) {
+		this.proclaims = proclaims;
 	}
 
 }

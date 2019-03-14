@@ -13,29 +13,28 @@ import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
 
-import repositories.SponsorRepository;
-import security.Authority;
-import security.LoginService;
-import security.UserAccount;
 import domain.Box;
 import domain.SocialProfile;
 import domain.Sponsor;
 import domain.Sponsorship;
 import forms.FormObjectSponsor;
+import repositories.SponsorRepository;
+import security.Authority;
+import security.LoginService;
+import security.UserAccount;
 
 @Service
 @Transactional
 public class SponsorService {
 
 	@Autowired
-	private SponsorRepository	SponsorRepository;
+	private SponsorRepository SponsorRepository;
 
 	@Autowired
-	private BoxService			boxService;
+	private BoxService boxService;
 
 	@Autowired
-	private Validator			validator;
-
+	private Validator validator;
 
 	public List<Sponsor> findAll() {
 		return this.SponsorRepository.findAll();
@@ -56,7 +55,7 @@ public class SponsorService {
 	public Sponsor createSponsor() {
 		Sponsor spo = new Sponsor();
 
-		//Se crean las listas vacias
+		// Se crean las listas vacias
 
 		List<SocialProfile> socialProfiles = new ArrayList<SocialProfile>();
 		List<Sponsorship> sponsorships = new ArrayList<Sponsorship>();
@@ -98,11 +97,11 @@ public class SponsorService {
 
 	public Sponsor saveCreate(Sponsor bro) {
 
-		//SOCIAL PROFILES
+		// SOCIAL PROFILES
 		List<SocialProfile> socialProfiles = new ArrayList<>();
 		bro.setSocialProfiles(socialProfiles);
 
-		//BOXES
+		// BOXES
 		List<Box> boxes = new ArrayList<>();
 		Box box1 = this.boxService.createSystem();
 		box1.setName("SPAMBOX");
@@ -139,37 +138,37 @@ public class SponsorService {
 		Sponsor result = new Sponsor();
 
 		result.setAddress(formObjectSponsor.getAddress());
-		//result.setBoxes(boxes);
+		// result.setBoxes(boxes);
 		result.setEmail(formObjectSponsor.getEmail());
-		//result.setEnrolments(enrolments)
-		//result.setFinder(finder)
+		// result.setEnrolments(enrolments)
+		// result.setFinder(finder)
 		result.setHasSpam(false);
 		result.setMiddleName(formObjectSponsor.getMiddleName());
 		result.setName(formObjectSponsor.getName());
 		result.setPhoneNumber(formObjectSponsor.getPhoneNumber());
 		result.setPhoto(formObjectSponsor.getPhoto());
-		//		result.setRequests(requests);
-		//		result.setPolarity(polarity);
-		//		result.setSocialProfiles(socialProfiles);
+		// result.setRequests(requests);
+		// result.setPolarity(polarity);
+		// result.setSocialProfiles(socialProfiles);
 		result.setSurname(formObjectSponsor.getSurname());
 
-		//USER ACCOUNT
+		// USER ACCOUNT
 		UserAccount userAccount = new UserAccount();
 
-		//Authorities
+		// Authorities
 		List<Authority> authorities = new ArrayList<Authority>();
 		Authority authority = new Authority();
 		authority.setAuthority(Authority.SPONSOR);
 		authorities.add(authority);
 		userAccount.setAuthorities(authorities);
 
-		//locked
+		// locked
 		userAccount.setIsNotLocked(true);
 
-		//Username
+		// Username
 		userAccount.setUsername(formObjectSponsor.getUsername());
 
-		//Password
+		// Password
 		Md5PasswordEncoder encoder;
 		encoder = new Md5PasswordEncoder();
 		userAccount.setPassword(encoder.encodePassword(formObjectSponsor.getPassword(), null));
@@ -198,7 +197,10 @@ public class SponsorService {
 		UserAccount userAccount = LoginService.getPrincipal();
 		String username = userAccount.getUsername();
 
+		Assert.notNull(this.SponsorRepository.getSponsorByUsername(username));
+
 		Sponsor loggedSponsor = this.SponsorRepository.getSponsorByUsername(username);
+
 		List<Authority> authorities = (List<Authority>) loggedSponsor.getUserAccount().getAuthorities();
 		Assert.isTrue(authorities.get(0).toString().equals("SPONSOR"));
 
@@ -230,6 +232,10 @@ public class SponsorService {
 		this.validator.validate(result, binding);
 
 		return result;
+	}
+
+	public void flush() {
+		this.SponsorRepository.flush();
 	}
 
 }

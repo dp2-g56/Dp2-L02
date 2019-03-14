@@ -15,26 +15,25 @@ import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
 
-import repositories.FloatRepository;
 import domain.Brotherhood;
 import domain.Parade;
 import forms.FormObjectParadeFloat;
 import forms.FormObjectParadeFloatCheckbox;
+import repositories.FloatRepository;
 
 @Service
 @Transactional
 public class FloatService {
 
 	@Autowired
-	private FloatRepository		floatRepository;
+	private FloatRepository floatRepository;
 
 	@Autowired
-	private BrotherhoodService	brotherhoodService;
+	private BrotherhoodService brotherhoodService;
 	@Autowired
-	private ParadeService		paradeService;
+	private ParadeService paradeService;
 	@Autowired
-	private Validator			validator;
-
+	private Validator validator;
 
 	public domain.Float reconstruct(domain.Float floatt, BindingResult binding) {
 		domain.Float result = new domain.Float();
@@ -50,14 +49,15 @@ public class FloatService {
 			result.setDescription(floatt.getDescription());
 			result.setTitle(floatt.getTitle());
 
-			//result = floatt;
+			// result = floatt;
 
-			//result.setPictures(floatt.getPictures());
+			// result.setPictures(floatt.getPictures());
 
 		}
 		this.validator.validate(result, binding);
 		return result;
 	}
+
 	public List<domain.Float> showAssignedFloats(Parade parade) {
 		List<domain.Float> floatts = new ArrayList<domain.Float>();
 		floatts = parade.getFloats();
@@ -87,7 +87,7 @@ public class FloatService {
 	}
 
 	public void remove(domain.Float floatt) {
-		//No se pueden eliminar pasos asignados a desfiles en final mode
+		// No se pueden eliminar pasos asignados a desfiles en final mode
 
 		this.brotherhoodService.loggedAsBrotherhood();
 		Brotherhood bro = new Brotherhood();
@@ -105,16 +105,16 @@ public class FloatService {
 
 	public domain.Float save(domain.Float floatt) {
 
-		//Obtener float list
-		//quitar float antiguo y añadir el nuevo
-		//Hacer set del float list modificado
-		//Save parade
+		// Obtener float list
+		// quitar float antiguo y añadir el nuevo
+		// Hacer set del float list modificado
+		// Save parade
 
-		//Obtener loggedBrotherhood
+		// Obtener loggedBrotherhood
 
-		//A PARTIR DE AQUI PUEDE QUE SEA OPCIONAL
-		//Quitar parade antigua y añadir nueva
-		//Obt
+		// A PARTIR DE AQUI PUEDE QUE SEA OPCIONAL
+		// Quitar parade antigua y añadir nueva
+		// Obt
 
 		this.brotherhoodService.loggedAsBrotherhood();
 		Brotherhood loggedBrotherhood = new Brotherhood();
@@ -131,6 +131,7 @@ public class FloatService {
 
 		return floattSaved;
 	}
+
 	public domain.Float create() {
 		final domain.Float floatt = new domain.Float();
 		final List<String> pictures = new ArrayList<String>();
@@ -170,7 +171,7 @@ public class FloatService {
 		result.setTitle(formObjectParadeFloat.getTitle());
 		result.setDescription(formObjectParadeFloat.getDescription());
 
-		//		this.validator.validate(result, binding);
+		// this.validator.validate(result, binding);
 
 		return result;
 	}
@@ -212,6 +213,7 @@ public class FloatService {
 		return floats;
 
 	}
+
 	public List<domain.Float> floatsInParadeInFinalMode() {
 		this.brotherhoodService.loggedAsBrotherhood();
 		Brotherhood bro = new Brotherhood();

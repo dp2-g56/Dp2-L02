@@ -38,6 +38,16 @@
 			</li>
 		</security:authorize>
 		
+		<security:authorize access="hasRole('SPONSOR')">
+			<li><a class="fNiv"><spring:message	code="master.page.sponsor" /></a>
+				<ul>
+					<li class="arrow"></li>				
+					<li><a href="parade/sponsor/list.do"><spring:message code="master.page.sponsor.listParades" /></a></li>
+					<li><a href="sponsorship/sponsor/list.do"><spring:message code="master.page.sponsor.listSponsorships" /></a></li>
+				</ul>
+			</li>
+		</security:authorize>
+		
 		<security:authorize access="hasRole('BROTHERHOOD')">
 			<li><a class="fNiv"><spring:message	code="master.page.brotherhood" /></a>
 				<ul>
@@ -63,6 +73,17 @@
 				</ul>	
 			</li>
 		</security:authorize>
+		
+		<security:authorize access="hasRole('CHAPTER')">
+			<li><a class="fNiv"><spring:message	code="master.page.chapter" /></a>
+				<ul>
+					<li class="arrow"></li>
+					<li><a href="parade/chapter/list.do"><spring:message code="master.page.chapter.parade.list" /></a></li>					
+					<li><a href="chapter/list.do"><spring:message code="master.page.sponsor.listProclaim" /></a></li>
+				</ul>
+			</li>
+		</security:authorize>
+		
 		
 		<security:authorize access="isAnonymous()">
 			<li><a class="fNiv" href="security/login.do"><spring:message code="master.page.login" /></a></li>

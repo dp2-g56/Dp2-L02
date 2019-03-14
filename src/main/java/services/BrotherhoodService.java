@@ -15,10 +15,6 @@ import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
 
-import repositories.BrotherhoodRepository;
-import security.Authority;
-import security.LoginService;
-import security.UserAccount;
 import domain.Box;
 import domain.Brotherhood;
 import domain.Enrolment;
@@ -28,20 +24,23 @@ import domain.Parade;
 import domain.SocialProfile;
 import domain.StatusEnrolment;
 import forms.FormObjectBrotherhood;
+import repositories.BrotherhoodRepository;
+import security.Authority;
+import security.LoginService;
+import security.UserAccount;
 
 @Service
 @Transactional
 public class BrotherhoodService {
 
 	@Autowired
-	private BrotherhoodRepository	brotherhoodRepository;
+	private BrotherhoodRepository brotherhoodRepository;
 
 	@Autowired
-	private BoxService				boxService;
+	private BoxService boxService;
 
 	@Autowired
-	private Validator				validator;
-
+	private Validator validator;
 
 	public List<Brotherhood> findAll() {
 		return this.brotherhoodRepository.findAll();
@@ -74,7 +73,7 @@ public class BrotherhoodService {
 	public Brotherhood createBrotherhood() {
 		Brotherhood bro = new Brotherhood();
 
-		//Se crean las listas vacias
+		// Se crean las listas vacias
 		List<String> pictures = new ArrayList<String>();
 		List<SocialProfile> socialProfiles = new ArrayList<SocialProfile>();
 		List<Enrolment> enrolments = new ArrayList<Enrolment>();
@@ -121,11 +120,11 @@ public class BrotherhoodService {
 
 	public Brotherhood saveCreate(Brotherhood bro) {
 
-		//SOCIAL PROFILES
+		// SOCIAL PROFILES
 		List<SocialProfile> socialProfiles = new ArrayList<>();
 		bro.setSocialProfiles(socialProfiles);
 
-		//BOXES
+		// BOXES
 		List<Box> boxes = new ArrayList<>();
 		Box box1 = this.boxService.createSystem();
 		box1.setName("SPAMBOX");
@@ -154,24 +153,24 @@ public class BrotherhoodService {
 
 		bro.setBoxes(boxes);
 
-		//ENROLMENTS
+		// ENROLMENTS
 		List<Enrolment> enrolments = new ArrayList<>();
 		bro.setEnrolments(enrolments);
 
-		//Establishment Date
+		// Establishment Date
 		Date date = new Date();
 		date.setTime(date.getTime() - 1);
 		bro.setEstablishmentDate(date);
 
-		//Pictures
+		// Pictures
 		List<String> pictures = new ArrayList<>();
 		bro.setPictures(pictures);
 
-		//Floats
+		// Floats
 		List<domain.Float> floats = new ArrayList<>();
 		bro.setFloats(floats);
 
-		//Parades
+		// Parades
 		List<Parade> parades = new ArrayList<>();
 		bro.setParades(parades);
 
@@ -183,39 +182,39 @@ public class BrotherhoodService {
 		Brotherhood result = new Brotherhood();
 
 		result.setAddress(formObjectBrotherhood.getAddress());
-		//result.setBoxes(boxes);
+		// result.setBoxes(boxes);
 		result.setEmail(formObjectBrotherhood.getEmail());
-		//result.setEnrolments(enrolments)
-		//result.setFinder(finder)
+		// result.setEnrolments(enrolments)
+		// result.setFinder(finder)
 		result.setHasSpam(false);
 		result.setMiddleName(formObjectBrotherhood.getMiddleName());
 		result.setName(formObjectBrotherhood.getName());
 		result.setPhoneNumber(formObjectBrotherhood.getPhoneNumber());
 		result.setPhoto(formObjectBrotherhood.getPhoto());
-		//		result.setRequests(requests);
-		//		result.setPolarity(polarity);
-		//		result.setSocialProfiles(socialProfiles);
+		// result.setRequests(requests);
+		// result.setPolarity(polarity);
+		// result.setSocialProfiles(socialProfiles);
 		result.setSurname(formObjectBrotherhood.getSurname());
 
 		result.setTitle(formObjectBrotherhood.getTitle());
 
-		//USER ACCOUNT
+		// USER ACCOUNT
 		UserAccount userAccount = new UserAccount();
 
-		//Authorities
+		// Authorities
 		List<Authority> authorities = new ArrayList<Authority>();
 		Authority authority = new Authority();
 		authority.setAuthority(Authority.BROTHERHOOD);
 		authorities.add(authority);
 		userAccount.setAuthorities(authorities);
 
-		//locked
+		// locked
 		userAccount.setIsNotLocked(true);
 
-		//Username
+		// Username
 		userAccount.setUsername(formObjectBrotherhood.getUsername());
 
-		//Password
+		// Password
 		Md5PasswordEncoder encoder;
 		encoder = new Md5PasswordEncoder();
 		userAccount.setPassword(encoder.encodePassword(formObjectBrotherhood.getPassword(), null));
@@ -307,6 +306,7 @@ public class BrotherhoodService {
 					positions.add(e.getPosition().getTitleSpanish());
 		return positions;
 	}
+
 	public Enrolment getEnrolment(Member m) {
 		Enrolment en = null;
 		Brotherhood bro = this.loggedBrotherhood();

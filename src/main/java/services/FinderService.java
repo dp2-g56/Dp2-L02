@@ -14,13 +14,13 @@ import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
 
+import domain.Finder;
+import domain.Member;
+import domain.Parade;
 import repositories.FinderRepository;
 import security.Authority;
 import security.LoginService;
 import security.UserAccount;
-import domain.Finder;
-import domain.Member;
-import domain.Parade;
 
 @Service
 @Transactional
@@ -29,17 +29,16 @@ public class FinderService {
 	// Managed repository ------------------------------------------
 
 	@Autowired
-	private FinderRepository		finderRepository;
+	private FinderRepository finderRepository;
 
 	// Supporting Services -----------------------------------------
 
 	@Autowired
-	private MemberService			memberRepository;
+	private MemberService memberRepository;
 	@Autowired
-	private Validator				validator;
+	private Validator validator;
 	@Autowired
-	private ConfigurationService	configurationService;
-
+	private ConfigurationService configurationService;
 
 	// Simple CRUD methods ------------------------------------------
 
@@ -75,6 +74,7 @@ public class FinderService {
 	public Finder save(Finder finder) {
 		return this.finderRepository.save(finder);
 	}
+
 	public void delete(Finder finder) {
 		this.finderRepository.delete(finder);
 	}
@@ -92,12 +92,12 @@ public class FinderService {
 		List<Parade> filter = new ArrayList<>();
 		List<Parade> result = this.getAllPublishedParades();
 
-		//KeyWord
+		// KeyWord
 		if (!finder.getKeyWord().equals(null) && !finder.getKeyWord().equals("")) {
 			filter = this.finderRepository.getParadesByKeyWord("%" + finder.getKeyWord() + "%");
 			result.retainAll(filter);
 		}
-		//Area
+		// Area
 		if (!finder.getArea().equals(null) && !finder.getArea().equals("")) {
 			filter = this.finderRepository.getParadesByArea("%" + finder.getArea() + "%");
 			result.retainAll(filter);
@@ -120,6 +120,7 @@ public class FinderService {
 		this.memberRepository.save(loggedMember);
 
 	}
+
 	public List<Parade> getAllPublishedParades() {
 		return this.finderRepository.getPublushedParades();
 	}
@@ -152,10 +153,10 @@ public class FinderService {
 
 	public void updateAllFinders() {
 
-		//LastEdit Finder
+		// LastEdit Finder
 
 		List<Finder> finders = this.findAll();
-		//Current Date
+		// Current Date
 		Date currentDate = new Date();
 
 		Calendar calendar = Calendar.getInstance();
@@ -165,22 +166,23 @@ public class FinderService {
 		Integer currentYear = calendar.get(Calendar.YEAR);
 		Integer currentHour = calendar.get(Calendar.HOUR);
 
-		//Max Time Finder
+		// Max Time Finder
 		Integer time = this.configurationService.getConfiguration().getTimeFinder();
 
-		//Empty List parades
+		// Empty List parades
 		List<Parade> parades = new ArrayList<>();
 
 		for (Finder f : finders) {
 
-			//Last Edit Date
+			// Last Edit Date
 			Date lasEdit = f.getLastEdit();
 			calendar.setTime(lasEdit);
 			Integer lastEditDay = calendar.get(Calendar.DATE);
 			Integer lastEditMonth = calendar.get(Calendar.MONTH);
 			Integer lastEditYear = calendar.get(Calendar.YEAR);
 			Integer lastEditHour = calendar.get(Calendar.HOUR);
-			if (!(currentDay.equals(lastEditDay) && currentMonth.equals(lastEditMonth) && currentYear.equals(lastEditYear) && lastEditHour < (currentHour + time))) {
+			if (!(currentDay.equals(lastEditDay) && currentMonth.equals(lastEditMonth)
+					&& currentYear.equals(lastEditYear) && lastEditHour < (currentHour + time))) {
 				f.setParades(parades);
 				this.save(f);
 			}

@@ -31,6 +31,8 @@
 		<value>/views/member/messages</value>
 		<value>/views/mail/messages</value>
 		<value>/views/actor/messages</value>
+		<value>/views/sponsor/messages</value>
+		<value>/views/chapter/messages</value>
 	</util:list>
 
 </beans>

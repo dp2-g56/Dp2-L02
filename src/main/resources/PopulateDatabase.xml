@@ -48,6 +48,14 @@
 				<value>LOW</value>
 			</list>
 		</property>
+		<property name="cardType">
+			<list>
+				<value>VISA</value>
+				<value>MASTER</value>
+				<value>DINNERS</value>
+				<value>AMEX</value>
+			</list>
+		</property>
 		<property name="priorityLvlSpa">
 			<list>
 				<value>ALTA</value>
@@ -69,6 +77,8 @@
 		
 		<property name="systemName" value="Acme Madrugá" />
 		<property name="imageURL" value="https://tinyurl.com/acme-madruga" />
+		<property name="VAT" value="21" />
+		<property name="fare" value="0.01" />
 		
 	</bean>
 	
@@ -255,6 +265,33 @@
 		<property name="isNotLocked" value="True" />
 	</bean> 
 	
+	<bean id="userAccount15" class="security.UserAccount">
+		<property name="username" value="chapter2" />
+		<property name="password" value="07a29f2348d728fad16c5260823f93ef" />
+		<property name="authorities">
+			<list>
+				<bean class="security.Authority">
+					<property name="authority" value="CHAPTER" />
+				</bean>
+			</list>
+		</property>
+		<property name="isNotLocked" value="True" />
+	</bean> 
+	
+	<!-- sponsor -->
+	<bean id="userAccount14" class="security.UserAccount">
+		<property name="username" value="sponsor1" />
+		<property name="password" value="42c63ad66d4dc07ed17753772bef96d6" />
+		<property name="authorities">
+			<list>
+				<bean class="security.Authority">
+					<property name="authority" value="SPONSOR" />
+				</bean>
+			</list>
+		</property>
+		<property name="isNotLocked" value="True" />
+	</bean> 
+	
 	<!-- FIN USER ACCOUNT -->
 	
 
@@ -390,6 +427,47 @@
 		<property name="polarity" value ="0.0"/>
 		<property name="title" value="Chapter1" />
 		<property name="area" ref="area1"/>
+		<property name="proclaims">
+			<list>
+				<ref bean="proclaim1" />
+				<ref bean="proclaim2" />
+				<ref bean="proclaim3" />
+			</list>
+		</property>
+	</bean>
+		
+		<!-- CHAPTER2 -->
+	<bean id="chapter2" class="domain.Chapter">
+		<property name="name" value="I2" />
+		<property name="middleName" value="Am2" />
+		<property name="surname" value="Chapter2" />
+		<property name="photo" value="https://www.url.com/example2" />
+		<property name="email" value="chapter2@admin.com" />
+		<property name="phoneNumber" value="+34609235422" />
+		<property name="address" value="Fake Street 12342" />
+		<property name="socialProfiles">
+			<list>
+			</list>
+		</property>
+		<property name="boxes">
+			<list>
+				<ref bean="inBoxChapter2" />
+				<ref bean="outBoxChapter2" />
+				<ref bean="trashBoxChapter2" />
+				<ref bean="spamBoxChapter2" />
+				<ref bean="notificationBoxChapter2" />
+			</list>
+		</property>
+		<property name="userAccount" ref="userAccount15" />
+		<property name="hasSpam" value = "true"/>
+		<property name="polarity" value ="0.0"/>
+		<property name="title" value="Chapter2" />
+		<property name="proclaims">
+			<list>
+				<ref bean="proclaim4" />
+			</list>
+		</property>
+		
 	</bean>
 	
 	<!-- FIN CHAPTER -->	
@@ -785,6 +863,34 @@
 		</property>		
 	</bean>
 	
+	<!-- SPONSOR -->
+		<!-- SYSTEM -->
+	<bean id="sponsor1" class="domain.Sponsor">
+		<property name="name" value="Pepe" />
+		<property name="middleName" value="" />
+		<property name="surname" value="Martin" />
+		<property name="photo" value="https://www.url.com/example" />
+		<property name="email" value="sponsor1@sponsor.com" />
+		<property name="phoneNumber" value="+34653248458" />
+		<property name="address" value="Sevilla" />
+		<property name="socialProfiles">
+			<list>
+			</list>
+		</property>
+		<property name="boxes">
+			<list>
+				<ref bean="inBoxSponsor1" />
+				<ref bean="outBoxSponsor1" />
+				<ref bean="trashBoxSponsor1" />
+				<ref bean="spamBoxSponsor1" />
+				<ref bean="notificationBoxSponsor1" />
+			</list>
+		</property>
+		<property name="userAccount" ref="userAccount14" />
+		<property name="hasSpam" value = "false"/>
+		<property name="polarity" value ="0.0"/>
+	</bean>
+	
 	<!-- SOCIAL PROFILES -->
 		<!-- ADMIN -->
 			<bean class="domain.SocialProfile" id="socialProfile1">
@@ -919,6 +1025,53 @@
 	
 	
 	<!-- BOXES -->
+		<!-- SPONSOR -->
+				<bean class="domain.Box" id="inBoxSponsor1">
+					<property value="INBOX" name="name" />
+					<property value="true" name="isSystem" />
+					<property name="messages">
+						<list>
+						</list>
+					</property>
+				</bean>
+				
+				<bean class="domain.Box" id="outBoxSponsor1">
+					<property value="OUTBOX" name="name" />
+					<property value="true" name="isSystem" />
+					<property name="messages">
+						<list>
+						</list>
+					</property>
+				</bean>
+				
+				<bean class="domain.Box" id="trashBoxSponsor1">
+					<property value="TRASHBOX" name="name" />
+					<property value="true" name="isSystem" />
+					<property name="messages">
+						<list>
+						</list>
+					</property>
+				</bean>
+				
+				<bean class="domain.Box" id="spamBoxSponsor1">
+					<property value="SPAMBOX" name="name" />
+					<property value="true" name="isSystem" />
+					<property name="messages">
+						<list>
+						</list>
+					</property>
+				</bean>
+				
+				<bean class="domain.Box" id="notificationBoxSponsor1">
+					<property value="NOTIFICATIONBOX" name="name" />
+					<property value="true" name="isSystem" />
+					<property name="messages">
+						<list>
+						</list>
+					</property>
+				</bean>
+			<!-- FIN SPONSOR -->
+		
 		<!-- ADMIN -->
 		<!-- SYSTEM -->
 				<bean class="domain.Box" id="inBoxAdmin4">
@@ -1155,6 +1308,55 @@
 				</bean>
 				
 				<bean class="domain.Box" id="notificationBoxChapter1">
+					<property value="NOTIFICATIONBOX" name="name" />
+					<property value="true" name="isSystem" />
+					<property name="messages">
+						<list>
+						</list>
+					</property>
+				</bean>
+			
+			<!-- FIN CHAPTER1 -->
+			
+			<!-- CHAPTER2 -->
+				
+				<bean class="domain.Box" id="inBoxChapter2">
+					<property value="INBOX" name="name" />
+					<property value="true" name="isSystem" />
+					<property name="messages">
+						<list>
+						</list>
+					</property>
+				</bean>
+				
+				<bean class="domain.Box" id="outBoxChapter2">
+					<property value="OUTBOX" name="name" />
+					<property value="true" name="isSystem" />
+					<property name="messages">
+						<list>
+						</list>
+					</property>
+				</bean>
+				
+				<bean class="domain.Box" id="trashBoxChapter2">
+					<property value="TRASHBOX" name="name" />
+					<property value="true" name="isSystem" />
+					<property name="messages">
+						<list>
+						</list>
+					</property>
+				</bean>
+				
+				<bean class="domain.Box" id="spamBoxChapter2">
+					<property value="SPAMBOX" name="name" />
+					<property value="true" name="isSystem" />
+					<property name="messages">
+						<list>
+						</list>
+					</property>
+				</bean>
+				
+				<bean class="domain.Box" id="notificationBoxChapter2">
 					<property value="NOTIFICATIONBOX" name="name" />
 					<property value="true" name="isSystem" />
 					<property name="messages">
@@ -1729,7 +1931,6 @@
 		<property value="true" name="isDraftMode" />
 		<property value="12" name="rowNumber" />
 		<property value="15" name="columnNumber" />
-		<property name="paradeStatus" value="DRAFTMODE" />
 		<property name="floats">
 			<list>
 				<ref bean="float1" />
@@ -1808,7 +2009,6 @@
 		<property value="true" name="isDraftMode" />
 		<property value="5" name="rowNumber" />
 		<property value="1" name="columnNumber" />
-		<property name="paradeStatus" value="DRAFTMODE" />
 		<property name="floats">
 		
 			<list>
@@ -2353,6 +2553,28 @@
 				<value>http://www.photo.com</value>
 			</list>
 		</property>
+	</bean>
+	
+	 <!--PROCLAIMS -->
+	
+	 <bean id ="proclaim1" class="domain.Proclaim">
+		<property name="publishMoment" value="14/03/2019 00:00"/>
+		<property name="description" value="A+"/>
+	</bean>
+	
+	 <bean id ="proclaim2" class="domain.Proclaim">
+		<property name="publishMoment" value="14/03/2019 00:00"/>
+		<property name="description" value="A++"/>
+	</bean>
+	
+	 <bean id ="proclaim3" class="domain.Proclaim">
+		<property name="publishMoment" value="14/03/2019 00:00"/>
+		<property name="description" value="A+++"/>
+	</bean>
+	
+	 <bean id ="proclaim4" class="domain.Proclaim">
+		<property name="publishMoment" value="14/03/2019 00:00"/>
+		<property name="description" value="A++++"/>
 	</bean>
 
 </beans>

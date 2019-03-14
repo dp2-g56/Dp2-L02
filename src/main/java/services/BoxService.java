@@ -12,29 +12,28 @@ import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
 
-import repositories.BoxRepository;
-import security.LoginService;
-import security.UserAccount;
 import domain.Actor;
 import domain.Box;
 import domain.Message;
+import repositories.BoxRepository;
+import security.LoginService;
+import security.UserAccount;
 
 @Transactional
 @Service
 public class BoxService {
 
 	@Autowired
-	private BoxRepository	boxRepository;
+	private BoxRepository boxRepository;
 
 	@Autowired
-	private MessageService	messageService;
+	private MessageService messageService;
 
 	@Autowired
-	private ActorService	actorService;
+	private ActorService actorService;
 
 	@Autowired
-	private Validator		validator;
-
+	private Validator validator;
 
 	public Box flushSave(Box box) {
 		return this.boxRepository.saveAndFlush(box);
@@ -43,9 +42,10 @@ public class BoxService {
 	public Box create() {
 
 		this.actorService.loggedAsActor();
-		//UserAccount userAccount;
-		//userAccount = LoginService.getPrincipal();
-		//Actor actor = this.actorService.getActorByUsername(userAccount.getUsername());
+		// UserAccount userAccount;
+		// userAccount = LoginService.getPrincipal();
+		// Actor actor =
+		// this.actorService.getActorByUsername(userAccount.getUsername());
 		final Box box = new Box();
 		final List<Message> messages = new ArrayList<Message>();
 
@@ -54,11 +54,11 @@ public class BoxService {
 		box.setMessages(messages);
 		box.setFatherBox(null);
 
-		//actor.getBoxes().add(box);
+		// actor.getBoxes().add(box);
 		return box;
 	}
 
-	public Box createSystem() {		//Crear cajas del sistema
+	public Box createSystem() { // Crear cajas del sistema
 		final Box box = new Box();
 		final List<Message> messages = new ArrayList<Message>();
 

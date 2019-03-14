@@ -13,9 +13,6 @@ import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
 
-import repositories.RequestRepository;
-import security.LoginService;
-import security.UserAccount;
 import domain.Actor;
 import domain.Brotherhood;
 import domain.Member;
@@ -23,6 +20,9 @@ import domain.Message;
 import domain.Parade;
 import domain.Request;
 import domain.Status;
+import repositories.RequestRepository;
+import security.LoginService;
+import security.UserAccount;
 
 @Service
 @Transactional
@@ -31,22 +31,22 @@ public class RequestService {
 	// Managed repository ------------------------------------------
 
 	@Autowired
-	private RequestRepository	requestRepository;
+	private RequestRepository requestRepository;
 	@Autowired
-	private MemberService		memberService;
+	private MemberService memberService;
 	@Autowired
-	private ParadeService		paradeService;
+	private ParadeService paradeService;
 	@Autowired
-	private Validator			validator;
+	private Validator validator;
 	@Autowired
-	private BrotherhoodService	brotherhoodService;
+	private BrotherhoodService brotherhoodService;
 	@Autowired
-	private ActorService		actorService;
+	private ActorService actorService;
 	@Autowired
-	private MessageService		messageService;
+	private MessageService messageService;
 
-
-	//Simple CRUD methods ---------------------------------------------------------------------
+	// Simple CRUD methods
+	// ---------------------------------------------------------------------
 
 	public Request createRequest(Member member, Parade parade) {
 		Request res = new Request();
@@ -194,7 +194,8 @@ public class RequestService {
 					break;
 				}
 
-			Boolean respectMaxAndMin = col <= parade.getColumnNumber() && row <= parade.getRowNumber() && col >= 1 && row >= 1;
+			Boolean respectMaxAndMin = col <= parade.getColumnNumber() && row <= parade.getRowNumber() && col >= 1
+					&& row >= 1;
 
 			Assert.isTrue(isFree && respectMaxAndMin);
 
@@ -209,6 +210,7 @@ public class RequestService {
 
 		return requestSaved;
 	}
+
 	public Request reconstructRequest(Request request, BindingResult binding) {
 		this.brotherhoodService.securityAndBrotherhood();
 
@@ -258,6 +260,7 @@ public class RequestService {
 		this.validator.validate(result, binding);
 		return result2;
 	}
+
 	public List<Integer> getFreePosition(Request request) {
 		List<Integer> position = new ArrayList<>();
 
@@ -302,7 +305,7 @@ public class RequestService {
 	}
 
 	public void sendMessagesToActorsInvolved(Request request) {
-		//Messages
+		// Messages
 		UserAccount userAccount;
 		userAccount = LoginService.getPrincipal();
 		String userName = userAccount.getUsername();
@@ -320,11 +323,14 @@ public class RequestService {
 
 		String subject = "Request updated: " + statusEN + " / Solicitud actualizada: " + statusES;
 
-		String body = "Request associated to the parade: " + request.getParade().getTicker() + ", " + request.getParade().getTitle() + " has been updated" + " / " + "Solicitud asociada al desfile: " + request.getParade().getTicker() + ", "
-			+ request.getParade().getTitle() + " ha sido actualizada";
+		String body = "Request associated to the parade: " + request.getParade().getTicker() + ", "
+				+ request.getParade().getTitle() + " has been updated" + " / " + "Solicitud asociada al desfile: "
+				+ request.getParade().getTicker() + ", " + request.getParade().getTitle() + " ha sido actualizada";
 
-		Message messageB = this.messageService.createNotification(subject, body, "NEUTRAL", "Notification, Request", brotherhood);
-		Message messageM = this.messageService.createNotification(subject, body, "NEUTRAL", "Notification, Request", request.getMember());
+		Message messageB = this.messageService.createNotification(subject, body, "NEUTRAL", "Notification, Request",
+				brotherhood);
+		Message messageM = this.messageService.createNotification(subject, body, "NEUTRAL", "Notification, Request",
+				request.getMember());
 
 		this.messageService.sendMessageAnotherSender(messageB);
 		this.messageService.sendMessageAnotherSender(messageM);

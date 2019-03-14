@@ -36,6 +36,12 @@
 		
 		<acme:input code="configuration.imageURL" path="imageURL"/>
 		
+		<acme:input code="configuration.VAT" path="VAT"/>
+		
+		<acme:input code="configuration.fare" path="fare"/>
+		
+		<acme:input code="configuration.cardType" path="cardType"/>
+		
 		<acme:submit name="save" code="configuration.save.button"/>
 		
 		<acme:cancel url="/configuration/administrator/list.do" code="configuration.cancel.button"/>

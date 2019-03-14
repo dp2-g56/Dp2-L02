@@ -234,4 +234,8 @@ public class SponsorService {
 		return result;
 	}
 
+	public void flush() {
+		this.SponsorRepository.flush();
+	}
+
 }

@@ -2,6 +2,7 @@
 package services;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,9 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
 import domain.CreditCard;
 import domain.Parade;
+import domain.Sponsor;
 import domain.Sponsorship;
 import utilities.AbstractTest;
 
@@ -28,6 +31,9 @@ public class SponsorshipServiceTest extends AbstractTest {
 
 	@Autowired
 	private AdminService adminService;
+
+	@Autowired
+	private SponsorService sponsorService;
 
 	@Test
 	public void driverAddSponsorship() {
@@ -92,6 +98,53 @@ public class SponsorshipServiceTest extends AbstractTest {
 			super.authenticate(username);
 			this.sponsorshipService.addSponsorship(spo);
 			this.sponsorshipService.flush();
+			super.unauthenticate();
+		} catch (Throwable oops) {
+			caught = oops.getClass();
+		}
+
+		super.checkExceptions(expected, caught);
+
+	}
+
+	@Test
+	public void driverListSponsorships() {
+
+		Object testingData[][] = { { null, "sponsor1", null }, { true, "sponsor1", null }, { false, "sponsor1", null },
+				{ null, "admin1", IllegalArgumentException.class }, { true, "admin1", IllegalArgumentException.class },
+				{ false, "admin1", IllegalArgumentException.class } };
+
+		for (int i = 0; i < testingData.length; i++)
+			this.templateListSponsorships((Boolean) testingData[i][0], (String) testingData[i][1],
+					(Class<?>) testingData[i][2]);
+	}
+
+	private void templateListSponsorships(Boolean isActivated, String username, Class<?> expected) {
+
+		Class<?> caught = null;
+
+		try {
+			super.authenticate(username);
+			Collection<Sponsorship> sponsorships = this.sponsorshipService.getSponsorships(isActivated);
+			Sponsor sponsor = this.sponsorService.securityAndSponsor();
+			Collection<Sponsorship> sponsorshipsOfSpo = sponsor.getSponsorships();
+			if (isActivated == null)
+				Assert.isTrue(sponsorships.size() == sponsorshipsOfSpo.size());
+			else if (isActivated == true) {
+				int size = 0;
+				for (Sponsorship s : sponsorshipsOfSpo) {
+					if (s.getIsActivated() == true)
+						size = size + 1;
+					Assert.isTrue(sponsorships.size() == size);
+				}
+			} else {
+				int size = 0;
+				for (Sponsorship s : sponsorshipsOfSpo) {
+					if (s.getIsActivated() == false)
+						size = size + 1;
+					Assert.isTrue(sponsorships.size() == size);
+				}
+			}
 			super.unauthenticate();
 		} catch (Throwable oops) {
 			caught = oops.getClass();

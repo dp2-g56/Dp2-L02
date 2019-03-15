@@ -427,6 +427,13 @@
 		<property name="polarity" value ="0.0"/>
 		<property name="title" value="Chapter1" />
 		<property name="area" ref="area1"/>
+		<property name="proclaims">
+			<list>
+				<ref bean="proclaim1" />
+				<ref bean="proclaim2" />
+				<ref bean="proclaim3" />
+			</list>
+		</property>
 	</bean>
 		
 		<!-- CHAPTER2 -->
@@ -455,6 +462,11 @@
 		<property name="hasSpam" value = "true"/>
 		<property name="polarity" value ="0.0"/>
 		<property name="title" value="Chapter2" />
+		<property name="proclaims">
+			<list>
+				<ref bean="proclaim4" />
+			</list>
+		</property>
 		
 	</bean>
 	
@@ -2566,6 +2578,28 @@
 				<value>http://www.photo.com</value>
 			</list>
 		</property>
+	</bean>
+	
+	 <!--PROCLAIMS -->
+	
+	 <bean id ="proclaim1" class="domain.Proclaim">
+		<property name="publishMoment" value="14/03/2019 00:00"/>
+		<property name="description" value="A+"/>
+	</bean>
+	
+	 <bean id ="proclaim2" class="domain.Proclaim">
+		<property name="publishMoment" value="14/03/2019 00:00"/>
+		<property name="description" value="A++"/>
+	</bean>
+	
+	 <bean id ="proclaim3" class="domain.Proclaim">
+		<property name="publishMoment" value="14/03/2019 00:00"/>
+		<property name="description" value="A+++"/>
+	</bean>
+	
+	 <bean id ="proclaim4" class="domain.Proclaim">
+		<property name="publishMoment" value="14/03/2019 00:00"/>
+		<property name="description" value="A++++"/>
 	</bean>
 
 </beans>

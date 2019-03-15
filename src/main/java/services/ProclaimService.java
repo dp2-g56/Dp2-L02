@@ -44,6 +44,7 @@ public class ProclaimService {
 	}
 
 	public Proclaim createProclaim() {
+		this.chapterService.loggedAsChapter();
 		Proclaim proclaim = new Proclaim();
 
 		Date thisMoment = new Date();
@@ -57,6 +58,7 @@ public class ProclaimService {
 	}
 
 	public List<Proclaim> showProclaims() {
+		this.chapterService.loggedAsChapter();
 		UserAccount userAccount;
 		userAccount = LoginService.getPrincipal();
 		Chapter chapter = new Chapter();
@@ -108,5 +110,9 @@ public class ProclaimService {
 
 		return result;
 
+	}
+
+	public void flush() {
+		this.proclaimRepository.flush();
 	}
 }

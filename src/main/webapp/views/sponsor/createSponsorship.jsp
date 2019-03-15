@@ -60,7 +60,7 @@
 	<jstl:if test="${paradeId==0}">
 		<acme:submit code="sponsorship.update" name="save" />
 	</jstl:if>
-	<acme:cancel url="/parade/sponsor/list.do" code="sponsorship.cancel" /> 
+	<acme:cancel url="/sponsorship/sponsor/list.do" code="sponsorship.cancel" /> 
 	
 </form:form> 
 

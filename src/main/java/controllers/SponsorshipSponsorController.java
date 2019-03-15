@@ -201,7 +201,7 @@ public class SponsorshipSponsorController extends AbstractController {
 	public ModelAndView changeStatusSponsorship(@RequestParam int sponsorshipId) {
 		ModelAndView result;
 
-		// this.sponsorshipService.changeStatus(sponsorshipId);
+		this.sponsorshipService.changeStatus(sponsorshipId);
 
 		result = new ModelAndView("redirect:list.do");
 

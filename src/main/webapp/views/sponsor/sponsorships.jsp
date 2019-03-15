@@ -71,7 +71,7 @@
 				<spring:param name="sponsorshipId" value="${row.id}" />
 			</spring:url>
 			
-			<a href="${updateSponsorship}"><spring:message code="sponsorship.update" /></a> / <a href="${changeStatus}"><jstl:out value="${status}"></jstl:out></a>
+			<a href="${updateSponsorship}"><spring:message code="sponsorship.update" /></a> / <a href="${changeStatus}" onClick="return confirm('<spring:message code="sponsorship.changeStatus.confirmation" />')"><jstl:out value="${status}"/></a>
 			
 		</display:column><a href="${changeStatus}"><spring:message code="sponsorship.update" /></a>
 				

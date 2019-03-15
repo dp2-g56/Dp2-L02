@@ -4,6 +4,8 @@ package services;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import javax.validation.ConstraintViolationException;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,13 +66,13 @@ public class SponsorshipServiceTest extends AbstractTest {
 						24, 778, parade2, "sponsor1", IllegalArgumentException.class } };
 
 		for (int i = 0; i < testingData.length; i++)
-			this.templateAddOrUpdateSponsorship((String) testingData[i][0], (String) testingData[i][1],
+			this.templateAddSponsorship((String) testingData[i][0], (String) testingData[i][1],
 					(String) testingData[i][2], (String) testingData[i][3], (Long) testingData[i][4],
 					(Integer) testingData[i][5], (Integer) testingData[i][6], (Integer) testingData[i][7],
 					(Parade) testingData[i][8], (String) testingData[i][9], (Class<?>) testingData[i][10]);
 	}
 
-	private void templateAddOrUpdateSponsorship(String banner, String targetURL, String holderName, String brandName,
+	private void templateAddSponsorship(String banner, String targetURL, String holderName, String brandName,
 			Long number, Integer expirationMonth, Integer expirationYear, Integer cvvCode, Parade parade,
 			String username, Class<?> expected) {
 
@@ -153,4 +155,70 @@ public class SponsorshipServiceTest extends AbstractTest {
 		super.checkExceptions(expected, caught);
 
 	}
+
+	@Test
+	public void driverUpdateSponsorship() {
+		Sponsor sponsor = this.sponsorService.getSponsorByUsername("sponsor1");
+		Sponsorship sponsorship = (new ArrayList<Sponsorship>(
+				this.sponsorshipService.getActivatedSponsorshipsOfSponsor(sponsor.getId()))).get(0);
+
+		Object testingData[][] = { { "https://www.imagen.com", sponsorship.getTargetURL(), "Ramon",
+				sponsorship.getCreditCard().getBrandName(), sponsorship.getCreditCard().getNumber(),
+				sponsorship.getCreditCard().getExpirationMonth(), sponsorship.getCreditCard().getExpirationYear(),
+				sponsorship.getCreditCard().getCvvCode(), sponsorship.getId(), "sponsor1", null },
+				{ "nourl", sponsorship.getTargetURL(), sponsorship.getCreditCard().getHolderName(),
+						sponsorship.getCreditCard().getBrandName(), sponsorship.getCreditCard().getNumber(), 13,
+						sponsorship.getCreditCard().getExpirationYear(), 1111111, sponsorship.getId(), "sponsor1",
+						ConstraintViolationException.class },
+				{ "https://www.imagen.com", sponsorship.getTargetURL(), "Ramon",
+						sponsorship.getCreditCard().getBrandName(), sponsorship.getCreditCard().getNumber(),
+						sponsorship.getCreditCard().getExpirationMonth(),
+						sponsorship.getCreditCard().getExpirationYear(), sponsorship.getCreditCard().getCvvCode(),
+						sponsorship.getId(), "admin1", IllegalArgumentException.class },
+				{ "https://www.imagen.com", sponsorship.getTargetURL(), "Ramon",
+						sponsorship.getCreditCard().getBrandName(), sponsorship.getCreditCard().getNumber(), 12, 11,
+						sponsorship.getCreditCard().getCvvCode(), sponsorship.getId(), "sponsor1",
+						IllegalArgumentException.class } };
+
+		for (int i = 0; i < testingData.length; i++)
+			this.templateUpdateSponsorship((String) testingData[i][0], (String) testingData[i][1],
+					(String) testingData[i][2], (String) testingData[i][3], (Long) testingData[i][4],
+					(Integer) testingData[i][5], (Integer) testingData[i][6], (Integer) testingData[i][7],
+					(Integer) testingData[i][8], (String) testingData[i][9], (Class<?>) testingData[i][10]);
+	}
+
+	private void templateUpdateSponsorship(String banner, String targetURL, String holderName, String brandName,
+			Long number, Integer expirationMonth, Integer expirationYear, Integer cvvCode, Integer sponsorshipId,
+			String username, Class<?> expected) {
+
+		Sponsorship sponsorship = this.sponsorshipService.findOne(sponsorshipId);
+		CreditCard card = sponsorship.getCreditCard();
+
+		card.setHolderName(holderName);
+		card.setBrandName(brandName);
+		card.setNumber(number);
+		card.setExpirationMonth(expirationMonth);
+		card.setExpirationYear(expirationYear);
+		card.setCvvCode(cvvCode);
+
+		sponsorship.setCreditCard(card);
+
+		sponsorship.setBanner(banner);
+		sponsorship.setTargetURL(targetURL);
+
+		Class<?> caught = null;
+
+		try {
+			super.authenticate(username);
+			this.sponsorshipService.addOrUpdateSponsorship(sponsorship);
+			this.sponsorshipService.flush();
+			super.unauthenticate();
+		} catch (Throwable oops) {
+			caught = oops.getClass();
+		}
+
+		super.checkExceptions(expected, caught);
+
+	}
+
 }

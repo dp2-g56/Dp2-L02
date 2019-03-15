@@ -96,6 +96,10 @@ public class SponsorshipService {
 		Sponsorship result;
 
 		List<String> cardType = this.configurationService.getConfiguration().getCardType();
+		Sponsor sponsor = this.sponsorService.securityAndSponsor();
+
+		if (sponsorship.getId() > 0)
+			Assert.isTrue(sponsor.equals(this.getSponsorOfSponsorship(sponsorship.getId())));
 
 		Assert.isTrue(cardType.contains(sponsorship.getCreditCard().getBrandName()));
 		Assert.isTrue(!sponsorship.getParade().getIsDraftMode()
@@ -103,8 +107,6 @@ public class SponsorshipService {
 		Assert.isTrue(this.creditCardService.validateNumberCreditCard(sponsorship.getCreditCard()));
 		Assert.isTrue(this.creditCardService.validateDateCreditCard(sponsorship.getCreditCard()));
 		Assert.isTrue(this.creditCardService.validateCvvCreditCard(sponsorship.getCreditCard()));
-
-		Sponsor sponsor = this.sponsorService.securityAndSponsor();
 
 		Sponsorship spon = this.save(sponsorship);
 		result = spon;
@@ -130,6 +132,22 @@ public class SponsorshipService {
 			sponsorships = this.sponsorshipRepository.getDeactivatedSponsorshipsOfSponsor(sponsor.getId());
 
 		return sponsorships;
+	}
+
+	public Collection<Sponsorship> getAllSponsorshipsOfSponsor(int sponsorId) {
+		return this.sponsorshipRepository.getAllSponsorshipsOfSponsor(sponsorId);
+	}
+
+	public Collection<Sponsorship> getActivatedSponsorshipsOfSponsor(int sponsorId) {
+		return this.sponsorshipRepository.getActivatedSponsorshipsOfSponsor(sponsorId);
+	}
+
+	public Collection<Sponsorship> getDeactivatedSponsorshipsOfSponsor(int sponsorId) {
+		return this.sponsorshipRepository.getDeactivatedSponsorshipsOfSponsor(sponsorId);
+	}
+
+	public Sponsor getSponsorOfSponsorship(int sponsorshipId) {
+		return this.sponsorshipRepository.getSponsorOfSponsorship(sponsorshipId);
 	}
 
 }

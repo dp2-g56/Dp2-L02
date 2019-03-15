@@ -150,4 +150,9 @@ public class SponsorshipService {
 		return this.sponsorshipRepository.getSponsorOfSponsorship(sponsorshipId);
 	}
 
+	// AQUI
+	public void changeStatus(int sponsorshipId) {
+
+	}
+
 }

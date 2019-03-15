@@ -196,4 +196,16 @@ public class SponsorshipSponsorController extends AbstractController {
 		return result;
 	}
 
+	// EDIT Sponsorship status
+	@RequestMapping(value = { "/activate", "/deactivate" }, method = RequestMethod.GET)
+	public ModelAndView changeStatusSponsorship(@RequestParam int sponsorshipId) {
+		ModelAndView result;
+
+		// this.sponsorshipService.changeStatus(sponsorshipId);
+
+		result = new ModelAndView("redirect:list.do");
+
+		return result;
+	}
+
 }

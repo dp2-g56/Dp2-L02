@@ -889,6 +889,31 @@
 		<property name="userAccount" ref="userAccount14" />
 		<property name="hasSpam" value = "false"/>
 		<property name="polarity" value ="0.0"/>
+		<property name="sponsorships">
+			<list>
+				<ref bean="sponsorship1" />
+			</list>
+		</property>		
+	</bean>
+	
+	<!-- SPONSORSHIP -->
+	<bean id="sponsorship1" class="domain.Sponsorship">
+		<property name="banner" value="https://boluda.com/files/pasar-wordpress-a-ssl.jpg" />
+		<property name="targetURL" value="https://boluda.com/files/pasar-wordpress-a-ssl.jpg" />
+		<property name="gain" value="20" />
+		<property name="isActivated" value="true" />
+		<property name="creditCard" ref="creditCard1" />
+		<property name="parade" ref="parade3" />
+	</bean>
+	
+	<!-- CREDITCARD -->
+	<bean id="creditCard1" class="domain.CreditCard">
+		<property name="holderName" value="David" />
+		<property name="brandName" value="VISA" />
+		<property name="number" value="4880576829512546" />
+		<property name="expirationMonth" value="12" />
+		<property name="expirationYear" value="23" />
+		<property name="cvvCode" value="123" />
 	</bean>
 	
 	<!-- SOCIAL PROFILES -->

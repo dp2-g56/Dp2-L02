@@ -39,6 +39,8 @@ public class ParadeService {
 	private ParadeRepository paradeRepository;
 	@Autowired
 	private BrotherhoodService brotherhoodService;
+	@Autowired
+	private SponsorService sponsorService;
 
 	// Simple CRUD methods ------------------------------------------
 
@@ -325,5 +327,15 @@ public class ParadeService {
 
 	public Boolean hasArea(Chapter chapter) {
 		return chapter.getArea() != null;
+	}
+
+	public Collection<Parade> listAcceptedParadeIfSponsor() {
+
+		this.sponsorService.securityAndSponsor();
+
+		Collection<Parade> parades = this.getAcceptedParades();
+
+		return parades;
+
 	}
 }

@@ -21,6 +21,7 @@ import security.UserAccount;
 import services.ActorService;
 import services.AdminService;
 import services.BrotherhoodService;
+import services.ChapterService;
 import services.ConfigurationService;
 import services.FloatService;
 import services.MemberService;
@@ -29,6 +30,7 @@ import services.SponsorService;
 import domain.Actor;
 import domain.Admin;
 import domain.Brotherhood;
+import domain.Chapter;
 import domain.Configuration;
 import domain.Member;
 import domain.SocialProfile;
@@ -60,6 +62,9 @@ public class SocialProfileController extends AbstractController {
 	@Autowired
 	private SponsorService			sponsorService;
 
+	@Autowired
+	private ChapterService			chapterService;
+
 
 	//-------------------------------------------------------------------
 	//---------------------------LIST BROTHERHOOD------------------------------------
@@ -67,6 +72,7 @@ public class SocialProfileController extends AbstractController {
 	public ModelAndView list() {
 		ModelAndView result;
 		Brotherhood broherhood = new Brotherhood();
+		Chapter chapter = new Chapter();
 		UserAccount userAccount;
 		userAccount = LoginService.getPrincipal();
 		Actor logguedActor = new Actor();
@@ -77,6 +83,10 @@ public class SocialProfileController extends AbstractController {
 		if (authorities.get(0).toString().equals("BROTHERHOOD")) {
 			broherhood = this.brotherhoodService.loggedBrotherhood();
 			socialProfiles = broherhood.getSocialProfiles();
+		} else if (authorities.get(0).toString().equals("CHAPTER")) {
+			chapter = this.chapterService.loggedChapter();
+			socialProfiles = chapter.getSocialProfiles();
+
 		} else {
 
 			logguedActor = this.actorService.getActorByUsername(userAccount.getUsername());
@@ -86,6 +96,7 @@ public class SocialProfileController extends AbstractController {
 
 		result = new ModelAndView("authenticated/showProfile");
 		result.addObject("socialProfiles", socialProfiles);
+		result.addObject("chapter", chapter);
 		result.addObject("actor", logguedActor);
 		result.addObject("broherhood", broherhood);
 		result.addObject("pictures", broherhood.getPictures());
@@ -123,8 +134,9 @@ public class SocialProfileController extends AbstractController {
 		Assert.notNull(socialProfile);
 		result = this.createEditModelAndView(socialProfile);
 
-		if (!(socialProfiles.contains(socialProfile)))
+		if (!(socialProfiles.contains(socialProfile))) {
 			result = this.list();
+		}
 		return result;
 	}
 
@@ -137,9 +149,9 @@ public class SocialProfileController extends AbstractController {
 
 		socialProfile = this.socialProfileService.reconstruct(socialProfile, binding);
 
-		if (binding.hasErrors())
+		if (binding.hasErrors()) {
 			result = this.createEditModelAndView(socialProfile);
-		else
+		} else {
 			try {
 
 				SocialProfile saved = this.socialProfileService.save(socialProfile);
@@ -148,8 +160,9 @@ public class SocialProfileController extends AbstractController {
 				if (socialProfiles.contains(socialProfile)) {
 					socialProfiles.remove(saved);
 					socialProfiles.add(saved);
-				} else
+				} else {
 					socialProfiles.add(saved);
+				}
 
 				logguedActor.setSocialProfiles(socialProfiles);
 
@@ -159,6 +172,7 @@ public class SocialProfileController extends AbstractController {
 			} catch (Throwable oops) {
 				result = this.createEditModelAndView(socialProfile, "socialProfile.commit.error");
 			}
+		}
 		return result;
 	}
 	//---------------------------------------------------------------------
@@ -206,14 +220,19 @@ public class SocialProfileController extends AbstractController {
 			Member member = this.memberService.loggedMember();
 			Assert.notNull(member);
 			result = this.createEditModelAndView(member);
+		} else if (authorities.get(0).toString().equals("CHAPTER")) {
+			Chapter chapter = this.chapterService.loggedChapter();
+			Assert.notNull(chapter);
+			result = this.createEditModelAndView(chapter);
 		} else {
 			Sponsor sponsor = this.sponsorService.loggedSponsor();
 			Assert.notNull(sponsor);
 			result = this.createEditModelAndView(sponsor);
 		}
 
-		if (result == null)
+		if (result == null) {
 			result = this.list();
+		}
 		return result;
 	}
 
@@ -229,21 +248,23 @@ public class SocialProfileController extends AbstractController {
 
 		String prefix = configuration.getSpainTelephoneCode();
 
-		if (binding.hasErrors())
+		if (binding.hasErrors()) {
 			result = this.createEditModelAndView(admin);
-		else
+		} else {
 			try {
-				if (admin.getPhoneNumber().matches("(\\+[0-9]{1,3})(\\([0-9]{1,3}\\))([0-9]{4,})$") || admin.getPhoneNumber().matches("(\\+[0-9]{1,3})([0-9]{4,})$"))
+				if (admin.getPhoneNumber().matches("(\\+[0-9]{1,3})(\\([0-9]{1,3}\\))([0-9]{4,})$") || admin.getPhoneNumber().matches("(\\+[0-9]{1,3})([0-9]{4,})$")) {
 					this.adminService.save(admin);
-				else if (admin.getPhoneNumber().matches("([0-9]{4,})$")) {
+				} else if (admin.getPhoneNumber().matches("([0-9]{4,})$")) {
 					admin.setPhoneNumber(prefix + admin.getPhoneNumber());
 					this.adminService.save(admin);
-				} else
+				} else {
 					this.adminService.save(admin);
+				}
 				result = new ModelAndView("redirect:/authenticated/showProfile.do");
 			} catch (Throwable oops) {
 				result = this.createEditModelAndView(admin, "socialProfile.commit.error");
 			}
+		}
 		return result;
 	}
 
@@ -257,9 +278,9 @@ public class SocialProfileController extends AbstractController {
 
 		String prefix = configuration.getSpainTelephoneCode();
 
-		if (binding.hasErrors())
+		if (binding.hasErrors()) {
 			result = this.createEditModelAndView(member);
-		else
+		} else {
 			try {
 				if (member.getEmail().matches("[\\w.%-]+\\<[\\w.%-]+\\@+\\>|[\\w.%-]+")) {
 					if (LocaleContextHolder.getLocale().getLanguage().toUpperCase().contains("ES")) {
@@ -270,23 +291,25 @@ public class SocialProfileController extends AbstractController {
 						return this.createEditModelAndView(member);
 					}
 
-				} else if (member.getPhoneNumber().matches("(\\+[0-9]{1,3})(\\([0-9]{1,3}\\))([0-9]{4,})$") || member.getPhoneNumber().matches("(\\+[0-9]{1,3})([0-9]{4,})$"))
+				} else if (member.getPhoneNumber().matches("(\\+[0-9]{1,3})(\\([0-9]{1,3}\\))([0-9]{4,})$") || member.getPhoneNumber().matches("(\\+[0-9]{1,3})([0-9]{4,})$")) {
 					this.memberService.save(member);
-				else if (member.getPhoneNumber().matches("([0-9]{4,})$")) {
+				} else if (member.getPhoneNumber().matches("([0-9]{4,})$")) {
 					member.setPhoneNumber(prefix + member.getPhoneNumber());
 					this.memberService.save(member);
-				} else
+				} else {
 					this.memberService.save(member);
+				}
 				result = new ModelAndView("redirect:/authenticated/showProfile.do");
 			} catch (Throwable oops) {
 				result = this.createEditModelAndView(member, "socialProfile.commit.error");
 			}
+		}
 		return result;
 	}
 
 	//Brotherhood
 	@RequestMapping(value = "/editBrotherhood", method = RequestMethod.POST, params = "save")
-	public ModelAndView saveMember(Brotherhood brotherhood, BindingResult binding) {
+	public ModelAndView saveBrotherhood(Brotherhood brotherhood, BindingResult binding) {
 		ModelAndView result;
 
 		brotherhood = this.brotherhoodService.reconstructBrotherhood(brotherhood, binding);
@@ -294,9 +317,9 @@ public class SocialProfileController extends AbstractController {
 
 		String prefix = configuration.getSpainTelephoneCode();
 
-		if (binding.hasErrors())
+		if (binding.hasErrors()) {
 			result = this.createEditModelAndView(brotherhood);
-		else
+		} else {
 			try {
 				if (brotherhood.getEmail().matches("[\\w.%-]+\\<[\\w.%-]+\\@+\\>|[\\w.%-]+")) {
 					if (LocaleContextHolder.getLocale().getLanguage().toUpperCase().contains("ES")) {
@@ -307,17 +330,19 @@ public class SocialProfileController extends AbstractController {
 						return this.createEditModelAndView(brotherhood);
 					}
 
-				} else if (brotherhood.getPhoneNumber().matches("(\\+[0-9]{1,3})(\\([0-9]{1,3}\\))([0-9]{4,})$") || brotherhood.getPhoneNumber().matches("(\\+[0-9]{1,3})([0-9]{4,})$"))
+				} else if (brotherhood.getPhoneNumber().matches("(\\+[0-9]{1,3})(\\([0-9]{1,3}\\))([0-9]{4,})$") || brotherhood.getPhoneNumber().matches("(\\+[0-9]{1,3})([0-9]{4,})$")) {
 					this.brotherhoodService.save(brotherhood);
-				else if (brotherhood.getPhoneNumber().matches("([0-9]{4,})$")) {
+				} else if (brotherhood.getPhoneNumber().matches("([0-9]{4,})$")) {
 					brotherhood.setPhoneNumber(prefix + brotherhood.getPhoneNumber());
 					this.brotherhoodService.save(brotherhood);
-				} else
+				} else {
 					this.brotherhoodService.save(brotherhood);
+				}
 				result = new ModelAndView("redirect:/authenticated/showProfile.do");
 			} catch (Throwable oops) {
 				result = this.createEditModelAndView(brotherhood, "socialProfile.commit.error");
 			}
+		}
 		return result;
 	}
 
@@ -331,9 +356,9 @@ public class SocialProfileController extends AbstractController {
 
 		String prefix = configuration.getSpainTelephoneCode();
 
-		if (binding.hasErrors())
+		if (binding.hasErrors()) {
 			result = this.createEditModelAndView(sponsor);
-		else
+		} else {
 			try {
 				if (sponsor.getEmail().matches("[\\w.%-]+\\<[\\w.%-]+\\@+\\>|[\\w.%-]+")) {
 					if (LocaleContextHolder.getLocale().getLanguage().toUpperCase().contains("ES")) {
@@ -344,17 +369,46 @@ public class SocialProfileController extends AbstractController {
 						return this.createEditModelAndView(sponsor);
 					}
 
-				} else if (sponsor.getPhoneNumber().matches("(\\+[0-9]{1,3})(\\([0-9]{1,3}\\))([0-9]{4,})$") || sponsor.getPhoneNumber().matches("(\\+[0-9]{1,3})([0-9]{4,})$"))
+				} else if (sponsor.getPhoneNumber().matches("(\\+[0-9]{1,3})(\\([0-9]{1,3}\\))([0-9]{4,})$") || sponsor.getPhoneNumber().matches("(\\+[0-9]{1,3})([0-9]{4,})$")) {
 					this.sponsorService.save(sponsor);
-				else if (sponsor.getPhoneNumber().matches("([0-9]{4,})$")) {
+				} else if (sponsor.getPhoneNumber().matches("([0-9]{4,})$")) {
 					sponsor.setPhoneNumber(prefix + sponsor.getPhoneNumber());
 					this.sponsorService.save(sponsor);
-				} else
+				} else {
 					this.sponsorService.save(sponsor);
+				}
 				result = new ModelAndView("redirect:/authenticated/showProfile.do");
 			} catch (Throwable oops) {
 				result = this.createEditModelAndView(sponsor, "socialProfile.commit.error");
 			}
+		}
+		return result;
+	}
+
+	//Chapter
+	@RequestMapping(value = "/editChapter", method = RequestMethod.POST, params = "save")
+	public ModelAndView saveChapter(Chapter chapter, BindingResult binding) {
+		ModelAndView result;
+
+		chapter = this.chapterService.reconstructPersonalData(chapter, binding);
+		Configuration configuration = this.configurationService.getConfiguration();
+
+		String prefix = configuration.getSpainTelephoneCode();
+		if (chapter.getPhoneNumber().matches("([0-9]{4,})$")) {
+			chapter.setPhoneNumber(prefix + chapter.getPhoneNumber());
+		}
+
+		if (binding.hasErrors()) {
+			result = this.createEditModelAndView(chapter);
+		} else {
+			try {
+
+				this.chapterService.update(chapter);
+				result = new ModelAndView("redirect:/authenticated/showProfile.do");
+			} catch (Throwable oops) {
+				result = this.createEditModelAndView(chapter, "socialProfile.commit.error");
+			}
+		}
 		return result;
 	}
 
@@ -522,6 +576,27 @@ public class SocialProfileController extends AbstractController {
 
 		result = new ModelAndView("authenticated/edit");
 		result.addObject("sponsor", sponsor);
+		result.addObject("message", messageCode);
+
+		return result;
+	}
+
+	//Chapter
+	protected ModelAndView createEditModelAndView(Chapter chapter) {
+
+		ModelAndView result;
+
+		result = this.createEditModelAndView(chapter, null);
+
+		return result;
+	}
+
+	protected ModelAndView createEditModelAndView(Chapter chapter, String messageCode) {
+
+		ModelAndView result;
+
+		result = new ModelAndView("authenticated/edit");
+		result.addObject("chapter", chapter);
 		result.addObject("message", messageCode);
 
 		return result;

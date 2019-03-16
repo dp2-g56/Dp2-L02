@@ -14,7 +14,7 @@ import domain.Parade;
 @Repository
 public interface ParadeRepository extends JpaRepository<Parade, Integer> {
 
-	@Query("select p from Parade p where paradeStatus = 1")
+	@Query("select p from Parade p where paradeStatus = 'ACCEPTED'")
 	public Collection<Parade> getAcceptedParades();
 
 	@Query("select p from Parade p where isDraftMode = true")

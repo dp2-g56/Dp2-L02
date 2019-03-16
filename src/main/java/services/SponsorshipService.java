@@ -150,4 +150,18 @@ public class SponsorshipService {
 		return this.sponsorshipRepository.getSponsorOfSponsorship(sponsorshipId);
 	}
 
+	public void changeStatus(int sponsorshipId) {
+		Sponsor loggedSponsor = this.sponsorService.securityAndSponsor();
+		Sponsorship sponsorship = this.findOne(sponsorshipId);
+
+		Assert.isTrue(loggedSponsor.equals(this.getSponsorOfSponsorship(sponsorship.getId())));
+
+		if (sponsorship.getIsActivated() == true)
+			sponsorship.setIsActivated(false);
+		else
+			sponsorship.setIsActivated(true);
+
+		this.save(sponsorship);
+	}
+
 }

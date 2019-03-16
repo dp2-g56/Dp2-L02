@@ -221,4 +221,35 @@ public class SponsorshipServiceTest extends AbstractTest {
 
 	}
 
+	@Test
+	public void driverDeleteSponsorship() {
+		Sponsor sponsor = this.sponsorService.getSponsorByUsername("sponsor1");
+		Sponsorship sponsorship = (new ArrayList<Sponsorship>(
+				this.sponsorshipService.getActivatedSponsorshipsOfSponsor(sponsor.getId()))).get(0);
+
+		Object testingData[][] = { { sponsorship.getId(), "sponsor1", null },
+				{ sponsorship.getId(), "admin1", IllegalArgumentException.class } };
+
+		for (int i = 0; i < testingData.length; i++)
+			this.templateDeleteSponsorship((Integer) testingData[i][0], (String) testingData[i][1],
+					(Class<?>) testingData[i][2]);
+	}
+
+	private void templateDeleteSponsorship(Integer sponsorshipId, String username, Class<?> expected) {
+
+		Class<?> caught = null;
+
+		try {
+			super.authenticate(username);
+			this.sponsorshipService.changeStatus(sponsorshipId);
+			this.sponsorshipService.flush();
+			super.unauthenticate();
+		} catch (Throwable oops) {
+			caught = oops.getClass();
+		}
+
+		super.checkExceptions(expected, caught);
+
+	}
+
 }

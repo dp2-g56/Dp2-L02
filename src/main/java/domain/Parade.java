@@ -54,6 +54,7 @@ public class Parade extends DomainEntity {
 		this.rejectedReason = rejectedReason;
 	}
 
+	@Enumerated(EnumType.STRING)
 	@Valid
 	@Enumerated(EnumType.STRING)
 	public ParadeStatus getParadeStatus() {

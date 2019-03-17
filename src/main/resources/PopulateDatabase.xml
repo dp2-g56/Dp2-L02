@@ -72,11 +72,11 @@
 		<property name="timeFinder" value="1"/>
 
 		
-		<property name="welcomeMessageEnglish" value="Welcome to Acme Madrugá, the site to organise your parades" />
-		<property name="welcomeMessageSpanish" value="¡Bienvenido a Acme Madrugá! el lugar para organizar tus desfiles" />
+		<property name="welcomeMessageEnglish" value="Welcome to Acme Parade, the site to organise your parades" />
+		<property name="welcomeMessageSpanish" value="¡Bienvenido a Acme Parade! el lugar para organizar tus desfiles" />
 		
-		<property name="systemName" value="Acme Madrugá" />
-		<property name="imageURL" value="https://thumbor.thedailymeal.com/qwE8cekL3Ll1KK_z12VbeJz8ssc=/774x516/https://www.theactivetimes.com/sites/default/files/uploads/M/MainPrideParade_0.jpg" />
+		<property name="systemName" value="Acme Parade" />
+		<property name="imageURL" value="https://i.ibb.co/HhytG1y/Untitled.jpg" />
 		<property name="VAT" value="21" />
 		<property name="fare" value="0.01" />
 		

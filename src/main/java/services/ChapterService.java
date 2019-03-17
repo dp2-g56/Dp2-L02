@@ -60,7 +60,7 @@ public class ChapterService {
 
 		Chapter chapter = new Chapter();
 
-		// Se crean las listas vacías
+		// Se crean las listas vacÃ­as
 		// ACTOR
 		List<SocialProfile> socialProfiles = new ArrayList<>();
 		List<Box> boxes = new ArrayList<>();
@@ -107,7 +107,7 @@ public class ChapterService {
 
 		List<Box> boxes = new ArrayList<>();
 
-		// Se crean las listas vacías
+		// Se crean las listas vacÃ­as
 		// ACTOR
 		List<SocialProfile> socialProfiles = new ArrayList<>();
 		chapter.setSocialProfiles(socialProfiles);
@@ -392,6 +392,11 @@ public class ChapterService {
 
 		return parade;
 
+	}
+
+	public Chapter getChapterByUsername(String usernameEdit) {
+		// TODO Auto-generated method stub
+		return this.chapterRepository.getChapterByUsername(usernameEdit);
 	}
 
 }

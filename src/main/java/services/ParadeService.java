@@ -1,4 +1,4 @@
-
+﻿
 package services;
 
 import java.text.ParseException;
@@ -331,7 +331,6 @@ public class ParadeService {
 	public void flush() {
 		this.paradeRepository.flush();
 	}
-
 
 	public Collection<Parade> listAcceptedParadeIfSponsor() {
 

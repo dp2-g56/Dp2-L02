@@ -227,7 +227,7 @@ public class ChapterService {
 		if (!formObjectChapter.getPassword().equals(formObjectChapter.getConfirmPassword()))
 			if (LocaleContextHolder.getLocale().getLanguage().toUpperCase().contains("ES"))
 				binding.addError(new FieldError("formObjectChapter", "password", formObjectChapter.getPassword(), false,
-						null, null, "Las contraseï¿½as no coinciden"));
+						null, null, "Las contrasenas no coinciden"));
 			else
 				binding.addError(new FieldError("formObjectChapter", "password", formObjectChapter.getPassword(), false,
 						null, null, "Passwords don't match"));
@@ -392,11 +392,6 @@ public class ChapterService {
 
 		return parade;
 
-	}
-
-	public Chapter getChapterByUsername(String usernameEdit) {
-		// TODO Auto-generated method stub
-		return this.chapterRepository.getChapterByUsername(usernameEdit);
 	}
 
 }

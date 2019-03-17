@@ -103,6 +103,9 @@
 		<put-attribute name="body" value="/views/administrator/broadcast.jsp" />
 	</definition>
 	
-	
+	<definition name="administrator/sponsorships" extends="master.page">	
+		<put-attribute name="title" value="Lista de patrocinios" />
+		<put-attribute name="body" value="/views/administrator/sponsorships.jsp" />
+	</definition>
 	
 </tiles-definitions>

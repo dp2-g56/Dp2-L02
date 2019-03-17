@@ -68,9 +68,9 @@
 		</display:column>
 		
 		<display:column titleKey="sponsorship.creditCard.isValid" style="color:${color}">
-			<jstl:set var="isValid" value="${isValid.get(row.id)}"/>
+			<jstl:set var="valid" value="${isValid.get(row.id)}"/>
 			<jstl:choose>
-				<jstl:when test="${isValid==true}">
+				<jstl:when test="${valid==true}">
 					<spring:message code="sponsorship.creditCard.isValid.yes" var="valid"/>
 					<jstl:out value="${valid}"/>
 				</jstl:when>

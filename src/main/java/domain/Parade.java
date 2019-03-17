@@ -9,6 +9,8 @@ import javax.persistence.AccessType;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Index;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
@@ -52,6 +54,7 @@ public class Parade extends DomainEntity {
 		this.rejectedReason = rejectedReason;
 	}
 
+	@Enumerated(EnumType.STRING)
 	@Valid
 	public ParadeStatus getParadeStatus() {
 		return this.paradeStatus;

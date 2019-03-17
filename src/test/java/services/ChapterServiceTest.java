@@ -128,7 +128,6 @@ public class ChapterServiceTest extends AbstractTest {
 	 * methods become uncommented.
 	 **/
 
-	@Test
 	public void driverRegisterNegativeWithAsserts() {
 		Area areaTest = this.chapterService.listFreeAreas().get(0);
 		Area areaTest2 = this.chapterService.listOccupiedAreas().get(0);
@@ -168,7 +167,6 @@ public class ChapterServiceTest extends AbstractTest {
 	 * provide the information in this cases.
 	 **/
 
-	@Test
 	public void driverRegisterNoAssertsNoForcedRollBack() {
 		Area areaTest = this.chapterService.listFreeAreas().get(0);
 		Area areaTest2 = this.chapterService.listOccupiedAreas().get(0);
@@ -196,65 +194,49 @@ public class ChapterServiceTest extends AbstractTest {
 					(Area) testingData[i][6], (Class<?>) testingData[i][7]);
 	}
 
+	/**
+	 * On this driver we are testing that the Chapter must select an Area that is
+	 * free and even more cases.
+	 *
+	 * 1. This is a positive test, is simple.
+	 *
+	 * 2. The Chapter 2 is trying to take an Area that is take up by another
+	 * chapter.
+	 *
+	 * 3. The Chapter 1 is trying to null his Area when he almost select one.
+	 *
+	 * 4. The Chapter 1 is trying to change his area to a free area.
+	 *
+	 * 5. The Chapter 1 is trying to change his area to a take up area.
+	 *
+	 * 6. The Chapter 1 is trying to changing the Chapter 2's Area to a null.
+	 *
+	 * 7. The Chapter 1 is trying to changing the Chapter 2's Area to a free area.
+	 *
+	 * 8. The Chapter 1 is trying to changing the Chapter 2's Area to a take up
+	 * area.
+	 *
+	 * 
+	 **/
+
 	@Test
 	public void driverSelectArea() {
-		Area areaTest = this.chapterService.listFreeAreas().get(0);
-		Area areaTest2 = this.chapterService.listOccupiedAreas().get(0);
+		Area areaFree = this.chapterService.listFreeAreas().get(0);
+		Area areaTakeUp = this.chapterService.listOccupiedAreas().get(0);
 		Object testingData[][] = {
 
-			{
-				"Chapter2", "Chapter2", null, null
-			}, {
-				"Chapter2", "Chapter2", areaTest, null
-			}, {
-				"Chapter2", "Chapter2", areaTest2, IllegalArgumentException.class
-			}, {
-				"Chapter1", "Chapter1", null, IllegalArgumentException.class
-			}, {
-				"Chapter1", "Chapter1", areaTest, IllegalArgumentException.class
-			}, {
-				"Chapter1", "Chapter1", areaTest2, IllegalArgumentException.class
-			}, {
-				"Chapter1", "Chapter2", null, IllegalArgumentException.class
-			}, {
-				"Chapter1", "Chapter2", areaTest, IllegalArgumentException.class
-			}, {
-				"Chapter1", "Chapter2", areaTest2, IllegalArgumentException.class
-			}
-		};
+				{ "Chapter2", "Chapter2", null, null }, { "Chapter2", "Chapter2", areaFree, null },
+				{ "Chapter2", "Chapter2", areaTakeUp, IllegalArgumentException.class },
+				{ "Chapter1", "Chapter1", null, IllegalArgumentException.class },
+				{ "Chapter1", "Chapter1", areaFree, IllegalArgumentException.class },
+				{ "Chapter1", "Chapter1", areaTakeUp, IllegalArgumentException.class },
+				{ "Chapter1", "Chapter2", null, IllegalArgumentException.class },
+				{ "Chapter1", "Chapter2", areaFree, IllegalArgumentException.class },
+				{ "Chapter1", "Chapter2", areaTakeUp, IllegalArgumentException.class } };
 
-		for (int i = 0; i < testingData.length; i++) {
-			this.templateSelectArea((String) testingData[i][0], (String) testingData[i][1], (Area) testingData[i][2], (Class<?>) testingData[i][3]);
-		}
-	}
-
-	@Test
-	public void driverEditPersonalData() {
-		Object testingData[][] = {
-
-			{
-				"Chapter1", "Chapter1", "name1", "surname1", "emailTest@gmail.com", "titleTest1", "https://www.example.com/", null
-			}, {
-				"Chapter1", "Chapter1", "", "surname1", "emailTest@gmail.com", "titleTest1", "https://www.example.com/", ConstraintViolationException.class
-			}, {
-				"Chapter1", "Chapter1", "name1", "", "emailTest@gmail.com", "titleTest1", "https://www.example.com/", ConstraintViolationException.class
-			}, {
-				"Chapter1", "Chapter1", "name1", "surname1", "", "titleTest1", "https://www.example.com/", ConstraintViolationException.class
-			}, {
-				"Chapter1", "Chapter1", "name1", "surname1", "invalid email", "titleTest1", "https://www.example.com/", ConstraintViolationException.class
-			}, {
-				"Chapter1", "Chapter1", "name1", "surname1", "emailTest@gmail.com", "", "https://www.example.com/", ConstraintViolationException.class
-			}, {
-				"Chapter1", "Chapter1", "name1", "surname1", "emailTest@gmail.com", "titleTest1", "invalid url", ConstraintViolationException.class
-			}, {
-				"Chapter2", "Chapter1", "name1", "surname1", "emailTest@gmail.com", "titleTest1", "https://www.example.com/", IllegalArgumentException.class
-			}
-		};
-
-		for (int i = 0; i < testingData.length; i++) {
-			this.templateEditPersonalData((String) testingData[i][0], (String) testingData[i][1], (String) testingData[i][2], (String) testingData[i][3], (String) testingData[i][4], (String) testingData[i][5], (String) testingData[i][6],
-				(Class<?>) testingData[i][7]);
-		}
+		for (int i = 0; i < testingData.length; i++)
+			this.templateSelectArea((String) testingData[i][0], (String) testingData[i][1], (Area) testingData[i][2],
+					(Class<?>) testingData[i][3]);
 	}
 
 	/**
@@ -357,8 +339,9 @@ public class ChapterServiceTest extends AbstractTest {
 		c.setId(editChapter.getId());
 
 		/**
-		 * This is the first command used to force to rollback the database, it initialise a Transaction in this point, before we add the entity
-		 * in order to set the rollback to this point.
+		 * This is the first command used to force to rollback the database, it
+		 * initialise a Transaction in this point, before we add the entity in order to
+		 * set the rollback to this point.
 		 **/
 
 		/** End of first command. **/
@@ -370,14 +353,16 @@ public class ChapterServiceTest extends AbstractTest {
 		}
 		super.checkExceptions(expected, caught);
 
-		/** This is the second command, it forces the database to rollback to the last transaction point that was set, in this case before we add the new entity. **/
+		/**
+		 * This is the second command, it forces the database to rollback to the last
+		 * transaction point that was set, in this case before we add the new entity.
+		 **/
 		this.unauthenticate();
 		this.rollbackTransaction();
 
 		/** End of second command. **/
 
 	}
-
 
 	/**
 	 * This test will tests the Requirment 2.2 of the level B: An actor who is
@@ -413,7 +398,6 @@ public class ChapterServiceTest extends AbstractTest {
 
 		ParadeStatus rejected = ParadeStatus.REJECTED;
 		ParadeStatus accepted = ParadeStatus.ACCEPTED;
-		ParadeStatus submitted = ParadeStatus.SUBMITTED;
 
 		// Chapter located in Area1
 		Chapter chapter1 = this.chapterService.findOne(super.getEntityId("chapter1"));

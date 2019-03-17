@@ -307,12 +307,10 @@ public class ParadeService {
 
 		rParade = this.findOne(parade.getId());
 
-		rParade.setParadeStatus(parade.getParadeStatus());
-		if (parade.getParadeStatus().equals(ParadeStatus.REJECTED)) {
-			Assert.notNull(parade.getRejectedReason());
-			Assert.isTrue(!parade.getRejectedReason().trim().equals(""));
-		}
+		Assert.isTrue(rParade.getParadeStatus().equals(ParadeStatus.SUBMITTED) && !rParade.getIsDraftMode());
+
 		rParade.setRejectedReason(parade.getRejectedReason());
+		rParade.setParadeStatus(parade.getParadeStatus());
 
 		return rParade;
 	}
@@ -338,4 +336,8 @@ public class ParadeService {
 		return parades;
 
 	}
+	public void flush() {
+		this.paradeRepository.flush();
+	}
+
 }

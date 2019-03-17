@@ -76,7 +76,7 @@
 		<property name="welcomeMessageSpanish" value="¡Bienvenido a Acme Madrugá! el lugar para organizar tus desfiles" />
 		
 		<property name="systemName" value="Acme Madrugá" />
-		<property name="imageURL" value="https://tinyurl.com/acme-madruga" />
+		<property name="imageURL" value="https://thumbor.thedailymeal.com/qwE8cekL3Ll1KK_z12VbeJz8ssc=/774x516/https://www.theactivetimes.com/sites/default/files/uploads/M/MainPrideParade_0.jpg" />
 		<property name="VAT" value="21" />
 		<property name="fare" value="0.01" />
 		
@@ -581,6 +581,7 @@
 		<property name="parades">
 			<list>
 				<ref bean="parade4" />
+				<ref bean="parade5" />
 			</list>
 		</property>
 		
@@ -636,7 +637,11 @@
 				<ref bean="float6" />
 			</list>
 		</property>
-		
+				<property name="parades">
+			<list>
+				<ref bean="parade6" />
+			</list>
+		</property>
 		<property name="enrolments">
 			<list>
 				<ref bean="enrolment7" />
@@ -2034,6 +2039,7 @@
 		<property value="true" name="isDraftMode" />
 		<property value="5" name="rowNumber" />
 		<property value="1" name="columnNumber" />
+		<property name="paradeStatus" value="SUBMITTED" />
 		<property name="floats">
 		
 			<list>
@@ -2042,6 +2048,50 @@
 		<property name="paths">
 		<list>
 			<ref bean="path4" />
+		</list>
+		</property>
+	</bean>
+	
+	<bean id ="parade5" class="domain.Parade">
+		<property name="title" value="parade5" />
+		<property name="description" value="The Fiveth Parade" />
+		<property value="07/08/2023 12:16" name="moment" />
+		<property value="230807-g2f4h3" name="ticker" />
+		<property value="false" name="isDraftMode" />
+		<property value="5" name="rowNumber" />
+		<property value="1" name="columnNumber" />
+		<property name="paradeStatus" value="REJECTED" />
+		<property name="floats">
+		
+			<list>
+			</list>
+		</property>		<!-- No hay Request porque es Draft -->
+		<property name="paths">
+		<list>
+		</list>
+		</property>
+	</bean>
+	
+			<!-- BROTHERHOOD 3 -->
+	<bean id ="parade6" class="domain.Parade">
+		<property name="title" value="parade6" />
+		<property name="description" value="The Sixth Parade" />
+		<property value="07/08/2023 12:16" name="moment" />
+		<property value="230807-s1fdf1" name="ticker" />
+		<property value="false" name="isDraftMode" />
+		<property value="5" name="rowNumber" />
+		<property value="1" name="columnNumber" />
+		<property name="paradeStatus" value="SUBMITTED" />
+		<property name="floats">
+			<list>
+			</list>
+		</property>
+		<property name="requests">
+			<list>
+			</list>
+		</property>	
+		<property name="paths">
+		<list>
 		</list>
 		</property>
 	</bean>

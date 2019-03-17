@@ -16,18 +16,19 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.Validator;
 
+import domain.Area;
+import domain.Box;
+import domain.Chapter;
+import domain.Parade;
+import domain.ParadeStatus;
+import domain.Proclaim;
+import domain.SocialProfile;
+import forms.FormObjectChapter;
 import repositories.ChapterRepository;
 import repositories.FinderRepository;
 import security.Authority;
 import security.LoginService;
 import security.UserAccount;
-import domain.Area;
-import domain.Box;
-import domain.Chapter;
-import domain.Parade;
-import domain.Proclaim;
-import domain.SocialProfile;
-import forms.FormObjectChapter;
 
 @Service
 @Transactional
@@ -36,23 +37,22 @@ public class ChapterService {
 	// Managed repository ------------------------------------------
 
 	@Autowired
-	private ChapterRepository	chapterRepository;
+	private ChapterRepository chapterRepository;
 
 	@Autowired
-	private FinderRepository	finderRepository;
+	private FinderRepository finderRepository;
 
 	@Autowired
-	private BoxService			boxService;
+	private BoxService boxService;
 
 	@Autowired
-	private AreaService			areaService;
+	private AreaService areaService;
 
 	@Autowired
-	private ParadeService		paradeService;
+	private ParadeService paradeService;
 
-	@Autowired
-	private Validator			validator;
-
+	@Autowired(required = false)
+	private Validator validator;
 
 	// Simple CRUD methods ------------------------------------------
 
@@ -75,7 +75,7 @@ public class ChapterService {
 		userAccount.setUsername("");
 		userAccount.setPassword("");
 
-		//Actor
+		// Actor
 		chapter.setAddress("");
 		chapter.setProclaims(proclaims);
 		chapter.setBoxes(boxes);
@@ -146,21 +146,27 @@ public class ChapterService {
 		Chapter saved = new Chapter();
 		Assert.isTrue(chapter.getArea() == null || this.listFreeAreas().contains(chapter.getArea()));
 
-		/** The Asserts done for the alternative workaround driver are commented (or uncommented) below, and "replace" the otherwise expected Domain tag errors. **/
+		/**
+		 * The Asserts done for the alternative workaround driver are commented (or
+		 * uncommented) below, and "replace" the otherwise expected Domain tag errors.
+		 **/
 
 		/*
 		 * Assert.isTrue(!chapter.getName().trim().isEmpty());
 		 * Assert.isTrue(!chapter.getUserAccount().getUsername().trim().isEmpty());
 		 * Assert.isTrue(!chapter.getTitle().trim().isEmpty());
 		 * Assert.isTrue(!chapter.getSurname().trim().isEmpty());
-		 * Assert.isTrue(chapter.getPhoto().isEmpty() || this.isUrl(chapter.getPhoto()));
-		 * Assert.isTrue(chapter.getEmail().matches("[\\w.%-]+\\@[-.\\w]+\\.[A-Za-z]{2,4}|[\\w.%-]+\\<+[\\w.%-]+\\@[-.\\w]+\\.[A-Za-z]{2,4}|[\\w.%-]+\\<[\\w.%-]+\\@+\\>|[\\w.%-]+"));
+		 * Assert.isTrue(chapter.getPhoto().isEmpty() ||
+		 * this.isUrl(chapter.getPhoto())); Assert.isTrue(chapter.getEmail().matches(
+		 * "[\\w.%-]+\\@[-.\\w]+\\.[A-Za-z]{2,4}|[\\w.%-]+\\<+[\\w.%-]+\\@[-.\\w]+\\.[A-Za-z]{2,4}|[\\w.%-]+\\<[\\w.%-]+\\@+\\>|[\\w.%-]+"
+		 * ));
 		 */
 
 		saved = this.chapterRepository.save(chapter);
 
 		return saved;
 	}
+
 	public Chapter reconstruct(FormObjectChapter formObjectChapter, BindingResult binding) {
 
 		Chapter result = new Chapter();
@@ -177,55 +183,58 @@ public class ChapterService {
 
 		result.setTitle(formObjectChapter.getTitle());
 
-		//USER ACCOUNT
+		// USER ACCOUNT
 		UserAccount userAccount = new UserAccount();
 
-		//Authorities
+		// Authorities
 		List<Authority> authorities = new ArrayList<Authority>();
 		Authority authority = new Authority();
 		authority.setAuthority(Authority.CHAPTER);
 		authorities.add(authority);
 		userAccount.setAuthorities(authorities);
 
-		//locked
+		// locked
 		userAccount.setIsNotLocked(true);
 
-		//Username
+		// Username
 		userAccount.setUsername(formObjectChapter.getUsername());
 
-		//Password
+		// Password
 		Md5PasswordEncoder encoder;
 		encoder = new Md5PasswordEncoder();
 		userAccount.setPassword(encoder.encodePassword(formObjectChapter.getPassword(), null));
 
 		result.setUserAccount(userAccount);
 
-		if (formObjectChapter.getEmail().matches("[\\w.%-]+\\<[\\w.%-]+\\@+\\>|[\\w.%-]+")) {
-			if (LocaleContextHolder.getLocale().getLanguage().toUpperCase().contains("ES")) {
-				binding.addError(new FieldError("chapter", "email", formObjectChapter.getEmail(), false, null, null, "No sigue el patron ejemplo@dominio.asd o alias <ejemplo@dominio.asd>"));
-			} else {
-				binding.addError(new FieldError("chapter", "email", formObjectChapter.getEmail(), false, null, null, "Dont follow the pattern example@domain.asd or alias <example@domain.asd>"));
-			}
-		}
+		if (formObjectChapter.getEmail().matches("[\\w.%-]+\\<[\\w.%-]+\\@+\\>|[\\w.%-]+"))
+			if (LocaleContextHolder.getLocale().getLanguage().toUpperCase().contains("ES"))
+				binding.addError(new FieldError("chapter", "email", formObjectChapter.getEmail(), false, null, null,
+						"No sigue el patron ejemplo@dominio.asd o alias <ejemplo@dominio.asd>"));
+			else
+				binding.addError(new FieldError("chapter", "email", formObjectChapter.getEmail(), false, null, null,
+						"Dont follow the pattern example@domain.asd or alias <example@domain.asd>"));
 
-		if (!formObjectChapter.getTermsAndConditions()) {
-			if (LocaleContextHolder.getLocale().getLanguage().toUpperCase().contains("ES")) {
-				binding.addError(new FieldError("formObjectChapter", "termsAndConditions", formObjectChapter.getTermsAndConditions(), false, null, null, "Debe aceptar los terminos y condiciones"));
-			} else {
-				binding.addError(new FieldError("formObjectChapter", "termsAndConditions", formObjectChapter.getTermsAndConditions(), false, null, null, "You must accept the terms and conditions"));
-			}
-		}
+		if (!formObjectChapter.getTermsAndConditions())
+			if (LocaleContextHolder.getLocale().getLanguage().toUpperCase().contains("ES"))
+				binding.addError(new FieldError("formObjectChapter", "termsAndConditions",
+						formObjectChapter.getTermsAndConditions(), false, null, null,
+						"Debe aceptar los terminos y condiciones"));
+			else
+				binding.addError(new FieldError("formObjectChapter", "termsAndConditions",
+						formObjectChapter.getTermsAndConditions(), false, null, null,
+						"You must accept the terms and conditions"));
 
-		if (!formObjectChapter.getPassword().equals(formObjectChapter.getConfirmPassword())) {
-			if (LocaleContextHolder.getLocale().getLanguage().toUpperCase().contains("ES")) {
-				binding.addError(new FieldError("formObjectChapter", "password", formObjectChapter.getPassword(), false, null, null, "Las contrase�as no coinciden"));
-			} else {
-				binding.addError(new FieldError("formObjectChapter", "password", formObjectChapter.getPassword(), false, null, null, "Passwords don't match"));
-			}
-		}
+		if (!formObjectChapter.getPassword().equals(formObjectChapter.getConfirmPassword()))
+			if (LocaleContextHolder.getLocale().getLanguage().toUpperCase().contains("ES"))
+				binding.addError(new FieldError("formObjectChapter", "password", formObjectChapter.getPassword(), false,
+						null, null, "Las contrasenas no coinciden"));
+			else
+				binding.addError(new FieldError("formObjectChapter", "password", formObjectChapter.getPassword(), false,
+						null, null, "Passwords don't match"));
 
 		return result;
 	}
+
 	public void flush() {
 		this.chapterRepository.flush();
 	}
@@ -240,6 +249,7 @@ public class ChapterService {
 		areas.removeAll(this.chapterRepository.getFreeAreas());
 		return areas;
 	}
+
 	public List<Chapter> findAll() {
 		return this.chapterRepository.findAll();
 	}
@@ -287,7 +297,7 @@ public class ChapterService {
 	public boolean paradeSecurity(Integer paradeId) {
 		Parade parade = this.paradeService.findOne(paradeId);
 		Boolean draftMode = parade.getIsDraftMode();
-
+		this.loggedAsChapter();
 		Chapter chapter = this.loggedChapter();
 		List<Parade> paradesArea = this.finderRepository.getParadesByArea(chapter.getArea().getName());
 
@@ -364,4 +374,24 @@ public class ChapterService {
 		Assert.isTrue(chapter.getId() == this.loggedChapter().getId());
 		return this.chapterRepository.save(chapter);
 	}
+
+	public Parade changeParadeStatus(Parade parade) {
+
+		Assert.isTrue(!parade.getIsDraftMode());
+
+		Chapter chapter = this.loggedChapter();
+
+		Assert.isTrue(this.paradeService.getParadesByArea(chapter.getArea()).contains(parade));
+
+		if (parade.getParadeStatus().equals(ParadeStatus.REJECTED)) {
+			Assert.notNull(parade.getRejectedReason());
+			Assert.isTrue(!(parade.getRejectedReason().trim().equals("")));
+		}
+
+		parade = this.paradeService.save(parade);
+
+		return parade;
+
+	}
+
 }

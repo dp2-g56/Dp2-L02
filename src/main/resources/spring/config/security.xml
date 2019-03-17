@@ -53,6 +53,7 @@
 		<security:intercept-url pattern="/priority/administrator/**" access="hasRole('ADMIN')" />
 		<security:intercept-url pattern="/broadcast/administrator/**" access="hasRole('ADMIN')"  />
 		<security:intercept-url pattern="/administrator/**" access="hasRole('ADMIN')"  />
+		<security:intercept-url pattern="/sponsorship/administrator/**" access="hasRole('ADMIN')"  />
 		
 		<!-- brotherhood -->
 		<security:intercept-url pattern="/area/brotherhood/**" access="hasRole('BROTHERHOOD')" />

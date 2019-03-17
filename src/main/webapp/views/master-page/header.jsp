@@ -34,6 +34,7 @@
 					<li><a href="broadcast/administrator/send.do"><spring:message code="master.page.administrator.broadcast" /></a></li>																							
 					<li><a href="broadcast/administrator/sendSecurityBreach.do"><spring:message code="master.page.administrator.broadcastSecurity" /></a></li>																							
 					<li><a href="administrator/createAdmin.do"><spring:message code="master.page.administrator.createAdmin" /></a></li>																								
+					<li><a href="sponsorship/administrator/list.do"><spring:message code="master.page.administrator.listSponsorships" /></a></li>																								
 				</ul>
 			</li>
 		</security:authorize>

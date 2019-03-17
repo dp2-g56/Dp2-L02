@@ -161,7 +161,7 @@ public class SponsorshipSponsorController extends AbstractController {
 	}
 
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
-	public ModelAndView paradeList() {
+	public ModelAndView sponsorshipList() {
 		ModelAndView result;
 
 		Collection<Sponsorship> sponsorships = this.sponsorshipService.getSponsorships(null);
@@ -205,7 +205,8 @@ public class SponsorshipSponsorController extends AbstractController {
 			this.sponsorshipService.changeStatus(sponsorshipId);
 			result = new ModelAndView("redirect:list.do");
 		} catch (Throwable oops) {
-			result = new ModelAndView("redirect:list.do");
+			result = this.sponsorshipList();
+			result.addObject("message", "sponsorship.changeStatus.error");
 		}
 
 		return result;

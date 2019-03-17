@@ -1,4 +1,4 @@
-
+Ôªø
 package services;
 
 import java.text.ParseException;
@@ -46,8 +46,8 @@ public class ParadeService {
 
 	public Parade create() {
 
-		// Asegurar que est· logueado como Brotherhood
-		// Asegurar que la Brotherhood logueada tiene un ·rea
+		// Asegurar que est√° logueado como Brotherhood
+		// Asegurar que la Brotherhood logueada tiene un √°rea
 		this.brotherhoodService.loggedAsBrotherhood();
 		Brotherhood loggedBrotherhood = this.brotherhoodService.loggedBrotherhood();
 		Assert.isTrue(!(loggedBrotherhood.getArea().equals(null)));
@@ -120,7 +120,7 @@ public class ParadeService {
 		Assert.isTrue(parade.getIsDraftMode());
 		Assert.isTrue(loggedBrotherhood.getParades().contains(parade));
 
-		// No deberÌa tener Request porque est· en Draft mode
+		// No deber√≠a tener Request porque est√° en Draft mode
 		// Tampoco hay que preocuparse por el finder porque no se pueden buscar parades
 		// en Draft mode
 
@@ -135,7 +135,7 @@ public class ParadeService {
 		this.paradeRepository.delete(parade);
 	}
 
-	// MÈtodo auxiliar para generar el ticker-------------------------------
+	// M√©todo auxiliar para generar el ticker-------------------------------
 	private String generateTicker() {
 		String res = "";
 		Date date = null;
@@ -307,12 +307,10 @@ public class ParadeService {
 
 		rParade = this.findOne(parade.getId());
 
-		rParade.setParadeStatus(parade.getParadeStatus());
-		if (parade.getParadeStatus().equals(ParadeStatus.REJECTED)) {
-			Assert.notNull(parade.getRejectedReason());
-			Assert.isTrue(!parade.getRejectedReason().trim().equals(""));
-		}
+		Assert.isTrue(rParade.getParadeStatus().equals(ParadeStatus.SUBMITTED) && !rParade.getIsDraftMode());
+
 		rParade.setRejectedReason(parade.getRejectedReason());
+		rParade.setParadeStatus(parade.getParadeStatus());
 
 		return rParade;
 	}
@@ -329,6 +327,11 @@ public class ParadeService {
 		return chapter.getArea() != null;
 	}
 
+
+	public void flush() {
+		this.paradeRepository.flush();
+	}
+
 	public Collection<Parade> listAcceptedParadeIfSponsor() {
 
 		this.sponsorService.securityAndSponsor();
@@ -338,4 +341,5 @@ public class ParadeService {
 		return parades;
 
 	}
+
 }

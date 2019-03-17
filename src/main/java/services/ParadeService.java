@@ -39,13 +39,15 @@ public class ParadeService {
 	private ParadeRepository paradeRepository;
 	@Autowired
 	private BrotherhoodService brotherhoodService;
+	@Autowired
+	private SponsorService sponsorService;
 
 	// Simple CRUD methods ------------------------------------------
 
 	public Parade create() {
 
-		// Asegurar que est· logueado como Brotherhood
-		// Asegurar que la Brotherhood logueada tiene un ·rea
+		// Asegurar que est√° logueado como Brotherhood
+		// Asegurar que la Brotherhood logueada tiene un √°rea
 		this.brotherhoodService.loggedAsBrotherhood();
 		Brotherhood loggedBrotherhood = this.brotherhoodService.loggedBrotherhood();
 		Assert.isTrue(!(loggedBrotherhood.getArea().equals(null)));
@@ -118,7 +120,7 @@ public class ParadeService {
 		Assert.isTrue(parade.getIsDraftMode());
 		Assert.isTrue(loggedBrotherhood.getParades().contains(parade));
 
-		// No deberÌa tener Request porque est· en Draft mode
+		// No deber√≠a tener Request porque est√° en Draft mode
 		// Tampoco hay que preocuparse por el finder porque no se pueden buscar parades
 		// en Draft mode
 
@@ -133,7 +135,7 @@ public class ParadeService {
 		this.paradeRepository.delete(parade);
 	}
 
-	// MÈtodo auxiliar para generar el ticker-------------------------------
+	// M√©todo auxiliar para generar el ticker-------------------------------
 	private String generateTicker() {
 		String res = "";
 		Date date = null;
@@ -325,8 +327,20 @@ public class ParadeService {
 		return chapter.getArea() != null;
 	}
 
+
 	public void flush() {
 		this.paradeRepository.flush();
+	}
+
+
+	public Collection<Parade> listAcceptedParadeIfSponsor() {
+
+		this.sponsorService.securityAndSponsor();
+
+		Collection<Parade> parades = this.getAcceptedParades();
+
+		return parades;
+
 	}
 
 }

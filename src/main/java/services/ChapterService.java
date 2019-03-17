@@ -60,7 +60,7 @@ public class ChapterService {
 
 		Chapter chapter = new Chapter();
 
-		// Se crean las listas vac�as
+		// Se crean las listas vacías
 		// ACTOR
 		List<SocialProfile> socialProfiles = new ArrayList<>();
 		List<Box> boxes = new ArrayList<>();
@@ -107,7 +107,7 @@ public class ChapterService {
 
 		List<Box> boxes = new ArrayList<>();
 
-		// Se crean las listas vac�as
+		// Se crean las listas vacías
 		// ACTOR
 		List<SocialProfile> socialProfiles = new ArrayList<>();
 		chapter.setSocialProfiles(socialProfiles);
@@ -227,7 +227,7 @@ public class ChapterService {
 		if (!formObjectChapter.getPassword().equals(formObjectChapter.getConfirmPassword()))
 			if (LocaleContextHolder.getLocale().getLanguage().toUpperCase().contains("ES"))
 				binding.addError(new FieldError("formObjectChapter", "password", formObjectChapter.getPassword(), false,
-						null, null, "Las contrase�as no coinciden"));
+						null, null, "Las contraseï¿½as no coinciden"));
 			else
 				binding.addError(new FieldError("formObjectChapter", "password", formObjectChapter.getPassword(), false,
 						null, null, "Passwords don't match"));
@@ -279,6 +279,10 @@ public class ChapterService {
 		UserAccount userAccount;
 		userAccount = LoginService.getPrincipal();
 		return this.chapterRepository.getChapterByUsername(userAccount.getUsername());
+	}
+
+	public Chapter getChapterByUsername(String username) {
+		return this.chapterRepository.getChapterByUsername(username);
 	}
 
 	public Boolean isUrl(String url) {
@@ -333,8 +337,41 @@ public class ChapterService {
 
 	public Chapter updateChapterArea(Chapter chapter) {
 		Chapter c = this.loggedChapter();
-		Assert.isTrue(chapter.getId() != 0 && c.getId() == chapter.getId() && c.getArea() == null
-				&& (this.listFreeAreas().contains(chapter.getArea()) || chapter.getArea() == null));
+		Assert.isTrue(chapter.getId() != 0 && c.getId() == chapter.getId() && c.getArea() == null && !this.listOccupiedAreas().contains(chapter.getArea()));
+		return this.chapterRepository.save(chapter);
+	}
+
+	public Chapter reconstructPersonalData(Chapter chapter, BindingResult binding) {
+
+		Chapter result;
+		Chapter chapter2;
+
+		result = chapter;
+		chapter2 = this.chapterRepository.findOne(chapter.getId());
+
+		result.setUserAccount(chapter2.getUserAccount());
+		result.setBoxes(chapter2.getBoxes());
+		result.setHasSpam(chapter2.getHasSpam());
+		result.setSocialProfiles(chapter2.getSocialProfiles());
+		result.setPolarity(chapter2.getPolarity());
+
+		result.setArea(chapter2.getArea());
+
+		this.validator.validate(result, binding);
+
+		if (chapter.getEmail().matches("[\\w.%-]+\\<[\\w.%-]+\\@+\\>|[\\w.%-]+")) {
+			if (LocaleContextHolder.getLocale().getLanguage().toUpperCase().contains("ES")) {
+				binding.addError(new FieldError("chapter", "email", chapter.getEmail(), false, null, null, "No sigue el patron ejemplo@dominio.asd o alias <ejemplo@dominio.asd>"));
+			} else {
+				binding.addError(new FieldError("chapter", "email", chapter.getEmail(), false, null, null, "Dont follow the pattern example@domain.asd or alias <example@domain.asd>"));
+			}
+		}
+
+		return result;
+	}
+
+	public Chapter update(Chapter chapter) {
+		Assert.isTrue(chapter.getId() == this.loggedChapter().getId());
 		return this.chapterRepository.save(chapter);
 	}
 

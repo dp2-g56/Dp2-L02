@@ -56,6 +56,7 @@ public class Parade extends DomainEntity {
 
 	@Enumerated(EnumType.STRING)
 	@Valid
+	@Enumerated(EnumType.STRING)
 	public ParadeStatus getParadeStatus() {
 		return this.paradeStatus;
 	}

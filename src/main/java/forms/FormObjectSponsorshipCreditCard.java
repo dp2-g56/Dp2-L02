@@ -16,6 +16,7 @@ public class FormObjectSponsorshipCreditCard {
 	// Se puede validar en este objeto
 	// Reconstruct de los dos tipos de objetos
 	// No extiende a Domain Entity
+	private int id;
 	private String banner;
 	private String targetURL;
 
@@ -28,7 +29,15 @@ public class FormObjectSponsorshipCreditCard {
 	private Integer cvvCode;
 
 	public FormObjectSponsorshipCreditCard() {
+		this.id = 0;
+	}
 
+	public int getId() {
+		return this.id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	@URL

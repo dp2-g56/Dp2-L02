@@ -55,26 +55,25 @@
 		
 		<display:column titleKey="action">
 			<jstl:if test="${row.isActivated==true}">
-			<%-- 
-				<spring:url var="deleteRequest" value="/request/member/delete.do">
-					<spring:param name="requestId" value="${row.id}" />
+				<spring:url var="changeStatus" value="/sponsorship/sponsor/deactivate.do">
+					<spring:param name="sponsorshipId" value="${row.id}" />
+					<spring:message code="sponsorship.deactivate" var="status"/>
 				</spring:url>
-				<a href="${deleteRequest}" onclick="return confirm('<spring:message code="request.delete.confirmation" />')">
-					<spring:message code="request.delete" />				
-				</a>
-			--%>
 			</jstl:if>
 			<jstl:if test="${row.isActivated==false}">
-			<%-- 
-				<spring:url var="deleteRequest" value="/request/member/delete.do">
-					<spring:param name="requestId" value="${row.id}" />
+				<spring:url var="changeStatus" value="/sponsorship/sponsor/activate.do">
+					<spring:param name="sponsorshipId" value="${row.id}" />
+					<spring:message code="sponsorship.activate" var="status"/>
 				</spring:url>
-				<a href="${deleteRequest}" onclick="return confirm('<spring:message code="request.delete.confirmation" />')">
-					<spring:message code="request.delete" />				
-				</a>
-			--%>
 			</jstl:if>
-		</display:column>
+			
+			<spring:url var="updateSponsorship" value="/sponsorship/sponsor/edit.do">
+				<spring:param name="sponsorshipId" value="${row.id}" />
+			</spring:url>
+			
+			<a href="${updateSponsorship}"><spring:message code="sponsorship.update" /></a> / <a href="${changeStatus}" onClick="return confirm('<spring:message code="sponsorship.changeStatus.confirmation" />')"><jstl:out value="${status}"/></a>
+			
+		</display:column><a href="${changeStatus}"><spring:message code="sponsorship.update" /></a>
 				
 	</display:table>
 	

@@ -394,9 +394,4 @@ public class ChapterService {
 
 	}
 
-	public Chapter getChapterByUsername(String usernameEdit) {
-		// TODO Auto-generated method stub
-		return this.chapterRepository.getChapterByUsername(usernameEdit);
-	}
-
 }

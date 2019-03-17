@@ -254,4 +254,68 @@ public class SponsorshipServiceTest extends AbstractTest {
 
 	}
 
+	@Test
+	public void driverListSponsorshipsAsAdmin() {
+
+		Object testingData[][] = { { null, "admin1", null }, { true, "admin1", null }, { false, "admin1", null },
+				{ null, "sponsor1", IllegalArgumentException.class },
+				{ true, "sponsor1", IllegalArgumentException.class },
+				{ false, "sponsor1", IllegalArgumentException.class } };
+
+		for (int i = 0; i < testingData.length; i++)
+			this.templateListSponsorshipsAsAdmin((Boolean) testingData[i][0], (String) testingData[i][1],
+					(Class<?>) testingData[i][2]);
+	}
+
+	private void templateListSponsorshipsAsAdmin(Boolean isActivated, String username, Class<?> expected) {
+
+		Class<?> caught = null;
+
+		try {
+			super.authenticate(username);
+			Collection<Sponsorship> sponsorships = this.sponsorshipService.findAll();
+			Collection<Sponsorship> sponsorshipsAsAdmin = this.sponsorshipService.getSponsorshipsAsAdmin(isActivated);
+			if (isActivated == null)
+				Assert.isTrue(sponsorships.size() == sponsorshipsAsAdmin.size());
+			else
+				Assert.isTrue(sponsorships
+						.size() == (sponsorshipsAsAdmin.size() + (sponsorships.size() - sponsorshipsAsAdmin.size())));
+			super.unauthenticate();
+		} catch (Throwable oops) {
+			caught = oops.getClass();
+		}
+
+		super.checkExceptions(expected, caught);
+
+	}
+
+	@Test
+	public void driverCheckAndDeactivateSponsorshipsAsAdmin() {
+
+		Object testingData[][] = { { "admin1", null }, { "sponsor1", IllegalArgumentException.class } };
+
+		for (int i = 0; i < testingData.length; i++)
+			this.templateCheckAndDeactivateSponsorshipsAsAdmin((String) testingData[i][0],
+					(Class<?>) testingData[i][1]);
+	}
+
+	private void templateCheckAndDeactivateSponsorshipsAsAdmin(String username, Class<?> expected) {
+
+		Class<?> caught = null;
+
+		try {
+			super.authenticate(username);
+			Integer activeSponsorships = this.sponsorshipService.getActivatedSponsorshipsAsAdmin().size();
+			this.sponsorshipService.checkAndDeactivateSponsorships();
+			Assert.isTrue(this.sponsorshipService.getActivatedSponsorshipsAsAdmin().size() + 1 == activeSponsorships);
+			super.unauthenticate();
+			this.sponsorshipService.flush();
+		} catch (Throwable oops) {
+			caught = oops.getClass();
+		}
+
+		super.checkExceptions(expected, caught);
+
+	}
+
 }

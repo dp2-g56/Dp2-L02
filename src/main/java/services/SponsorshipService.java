@@ -34,6 +34,8 @@ public class SponsorshipService {
 	private SponsorService sponsorService;
 	@Autowired
 	private CreditCardService creditCardService;
+	@Autowired
+	private AdminService adminService;
 
 	public List<Sponsorship> findAll() {
 		return this.sponsorshipRepository.findAll();
@@ -146,6 +148,18 @@ public class SponsorshipService {
 		return this.sponsorshipRepository.getDeactivatedSponsorshipsOfSponsor(sponsorId);
 	}
 
+	public Collection<Sponsorship> getAllSponsorshipsAsAdmin() {
+		return this.sponsorshipRepository.getAllSponsorshipsAsAdmin();
+	}
+
+	public Collection<Sponsorship> getActivatedSponsorshipsAsAdmin() {
+		return this.sponsorshipRepository.getActivatedSponsorshipsAsAdmin();
+	}
+
+	public Collection<Sponsorship> getDeactivatedSponsorshipsAsAdmin() {
+		return this.sponsorshipRepository.getDeactivatedSponsorshipsAsAdmin();
+	}
+
 	public Sponsor getSponsorOfSponsorship(int sponsorshipId) {
 		return this.sponsorshipRepository.getSponsorOfSponsorship(sponsorshipId);
 	}
@@ -158,10 +172,44 @@ public class SponsorshipService {
 
 		if (sponsorship.getIsActivated() == true)
 			sponsorship.setIsActivated(false);
-		else
+		else {
+			Assert.isTrue(this.creditCardService.validateNumberCreditCard(sponsorship.getCreditCard()));
+			Assert.isTrue(this.creditCardService.validateDateCreditCard(sponsorship.getCreditCard()));
+			Assert.isTrue(this.creditCardService.validateCvvCreditCard(sponsorship.getCreditCard()));
 			sponsorship.setIsActivated(true);
+		}
 
 		this.save(sponsorship);
+	}
+
+	public Collection<Sponsorship> getSponsorshipsAsAdmin(Boolean isActivated) {
+		this.adminService.loggedAsAdmin();
+
+		Collection<Sponsorship> sponsorships;
+		if (isActivated == null)
+			sponsorships = this.sponsorshipRepository.getAllSponsorshipsAsAdmin();
+		else if (isActivated == true)
+			sponsorships = this.sponsorshipRepository.getActivatedSponsorshipsAsAdmin();
+		else
+			sponsorships = this.sponsorshipRepository.getDeactivatedSponsorshipsAsAdmin();
+
+		return sponsorships;
+	}
+
+	public void checkAndDeactivateSponsorships() {
+		this.adminService.loggedAsAdmin();
+
+		Collection<Sponsorship> sponsorships = this.findAll();
+
+		for (Sponsorship s : sponsorships) {
+			CreditCard card = s.getCreditCard();
+			if (!(this.creditCardService.validateNumberCreditCard(card)
+					&& this.creditCardService.validateDateCreditCard(card)
+					&& this.creditCardService.validateCvvCreditCard(card)) && s.getIsActivated()) {
+				s.setIsActivated(false);
+				this.save(s);
+			}
+		}
 	}
 
 }

@@ -134,18 +134,16 @@ public class SponsorshipServiceTest extends AbstractTest {
 				Assert.isTrue(sponsorships.size() == sponsorshipsOfSpo.size());
 			else if (isActivated == true) {
 				int size = 0;
-				for (Sponsorship s : sponsorshipsOfSpo) {
+				for (Sponsorship s : sponsorshipsOfSpo)
 					if (s.getIsActivated() == true)
 						size = size + 1;
-					Assert.isTrue(sponsorships.size() == size);
-				}
+				Assert.isTrue(sponsorships.size() == size);
 			} else {
 				int size = 0;
-				for (Sponsorship s : sponsorshipsOfSpo) {
+				for (Sponsorship s : sponsorshipsOfSpo)
 					if (s.getIsActivated() == false)
 						size = size + 1;
-					Assert.isTrue(sponsorships.size() == size);
-				}
+				Assert.isTrue(sponsorships.size() == size);
 			}
 			super.unauthenticate();
 		} catch (Throwable oops) {
@@ -226,9 +224,13 @@ public class SponsorshipServiceTest extends AbstractTest {
 		Sponsor sponsor = this.sponsorService.getSponsorByUsername("sponsor1");
 		Sponsorship sponsorship = (new ArrayList<Sponsorship>(
 				this.sponsorshipService.getActivatedSponsorshipsOfSponsor(sponsor.getId()))).get(0);
+		Sponsorship sponsorship2 = (new ArrayList<Sponsorship>(
+				this.sponsorshipService.getActivatedSponsorshipsOfSponsor(sponsor.getId()))).get(1);
 
 		Object testingData[][] = { { sponsorship.getId(), "sponsor1", null },
-				{ sponsorship.getId(), "admin1", IllegalArgumentException.class } };
+				{ sponsorship.getId(), "admin1", IllegalArgumentException.class },
+				{ sponsorship2.getId(), "sponsor1", null },
+				{ sponsorship2.getId(), "sponsor1", IllegalArgumentException.class } };
 
 		for (int i = 0; i < testingData.length; i++)
 			this.templateDeleteSponsorship((Integer) testingData[i][0], (String) testingData[i][1],

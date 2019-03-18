@@ -144,7 +144,7 @@ public class ParadesChapterController extends AbstractController {
 			parade = this.paradeService.reconstrucParadeStatus(parade);
 			try {
 
-				this.paradeService.save(parade);
+				this.chapterService.changeParadeStatus(parade);
 
 				result = new ModelAndView("redirect:list.do");
 			} catch (Throwable oops) {

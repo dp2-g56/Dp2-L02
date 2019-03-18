@@ -211,3 +211,52 @@
 	
 		</form:form>
 	</security:authorize>
+	
+	<!-- Chapter -->
+	<security:authorize access = "hasRole('CHAPTER')">
+	
+		<form:form modelAttribute="chapter" action="authenticated/editChapter.do">
+		
+		
+		<form:hidden path="id"/>
+		<form:hidden path="version"/>
+
+		<!-- Actor Attributes -->
+		<fieldset>
+    	<legend> <spring:message code="anonymous.personalData" /> </legend>
+		<acme:textbox path="name" code="anonymous.name" />
+		<br />
+	
+		<acme:textbox path="middleName" code="anonymous.middleName" />
+		<br />
+	
+		<acme:textbox path="surname" code="anonymous.surname" />
+		<br />
+	
+		<acme:textbox path="photo" code="anonymous.photo" />
+		<br />
+	
+		<acme:textbox path="email" code="anonymous.email" />
+		<br />
+	
+		<acme:textbox path="phoneNumber" code="anonymous.phoneNumber" />
+		<br />
+	
+		<acme:textbox path="address" code="anonymous.address" />
+		<br />	
+	
+		<!-- chapter -->
+		<acme:textbox path="title" code="anonymous.title" />
+		<br />	
+		</fieldset>
+		<br />
+		
+		<!-- BOTONES -->	
+		<input type="submit" name="save" value="<spring:message code="anonymous.save" />" 
+		onclick="phonenumberval();validateEmail();"/> 
+	
+		<acme:cancel url="/" code="anonymous.cancel" /> 
+	
+		</form:form>
+		
+	</security:authorize>

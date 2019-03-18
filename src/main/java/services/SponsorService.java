@@ -234,6 +234,10 @@ public class SponsorService {
 		return result;
 	}
 
+	public Sponsor getSponsorByUsername(String a) {
+		return this.SponsorRepository.getSponsorByUsername(a);
+	}
+
 	public void flush() {
 		this.SponsorRepository.flush();
 	}

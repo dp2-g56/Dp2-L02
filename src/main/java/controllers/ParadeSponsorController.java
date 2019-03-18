@@ -33,9 +33,7 @@ public class ParadeSponsorController extends AbstractController {
 	public ModelAndView paradesList() {
 		ModelAndView result;
 
-		this.sponsorService.loggedAsSponsor();
-
-		Collection<Parade> parades = this.paradeService.getAcceptedParades();
+		Collection<Parade> parades = this.paradeService.listAcceptedParadeIfSponsor();
 
 		result = new ModelAndView("sponsor/parades");
 

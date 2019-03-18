@@ -34,6 +34,8 @@ public class SponsorshipService {
 	private SponsorService sponsorService;
 	@Autowired
 	private CreditCardService creditCardService;
+	@Autowired
+	private AdminService adminService;
 
 	public List<Sponsorship> findAll() {
 		return this.sponsorshipRepository.findAll();
@@ -74,24 +76,32 @@ public class SponsorshipService {
 
 	public Sponsorship reconstruct(FormObjectSponsorshipCreditCard formObject, BindingResult binding,
 			CreditCard creditCard, Parade parade) {
-		Sponsorship spo = new Sponsorship();
+		Sponsorship spo;
+		if (formObject.getId() == 0 && parade != null) {
+			spo = new Sponsorship();
+			spo.setIsActivated(true);
+			spo.setGain(0f);
+			spo.setParade(parade);
+		} else
+			spo = this.findOne(formObject.getId());
 
 		spo.setBanner(formObject.getBanner());
 		spo.setTargetURL(formObject.getTargetURL());
-		spo.setParade(parade);
-		spo.setGain(0f);
 		spo.setCreditCard(creditCard);
-		spo.setIsActivated(true);
 
 		// this.validator.validate(spo, binding);
 
 		return spo;
 	}
 
-	public Sponsorship addSponsorship(Sponsorship sponsorship) {
+	public Sponsorship addOrUpdateSponsorship(Sponsorship sponsorship) {
 		Sponsorship result;
 
 		List<String> cardType = this.configurationService.getConfiguration().getCardType();
+		Sponsor sponsor = this.sponsorService.securityAndSponsor();
+
+		if (sponsorship.getId() > 0)
+			Assert.isTrue(sponsor.equals(this.getSponsorOfSponsorship(sponsorship.getId())));
 
 		Assert.isTrue(cardType.contains(sponsorship.getCreditCard().getBrandName()));
 		Assert.isTrue(!sponsorship.getParade().getIsDraftMode()
@@ -100,13 +110,14 @@ public class SponsorshipService {
 		Assert.isTrue(this.creditCardService.validateDateCreditCard(sponsorship.getCreditCard()));
 		Assert.isTrue(this.creditCardService.validateCvvCreditCard(sponsorship.getCreditCard()));
 
-		Sponsor sponsor = this.sponsorService.securityAndSponsor();
-
 		Sponsorship spon = this.save(sponsorship);
-		List<Sponsorship> sps = sponsor.getSponsorships();
-		sps.add(spon);
-		this.sponsorService.save(sponsor);
 		result = spon;
+
+		if (sponsorship.getId() == 0) {
+			List<Sponsorship> sps = sponsor.getSponsorships();
+			sps.add(result);
+			this.sponsorService.save(sponsor);
+		}
 
 		return result;
 	}
@@ -123,6 +134,82 @@ public class SponsorshipService {
 			sponsorships = this.sponsorshipRepository.getDeactivatedSponsorshipsOfSponsor(sponsor.getId());
 
 		return sponsorships;
+	}
+
+	public Collection<Sponsorship> getAllSponsorshipsOfSponsor(int sponsorId) {
+		return this.sponsorshipRepository.getAllSponsorshipsOfSponsor(sponsorId);
+	}
+
+	public Collection<Sponsorship> getActivatedSponsorshipsOfSponsor(int sponsorId) {
+		return this.sponsorshipRepository.getActivatedSponsorshipsOfSponsor(sponsorId);
+	}
+
+	public Collection<Sponsorship> getDeactivatedSponsorshipsOfSponsor(int sponsorId) {
+		return this.sponsorshipRepository.getDeactivatedSponsorshipsOfSponsor(sponsorId);
+	}
+
+	public Collection<Sponsorship> getAllSponsorshipsAsAdmin() {
+		return this.sponsorshipRepository.getAllSponsorshipsAsAdmin();
+	}
+
+	public Collection<Sponsorship> getActivatedSponsorshipsAsAdmin() {
+		return this.sponsorshipRepository.getActivatedSponsorshipsAsAdmin();
+	}
+
+	public Collection<Sponsorship> getDeactivatedSponsorshipsAsAdmin() {
+		return this.sponsorshipRepository.getDeactivatedSponsorshipsAsAdmin();
+	}
+
+	public Sponsor getSponsorOfSponsorship(int sponsorshipId) {
+		return this.sponsorshipRepository.getSponsorOfSponsorship(sponsorshipId);
+	}
+
+	public void changeStatus(int sponsorshipId) {
+		Sponsor loggedSponsor = this.sponsorService.securityAndSponsor();
+		Sponsorship sponsorship = this.findOne(sponsorshipId);
+
+		Assert.isTrue(loggedSponsor.equals(this.getSponsorOfSponsorship(sponsorship.getId())));
+
+		if (sponsorship.getIsActivated() == true)
+			sponsorship.setIsActivated(false);
+		else {
+			Assert.isTrue(this.creditCardService.validateNumberCreditCard(sponsorship.getCreditCard()));
+			Assert.isTrue(this.creditCardService.validateDateCreditCard(sponsorship.getCreditCard()));
+			Assert.isTrue(this.creditCardService.validateCvvCreditCard(sponsorship.getCreditCard()));
+			sponsorship.setIsActivated(true);
+		}
+
+		this.save(sponsorship);
+	}
+
+	public Collection<Sponsorship> getSponsorshipsAsAdmin(Boolean isActivated) {
+		this.adminService.loggedAsAdmin();
+
+		Collection<Sponsorship> sponsorships;
+		if (isActivated == null)
+			sponsorships = this.sponsorshipRepository.getAllSponsorshipsAsAdmin();
+		else if (isActivated == true)
+			sponsorships = this.sponsorshipRepository.getActivatedSponsorshipsAsAdmin();
+		else
+			sponsorships = this.sponsorshipRepository.getDeactivatedSponsorshipsAsAdmin();
+
+		return sponsorships;
+	}
+
+	public void checkAndDeactivateSponsorships() {
+		this.adminService.loggedAsAdmin();
+
+		Collection<Sponsorship> sponsorships = this.findAll();
+
+		for (Sponsorship s : sponsorships) {
+			CreditCard card = s.getCreditCard();
+			if (!(this.creditCardService.validateNumberCreditCard(card)
+					&& this.creditCardService.validateDateCreditCard(card)
+					&& this.creditCardService.validateCvvCreditCard(card)) && s.getIsActivated()) {
+				s.setIsActivated(false);
+				this.save(s);
+			}
+		}
 	}
 
 }

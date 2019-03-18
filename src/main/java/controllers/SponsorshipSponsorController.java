@@ -59,7 +59,25 @@ public class SponsorshipSponsorController extends AbstractController {
 		return result;
 	}
 
-	@RequestMapping(value = "/create", method = RequestMethod.POST, params = "save")
+	// EDIT Sponsorship with Credit Card
+	@RequestMapping(value = "/edit", method = RequestMethod.GET)
+	public ModelAndView editSponsorship(@RequestParam int sponsorshipId) {
+		ModelAndView result;
+
+		Sponsorship sponsorship = this.sponsorshipService.findOne(sponsorshipId);
+
+		FormObjectSponsorshipCreditCard formObject = new FormObjectSponsorshipCreditCard();
+
+		formObject.setId(sponsorship.getId());
+		formObject.setBanner(sponsorship.getBanner());
+		formObject.setTargetURL(sponsorship.getTargetURL());
+
+		result = this.createEditModelAndView("sponsor/editSponsorship", formObject, 0);
+
+		return result;
+	}
+
+	@RequestMapping(value = "/save", method = RequestMethod.POST, params = "save")
 	public ModelAndView saveSponsorship(@ModelAttribute("formObject") @Valid FormObjectSponsorshipCreditCard formObject,
 			BindingResult binding, @RequestParam int paradeId) {
 		ModelAndView result;
@@ -67,7 +85,11 @@ public class SponsorshipSponsorController extends AbstractController {
 		Sponsorship sponsorship = new Sponsorship();
 		CreditCard creditCard = new CreditCard();
 
-		Parade parade = this.paradeService.findOne(paradeId);
+		Parade parade;
+		if (paradeId > 0)
+			parade = this.paradeService.findOne(paradeId);
+		else
+			parade = null;
 
 		creditCard = this.creditCardService.reconstruct(formObject, binding);
 		sponsorship = this.sponsorshipService.reconstruct(formObject, binding, creditCard, parade);
@@ -104,7 +126,7 @@ public class SponsorshipSponsorController extends AbstractController {
 			result = this.createEditModelAndView("sponsor/createSponsorship", formObject, paradeId);
 		else
 			try {
-				this.sponsorshipService.addSponsorship(sponsorship);
+				this.sponsorshipService.addOrUpdateSponsorship(sponsorship);
 
 				result = new ModelAndView("redirect:/sponsorship/sponsor/list.do");
 			} catch (Throwable oops) {
@@ -139,7 +161,7 @@ public class SponsorshipSponsorController extends AbstractController {
 	}
 
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
-	public ModelAndView paradeList() {
+	public ModelAndView sponsorshipList() {
 		ModelAndView result;
 
 		Collection<Sponsorship> sponsorships = this.sponsorshipService.getSponsorships(null);
@@ -169,6 +191,22 @@ public class SponsorshipSponsorController extends AbstractController {
 			result = new ModelAndView("sponsor/sponsorships");
 
 			result.addObject("sponsorships", sponsorships);
+		}
+
+		return result;
+	}
+
+	// EDIT Sponsorship status
+	@RequestMapping(value = { "/activate", "/deactivate" }, method = RequestMethod.GET)
+	public ModelAndView changeStatusSponsorship(@RequestParam int sponsorshipId) {
+		ModelAndView result;
+
+		try {
+			this.sponsorshipService.changeStatus(sponsorshipId);
+			result = new ModelAndView("redirect:list.do");
+		} catch (Throwable oops) {
+			result = this.sponsorshipList();
+			result.addObject("message", "sponsorship.changeStatus.error");
 		}
 
 		return result;

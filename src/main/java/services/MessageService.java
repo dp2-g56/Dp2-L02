@@ -9,6 +9,7 @@ import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
 
@@ -403,7 +404,7 @@ public class MessageService {
 
 		boxesContainingMessage = this.boxService.getCurrentBoxByMessage(message);
 
-		//Assert.isTrue(actor.getBoxes().containsAll(boxesContainingMessage));
+		// Assert.isTrue(actor.getBoxes().containsAll(boxesContainingMessage));
 
 		for (Box b : actor.getBoxes()) {
 			if (b.getMessages().contains(message))

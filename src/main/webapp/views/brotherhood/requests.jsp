@@ -28,7 +28,7 @@
 	<br/>
 
 	<display:table pagesize="5" name="requests" id="row" class="displaytag" 
-					requestURI="request/brotherhood/list.do">
+					requestURI="${requestURI}">
 					
 		<jstl:choose>
 			<jstl:when test="${row.status.toString()=='APPROVED'}">

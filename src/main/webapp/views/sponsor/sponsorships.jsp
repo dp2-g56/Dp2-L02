@@ -26,7 +26,7 @@
 	<br/>
 
 	<display:table pagesize="5" name="sponsorships" id="row" class="displaytag" 
-					requestURI="sponsorship/sponsor/list.do">
+					requestURI="${requestURI}">
 					
 		<jstl:choose>
 			<jstl:when test="${row.isActivated==true}">

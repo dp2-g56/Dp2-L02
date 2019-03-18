@@ -169,12 +169,13 @@ public class SponsorshipSponsorController extends AbstractController {
 		result = new ModelAndView("sponsor/sponsorships");
 
 		result.addObject("sponsorships", sponsorships);
+		result.addObject("requestURI", "sponsorship/sponsor/list.do");
 
 		return result;
 	}
 
-	@RequestMapping(value = "/filter", method = RequestMethod.POST, params = "refresh")
-	public ModelAndView requestsFilter(@Valid String fselect) {
+	@RequestMapping(value = "/filter", method = { RequestMethod.POST, RequestMethod.GET }, params = "refresh")
+	public ModelAndView requestsFilter(@RequestParam String fselect) {
 		ModelAndView result;
 
 		if (fselect.equals("ALL") || (!fselect.equals("ACTIVATED") && !fselect.equals("DEACTIVATED")))
@@ -191,6 +192,7 @@ public class SponsorshipSponsorController extends AbstractController {
 			result = new ModelAndView("sponsor/sponsorships");
 
 			result.addObject("sponsorships", sponsorships);
+			result.addObject("requestURI", "sponsorship/sponsor/filter.do");
 		}
 
 		return result;

@@ -533,6 +533,7 @@
 				<ref bean="enrolment8" />
 			</list>
 		</property>
+		<property name="history" ref="history1" />
 	</bean>
 	
 		<!-- BROTHERHOOD2 -->
@@ -591,6 +592,7 @@
 				<ref bean="enrolment6" />
 			</list>
 		</property>
+		<property name="history" ref="history2" />
 		
 	</bean>
 	
@@ -648,6 +650,7 @@
 				<ref bean="enrolment9" />
 			</list>
 		</property>
+		<property name="history" ref="history3" />
 		
 	</bean>
 	

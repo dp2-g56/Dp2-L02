@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import domain.Admin;
 import domain.Brotherhood;
+import domain.Chapter;
 import domain.Member;
 
 @Repository
@@ -184,12 +185,39 @@ public interface AdminRepository extends JpaRepository<Admin, Integer> {
 	@Query("select stddev(1+h.legalRecords.size+h.linkRecords.size+h.periodRecords.size+h.miscellaneousRecords.size) from Brotherhood b join b.history h")
 	public Float stddevRecordsPerHistory();
 
-	// @Query("select b,
-	// max(1+h.legalRecords.size+h.linkRecords.size+h.periodRecords.size+h.miscellaneousRecords.size)
-	// from Brotherhood b join b.history h")
 	@Query("select b from Brotherhood b join b.history h where (1+h.legalRecords.size+h.linkRecords.size+h.periodRecords.size+h.miscellaneousRecords.size) = (select max(1+i.legalRecords.size+i.linkRecords.size+i.periodRecords.size+i.miscellaneousRecords.size) from Brotherhood a join a.history i)")
-	public Brotherhood broLargestHistory();
+	public List<Brotherhood> broLargestHistory();
 
 	@Query("select b from Brotherhood b join b.history h where (1+h.legalRecords.size+h.linkRecords.size+h.periodRecords.size+h.miscellaneousRecords.size) > (select avg(1+i.legalRecords.size+i.linkRecords.size+i.periodRecords.size+i.miscellaneousRecords.size) from Brotherhood a join a.history i)")
 	public List<Brotherhood> broHistoryLargerThanAvg();
+
+	@Query("select ((select count(a) from Area a where a not in (select c.area from Chapter c where c.area is not null))/(select count(b) from Area b)*100) from Configuration d")
+	public Float ratioAreasNotCoordinated();
+
+	@Query("select max(b.parades.size) from Brotherhood b, Chapter c where c.area = b.area")
+	public Float maxParadesCoordinated();
+
+	@Query("select min(b.parades.size) from Brotherhood b, Chapter c where c.area = b.area")
+	public Float minParadesCoordinated();
+
+	@Query("select avg(b.parades.size) from Brotherhood b, Chapter c where c.area = b.area")
+	public Float avgParadesCoordinated();
+
+	@Query("select stddev(b.parades.size) from Brotherhood b, Chapter c where c.area = b.area")
+	public Float stddevParadesCoordinated();
+
+	@Query("select c from Chapter c, Brotherhood b where (c.area = b.area) and (b.parades.size > (select avg(b.parades.size) from Brotherhood b, Chapter c where c.area = b.area)*1.1)")
+	public List<Chapter> chaptersThatCoordinateAtLeast();
+
+	@Query("select distinct(cast((select count(p) from Parade p where p.isDraftMode = true) as float)/(select count(u) from Parade u where u.isDraftMode = false)) from Configuration d")
+	public Float paradesDraftVSFinal();
+
+	@Query("select distinct (cast((select count(a1.paradeStatus) from Parade a1 where paradeStatus='ACCEPTED') as float)/ (select count(a2) from Parade a2 where a2.isDraftMode = false) * 100) from Configuration a")
+	public Float ratioParadesAcceptedRequests();
+
+	@Query("select distinct (cast((select count(a1.paradeStatus) from Parade a1 where paradeStatus='SUBMITTED') as float)/ (select count(a2) from Parade a2 where a2.isDraftMode = false) * 100) from Configuration a")
+	public Float ratioParadesSubmittedRequests();
+
+	@Query("select distinct (cast((select count(a1.paradeStatus) from Parade a1 where paradeStatus='REJECTED') as float)/ (select count(a2) from Parade a2 where a2.isDraftMode = false) * 100) from Configuration a")
+	public Float ratioParadesRejectedRequests();
 }

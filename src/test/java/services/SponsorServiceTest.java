@@ -18,6 +18,7 @@ import org.springframework.util.Assert;
 import security.Authority;
 import security.UserAccount;
 import utilities.AbstractTest;
+import domain.SocialProfile;
 import domain.Sponsor;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -28,9 +29,13 @@ import domain.Sponsor;
 public class SponsorServiceTest extends AbstractTest {
 
 	@Autowired
-	private SponsorService	sponsorService;
+	private SponsorService			sponsorService;
+
+	@Autowired
+	private SocialProfileService	socialProfileService;
 
 
+	// REGISTER ----------------------------------------------------------------------------------------------------------------------------------------------------------------
 	@Test
 	public void driverRegister() {
 
@@ -120,6 +125,152 @@ public class SponsorServiceTest extends AbstractTest {
 
 			Assert.isTrue(termsAndConditions && password == confirmPassword);
 			this.sponsorService.saveCreate(sponsor);
+			this.sponsorService.flush();
+
+		} catch (Throwable oops) {
+			caught = oops.getClass();
+		} finally {
+			//Se fuerza el rollback para que no de ningun problema la siguiente iteracion
+			this.rollbackTransaction();
+		}
+		super.checkExceptions(expected, caught);
+	}
+
+	//EDIT SOCIAL PROFILES ----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+	@Test
+	public void driverSocialProfiles() {
+
+		Object testingData[][] = {
+			{
+				//Positive test
+				"sponsor1", "nick", "name", "https://www.example.com/", null
+			}, {
+				//Blank Username
+				"", "nick", "name", "https://www.example.com/", IllegalArgumentException.class
+			}, {
+				//Blank nick
+				"sponsor1", "", "name", "https://www.example.com/", ConstraintViolationException.class
+			}, {
+				//Blank name
+				"sponsor1", "nick", "", "https://www.example.com/", ConstraintViolationException.class
+			}, {
+				//Invalid URL
+				"sponsor1", "nick", "name", "papapa", ConstraintViolationException.class
+			}, {
+				//Blank URL
+				"sponsor1", "nick", "name", "", ConstraintViolationException.class
+			}, {
+				//Not a sponsor
+				"brotherhood1", "nick", "name", "https://www.example.com/", IllegalArgumentException.class
+			}
+		};
+
+		for (int i = 0; i < testingData.length; i++)
+			this.templateSocialProfiles((String) testingData[i][0], (String) testingData[i][1], (String) testingData[i][2], (String) testingData[i][3], (Class<?>) testingData[i][4]);
+	}
+
+	protected void templateSocialProfiles(String username, String nick, String name, String profileLink, Class<?> expected) {
+		Class<?> caught = null;
+
+		try {
+			//En cada iteraccion comenzamos una transaccion, de esya manera, no se toman valores residuales de otros test
+			this.startTransaction();
+
+			super.authenticate(username);
+			this.sponsorService.loggedAsSponsor();
+			Sponsor sponsor = this.sponsorService.loggedSponsor();
+			SocialProfile savedSocialProfile = new SocialProfile();
+
+			SocialProfile socialProfile = this.socialProfileService.create();
+
+			socialProfile.setName(name);
+			socialProfile.setNick(nick);
+			socialProfile.setProfileLink(profileLink);
+
+			savedSocialProfile = this.socialProfileService.save(socialProfile);
+			sponsor.getSocialProfiles().add(savedSocialProfile);
+			this.sponsorService.save(sponsor);
+
+			this.sponsorService.flush();
+			super.unauthenticate();
+
+		} catch (Throwable oops) {
+			caught = oops.getClass();
+		} finally {
+			//Se fuerza el rollback para que no de ningun problema la siguiente iteracion
+			this.rollbackTransaction();
+		}
+		super.checkExceptions(expected, caught);
+	}
+	//--------------------------------------------------------------------------------------------------------------------------------------------
+
+	//EDIT PERSONAL DATA-------------------------------------------------------------------------------------------------------------------------------------------------
+	@Test
+	public void driverEditPersonalData() {
+
+		Object testingData[][] = {
+			{
+				//Positive test
+				"sponsor1", "name", "middleName", "surname", "https://www.youtube.com/watch?v=TtXMeMR81q4&list=RD7zok9co_8E4&index=27", "email@gmail.com", "phoneNumber", "address", null
+			}, {
+				//Blank name
+				"sponsor1", "", "middleName", "surname", "https://www.youtube.com/watch?v=TtXMeMR81q4&list=RD7zok9co_8E4&index=27", "email@gmail.com", "phoneNumber", "address", ConstraintViolationException.class
+			}, {
+				//Blank surname
+				"sponsor1", "name", "middleName", "", "https://www.youtube.com/watch?v=TtXMeMR81q4&list=RD7zok9co_8E4&index=27", "email@gmail.com", "phoneNumber", "address", ConstraintViolationException.class
+			}, {
+				//Positive test blank middleName
+				"sponsor1", "name", "", "surname", "https://www.youtube.com/watch?v=TtXMeMR81q4&list=RD7zok9co_8E4&index=27", "email@gmail.com", "phoneNumber", "address", null
+			}, {
+				//Positive test blank photo
+				"sponsor1", "name", "", "surname", "", "email@gmail.com", "phoneNumber", "address", null
+			}, {
+				//Incorrect format for the photo
+				"sponsor1", "name", "middleName", "surname", "htt", "email@gmail.com", "phoneNumber", "address", ConstraintViolationException.class
+			}, {
+				//Incorrect format for the email
+				"sponsor1", "name", "middleName", "surname", "https://www.youtube.com", "", "phoneNumber", "address", ConstraintViolationException.class
+			}, {
+				//Incorrect format for the email
+				"sponsor1", "name", "middleName", "surname", "https://www.youtube.com", "$%&/$·$ª!$!", "phoneNumber", "address", ConstraintViolationException.class
+			}, {
+				//Blank values possibles, positive test
+				"sponsor1", "name", "", "surname", "https://www.youtube.com", "email@gmail.com", "", "", null
+			}, {
+				//Not the logged Sponsor
+				"brotherhood1", "name", "", "surname", "https://www.youtube.com", "email@gmail.com", "", "", IllegalArgumentException.class
+			}
+		};
+
+		for (int i = 0; i < testingData.length; i++)
+			this.templateEditSocialData((String) testingData[i][0], (String) testingData[i][1], (String) testingData[i][2], (String) testingData[i][3], (String) testingData[i][4], (String) testingData[i][5], (String) testingData[i][6],
+				(String) testingData[i][7], (Class<?>) testingData[i][8]);
+	}
+
+	protected void templateEditSocialData(String username, String name, String middleName, String surname, String photo, String email, String phoneNumber, String address, Class<?> expected) {
+		Class<?> caught = null;
+
+		try {
+			//En cada iteraccion comenzamos una transaccion, de esya manera, no se toman valores residuales de otros test
+			this.startTransaction();
+
+			super.authenticate(username);
+
+			this.sponsorService.loggedAsSponsor();
+
+			Sponsor sponsor = this.sponsorService.loggedSponsor();
+
+			sponsor.setAddress(address);
+			sponsor.setMiddleName(middleName);
+			sponsor.setPhoneNumber(phoneNumber);
+
+			sponsor.setEmail(email);
+			sponsor.setName(name);
+			sponsor.setPhoto(photo);
+			sponsor.setSurname(surname);
+
+			this.sponsorService.save(sponsor);
 			this.sponsorService.flush();
 
 		} catch (Throwable oops) {

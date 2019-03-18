@@ -21,6 +21,7 @@ import domain.Admin;
 import domain.Area;
 import domain.Box;
 import domain.Brotherhood;
+import domain.Chapter;
 import domain.Member;
 import domain.Message;
 import domain.Parade;
@@ -436,8 +437,35 @@ public class AdminService {
 			statistics.add(this.adminRepository.stddevRecordsPerHistory());
 		}
 
-		if (this.adminRepository.numberNonEmptyFinders() == 0)
+		if (this.adminRepository.ratioAreasNotCoordinated() == 0)
 			statistics.add((float) -1);
+		else
+			statistics.add(this.adminRepository.ratioAreasNotCoordinated());
+
+		if (this.paradeService.findAll().isEmpty()) {
+			statistics.add((float) 0);
+			statistics.add((float) 0);
+			statistics.add((float) 0);
+			statistics.add((float) 0);
+			statistics.add((float) 0);
+			statistics.add((float) 0);
+			statistics.add((float) 0);
+			statistics.add((float) 0);
+
+		} else {
+			statistics.add(this.adminRepository.minParadesCoordinated());
+			statistics.add(this.adminRepository.maxParadesCoordinated());
+			statistics.add(this.adminRepository.avgParadesCoordinated());
+			statistics.add(this.adminRepository.stddevParadesCoordinated());
+			statistics.add(this.adminRepository.paradesDraftVSFinal());
+			statistics.add(this.adminRepository.ratioParadesAcceptedRequests());
+			statistics.add(this.adminRepository.ratioParadesRejectedRequests());
+			statistics.add(this.adminRepository.ratioParadesSubmittedRequests());
+
+		}
+
+		if (this.adminRepository.numberNonEmptyFinders() == null)
+			statistics.add((float) 0);
 		else
 			statistics.add(this.adminRepository.ratioEmptyFinder());
 
@@ -457,8 +485,15 @@ public class AdminService {
 		return statistics;
 	}
 
-	public Brotherhood broLargestHistory() {
-		return this.adminRepository.broLargestHistory();
+	public List<Chapter> chaptersThatCoordinateAtLeast() {
+		return this.adminRepository.chaptersThatCoordinateAtLeast();
+	}
+
+	public List<String> broLargestHistory() {
+		List<String> res = new ArrayList<String>();
+		for (Brotherhood b : this.adminRepository.broLargestHistory())
+			res.add(b.getName());
+		return res;
 	}
 
 	public List<Brotherhood> broHistoryLargerThanAvg() {

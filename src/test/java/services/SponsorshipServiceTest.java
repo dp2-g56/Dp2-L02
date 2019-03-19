@@ -3,6 +3,7 @@ package services;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import javax.validation.ConstraintViolationException;
 
@@ -309,6 +310,41 @@ public class SponsorshipServiceTest extends AbstractTest {
 			this.sponsorshipService.checkAndDeactivateSponsorships();
 			Assert.isTrue(this.sponsorshipService.getActivatedSponsorshipsAsAdmin().size() + 1 == activeSponsorships);
 			super.unauthenticate();
+			this.sponsorshipService.flush();
+		} catch (Throwable oops) {
+			caught = oops.getClass();
+		}
+
+		super.checkExceptions(expected, caught);
+
+	}
+
+	// AQUI
+	@Test
+	public void driverUpdateGainOfSponsorship() {
+		Sponsor sponsor = this.sponsorService.getSponsorByUsername("sponsor1");
+		List<Sponsorship> sponsorships = (List<Sponsorship>) this.sponsorshipService
+				.getActivatedSponsorshipsOfSponsor(sponsor.getId());
+
+		Sponsorship sponsorship = sponsorships.get(0);
+		Parade parade = sponsorship.getParade();
+
+		Integer anotherParadeId = 637;
+
+		Object testingData[][] = { { parade.getId(), sponsorship.getId(), null },
+				{ anotherParadeId, sponsorship.getId(), IllegalArgumentException.class } };
+
+		for (int i = 0; i < testingData.length; i++)
+			this.templateUpdateGainOfSponsorship((Integer) testingData[i][0], (Integer) testingData[i][1],
+					(Class<?>) testingData[i][2]);
+	}
+
+	private void templateUpdateGainOfSponsorship(int paradeId, int sponsorshipId, Class<?> expected) {
+
+		Class<?> caught = null;
+
+		try {
+			this.sponsorshipService.updateGainOfSponsorship(paradeId, sponsorshipId);
 			this.sponsorshipService.flush();
 		} catch (Throwable oops) {
 			caught = oops.getClass();

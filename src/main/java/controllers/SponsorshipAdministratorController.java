@@ -5,12 +5,11 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import domain.Sponsorship;
@@ -60,12 +59,13 @@ public class SponsorshipAdministratorController extends AbstractController {
 
 		result.addObject("sponsorships", sponsorships);
 		result.addObject("isValid", isValid);
+		result.addObject("requestURI", "sponsorship/administrator/list.do");
 
 		return result;
 	}
 
-	@RequestMapping(value = "/filter", method = RequestMethod.POST, params = "refresh")
-	public ModelAndView sponsorshipFilter(@Valid String fselect) {
+	@RequestMapping(value = "/filter", method = { RequestMethod.POST, RequestMethod.GET }, params = "refresh")
+	public ModelAndView sponsorshipFilter(@RequestParam String fselect) {
 		ModelAndView result;
 
 		if (fselect.equals("ALL") || (!fselect.equals("ACTIVATED") && !fselect.equals("DEACTIVATED")))
@@ -92,6 +92,7 @@ public class SponsorshipAdministratorController extends AbstractController {
 
 			result.addObject("sponsorships", sponsorships);
 			result.addObject("isValid", isValid);
+			result.addObject("requestURI", "sponsorship/administrator/filter.do");
 		}
 
 		return result;

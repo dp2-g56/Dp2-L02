@@ -55,12 +55,20 @@
 			
 		</jstl:if>
 	</display:column> 
+	
+	<display:column property="ticker" titleKey="parade.ticker" /> 
 		
 	<display:column property="title" titleKey="parade.title" /> 
 	
 	<display:column property="description" titleKey="parade.description" /> 
 	
 	<display:column property="moment" titleKey="parade.moment" /> 
+	
+	<display:column titleKey="parade.sponsorship">
+		<jstl:if test="${randomSpo.get(row.id).id>0}">
+			<a href="${randomSpo.get(row.id).targetURL}"><img src="${randomSpo.get(row.id).banner}" style="width:auto; height:50px;" alt="<spring:message code='parade.sponsorship'/>"/></a>
+		</jstl:if>
+	</display:column>
 	
 	</display:table>
 	

@@ -3,6 +3,7 @@ package services;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Random;
 
 import javax.transaction.Transactional;
 
@@ -12,6 +13,7 @@ import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
 
+import domain.Configuration;
 import domain.CreditCard;
 import domain.Parade;
 import domain.ParadeStatus;
@@ -210,6 +212,37 @@ public class SponsorshipService {
 				this.save(s);
 			}
 		}
+	}
+
+	public List<Sponsorship> getSponsorshipsOfParade(int paradeId) {
+		return this.sponsorshipRepository.getSponsorshipsOfParade(paradeId);
+	}
+
+	public Sponsorship getRandomSponsorship(int paradeId) {
+		List<Sponsorship> sponsorships = this.getSponsorshipsOfParade(paradeId);
+
+		Random random = new Random();
+		if (sponsorships.size() == 0)
+			return this.createSponsorship();
+		else
+			return sponsorships.get(random.nextInt(sponsorships.size()));
+	}
+
+	public void updateGainOfSponsorship(int paradeId, int sponsorshipId) {
+		Assert.isTrue(sponsorshipId > 0 && paradeId > 0);
+
+		Sponsorship sponsorship = this.findOne(sponsorshipId);
+
+		Assert.isTrue(paradeId == sponsorship.getParade().getId());
+
+		Configuration conf = this.configurationService.getConfiguration();
+		java.lang.Float newGain = sponsorship.getGain() + conf.getFare() * conf.getVAT() / 100;
+
+		sponsorship.setGain(newGain);
+
+		this.save(sponsorship);
+
+		this.flush();
 	}
 
 }

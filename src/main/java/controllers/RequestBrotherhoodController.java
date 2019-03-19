@@ -1,8 +1,8 @@
 /*
  * CustomerController.java
- * 
+ *
  * Copyright (C) 2018 Universidad de Sevilla
- * 
+ *
  * The use of this project is hereby constrained to the conditions of the
  * TDG Licence, a copy of which you may download from
  * http://www.tdg-seville.info/License.html
@@ -24,25 +24,24 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import services.BrotherhoodService;
-import services.ParadeService;
-import services.RequestService;
 import domain.Brotherhood;
 import domain.Parade;
 import domain.Request;
 import domain.Status;
+import services.BrotherhoodService;
+import services.ParadeService;
+import services.RequestService;
 
 @Controller
 @RequestMapping("/request/brotherhood/")
 public class RequestBrotherhoodController extends AbstractController {
 
 	@Autowired
-	private RequestService		requestService;
+	private RequestService requestService;
 	@Autowired
-	private BrotherhoodService	brotherhoodService;
+	private BrotherhoodService brotherhoodService;
 	@Autowired
-	private ParadeService		paradeService;
-
+	private ParadeService paradeService;
 
 	// Constructors -----------------------------------------------------------
 
@@ -50,7 +49,7 @@ public class RequestBrotherhoodController extends AbstractController {
 		super();
 	}
 
-	// List ---------------------------------------------------------------		
+	// List ---------------------------------------------------------------
 
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public ModelAndView requestsList() {
@@ -67,8 +66,8 @@ public class RequestBrotherhoodController extends AbstractController {
 		return result;
 	}
 
-	@RequestMapping(value = "/filter", method = RequestMethod.POST, params = "refresh")
-	public ModelAndView requestsFilter(@Valid String fselect) {
+	@RequestMapping(value = "/filter", method = { RequestMethod.POST, RequestMethod.GET }, params = "refresh")
+	public ModelAndView requestsFilter(@RequestParam String fselect) {
 		ModelAndView result;
 
 		if (fselect.equals("ALL"))
@@ -82,7 +81,8 @@ public class RequestBrotherhoodController extends AbstractController {
 				status = Status.REJECTED;
 
 			Brotherhood loggedBrotherhood = this.brotherhoodService.securityAndBrotherhood();
-			Collection<Request> requests = this.requestService.getRequestsByBrotherhoodAndStatus(loggedBrotherhood, status);
+			Collection<Request> requests = this.requestService.getRequestsByBrotherhoodAndStatus(loggedBrotherhood,
+					status);
 
 			result = new ModelAndView("brotherhood/requests");
 
@@ -105,7 +105,8 @@ public class RequestBrotherhoodController extends AbstractController {
 			return this.requestsList();
 
 		if (request.getId() != 0) {
-			Collection<Request> requests = this.requestService.getRequestApprovedByBrotherhoodAndParade(brotherhood, request.getParade());
+			Collection<Request> requests = this.requestService.getRequestApprovedByBrotherhoodAndParade(brotherhood,
+					request.getParade());
 
 			List<Integer> freePosition = this.requestService.getFreePosition(request);
 
@@ -134,7 +135,8 @@ public class RequestBrotherhoodController extends AbstractController {
 
 		Brotherhood brotherhood = this.brotherhoodService.securityAndBrotherhood();
 		Request requestFounded = this.requestService.findOne(request.getId());
-		Collection<Request> requests = this.requestService.getRequestApprovedByBrotherhoodAndParade(brotherhood, requestFounded.getParade());
+		Collection<Request> requests = this.requestService.getRequestApprovedByBrotherhoodAndParade(brotherhood,
+				requestFounded.getParade());
 		Parade parade = requestFounded.getParade();
 
 		r = this.requestService.reconstructRequest(request, binding);

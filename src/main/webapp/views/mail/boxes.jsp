@@ -38,6 +38,11 @@
 			</jstl:if>	
 		</display:column>	
 		
+	
+		<display:column	property ="fatherBox.name"
+				titleKey="mail.box.fatherBox"/>	
+			
+
 
 															
 </display:table>

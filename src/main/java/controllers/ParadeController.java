@@ -114,46 +114,10 @@ public class ParadeController extends AbstractController {
 		return result;
 	}
 
-	@RequestMapping(value = "/filter", method = RequestMethod.GET)
-	public ModelAndView listFilter(@RequestParam String fselect) {
-
-		ModelAndView result;
-
-		this.brotherhoodService.loggedAsBrotherhood();
-
-		Brotherhood loggedBrotherhood = this.brotherhoodService.loggedBrotherhood();
-
-		Boolean hasArea = !(loggedBrotherhood.getArea() == null);
-
-		List<ParadeStatus> paradeStatus = Arrays.asList(ParadeStatus.values());
-
-		String locale = LocaleContextHolder.getLocale().getLanguage();
-
-		List<String> statusName = new ArrayList<>();
-
-		if (locale == "es") {
-			statusName.add("PRESENTADO");
-			statusName.add("ACEPTADO");
-			statusName.add("RECHAZADO");
-		} else if (locale == "en") {
-			statusName.add("SUBMITTED");
-			statusName.add("ACCEPTED");
-			statusName.add("REJECTED");
-		}
-		List<Parade> parades = this.paradeService.filterParadesBrotherhood(loggedBrotherhood, fselect);
-
-		result = new ModelAndView("parade/brotherhood/list");
-		result.addObject("parades", parades);
-		result.addObject("requestURI", "parade/brotherhood/filter.do");
-		result.addObject("hasArea", hasArea);
-		result.addObject("paradeStatus", paradeStatus);
-		result.addObject("statusName", statusName);
-
-		return result;
-	}
-
-	@RequestMapping(value = "/filter", method = RequestMethod.POST, params = "refresh")
-	public ModelAndView paradeFilter(@Valid String fselect) {
+	@RequestMapping(value = "/filter", method = {
+		RequestMethod.POST, RequestMethod.GET
+	}, params = "refresh")
+	public ModelAndView paradeFilter(@RequestParam String fselect) {
 		ModelAndView result;
 
 		Brotherhood loggedBro = this.brotherhoodService.loggedBrotherhood();

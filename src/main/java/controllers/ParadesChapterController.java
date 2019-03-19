@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
@@ -85,46 +83,10 @@ public class ParadesChapterController extends AbstractController {
 	}
 	//**********************************************************************************************************
 
-	@RequestMapping(value = "/filter", method = RequestMethod.GET)
-	public ModelAndView listFilter(@RequestParam String fselect) {
-
-		ModelAndView result;
-
-		this.chapterService.loggedAsChapter();
-
-		Chapter loggedChapter = this.chapterService.loggedChapter();
-
-		Boolean hasArea = !(loggedChapter.getArea() == null);
-
-		List<ParadeStatus> paradeStatus = Arrays.asList(ParadeStatus.values());
-
-		String locale = LocaleContextHolder.getLocale().getLanguage();
-
-		List<String> statusName = new ArrayList<>();
-
-		if (locale == "es") {
-			statusName.add("PRESENTADO");
-			statusName.add("ACEPTADO");
-			statusName.add("RECHAZADO");
-		} else if (locale == "en") {
-			statusName.add("SUBMITTED");
-			statusName.add("ACCEPTED");
-			statusName.add("REJECTED");
-		}
-		List<Parade> parades = this.paradeService.filterParadesChapter(loggedChapter, fselect);
-
-		result = new ModelAndView("parade/chapter/list");
-		result.addObject("parades", parades);
-		result.addObject("requestURI", "parade/chapter/filter.do");
-		result.addObject("hasArea", hasArea);
-		result.addObject("paradeStatus", paradeStatus);
-		result.addObject("statusName", statusName);
-
-		return result;
-	}
-
-	@RequestMapping(value = "/filter", method = RequestMethod.POST, params = "refresh")
-	public ModelAndView paradeFilter(@Valid String fselect) {
+	@RequestMapping(value = "/filter", method = {
+		RequestMethod.POST, RequestMethod.GET
+	}, params = "refresh")
+	public ModelAndView paradeFilter(@RequestParam String fselect) {
 		ModelAndView result;
 
 		Chapter loggedChapter = this.chapterService.loggedChapter();

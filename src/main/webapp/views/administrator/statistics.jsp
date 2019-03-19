@@ -549,5 +549,53 @@ tr:nth-child(even) {
 		</tr>
 	</table>
 	<br />
+	
+	<table style="width: 100%">
+		<tr>
+			<td><b><spring:message code="statistics.ratioActiveSponsorships" /></b></td>
+			<td><jstl:out value="${statistics.get(28)}"></jstl:out>
+		</tr>
+	</table>
+	
+	<strong><spring:message code="statistics.sponsorshipsPerSponsor" />:</strong>
+	<br />
+	<table style="width: 100%">
+		<tr>
+			<td><b><spring:message code="statistics.minimum" /></b></td>
+			<td><jstl:out value="${statistics.get(29)}" /></td>
+		</tr>
+		<tr>
+			<td><b><spring:message code="statistics.maximum" /></b></td>
+			<td><jstl:out value="${statistics.get(30)}" /></td>
+		</tr>
+		<tr>
+			<td><b><spring:message code="statistics.average" /></b></td>
+			<td><jstl:out value="${statistics.get(31)}" /></td>
+		</tr>
+		<tr>
+			<td><b><spring:message code="statistics.standardDeviation" /></b></td>
+			<td><jstl:out value="${statistics.get(32)}" /></td>
+		</tr>
+	</table>
+	<br />
+	
+	<strong><spring:message
+			code="statistics.top5Sponsor" />:</strong>
+	<br />
+	<table style="width: 100%">
+		<jstl:choose>
+			<jstl:when test="${top5Sponsor.isEmpty()}">
+				<td><spring:message code="statistics.none" /></td>
+			</jstl:when>
+			<jstl:otherwise>
+				<jstl:forEach items="${top5Sponsor}" var="sponsor">
+					<tr>
+						<td><jstl:out value="${sponsor}" /></td>
+					</tr>
+				</jstl:forEach>
+			</jstl:otherwise>
+		</jstl:choose>
+	</table>
+	<br />
 
 </security:authorize>

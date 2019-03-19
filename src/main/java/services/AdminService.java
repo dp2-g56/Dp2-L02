@@ -27,6 +27,7 @@ import domain.Message;
 import domain.Parade;
 import domain.Position;
 import domain.SocialProfile;
+import domain.Sponsor;
 import forms.FormObjectMember;
 import repositories.AdminRepository;
 import security.Authority;
@@ -72,6 +73,9 @@ public class AdminService {
 
 	@Autowired
 	private HistoryService historyService;
+
+	@Autowired
+	private SponsorshipService sponsorshipService;
 
 	// 1. Create user accounts for new administrators.
 	public void loggedAsAdmin() {
@@ -464,6 +468,21 @@ public class AdminService {
 
 		}
 
+		if (this.sponsorshipService.findAll().isEmpty()) {
+			statistics.add((float) 0);
+			statistics.add((float) 0);
+			statistics.add((float) 0);
+			statistics.add((float) 0);
+			statistics.add((float) 0);
+
+		} else {
+			statistics.add(this.adminRepository.ratioActiveSponsorships());
+			statistics.add(this.adminRepository.minSponsorshipsPerSponsor());
+			statistics.add(this.adminRepository.maxSponsorshipsPerSponsor());
+			statistics.add(this.adminRepository.avgSponsorshipsPerSponsor());
+			statistics.add(this.adminRepository.stddevSponsorshipsPerSponsor());
+		}
+
 		if (this.adminRepository.numberNonEmptyFinders() == null)
 			statistics.add((float) 0);
 		else
@@ -483,6 +502,18 @@ public class AdminService {
 			statistics.add(this.adminRepository.avgBrotherhoodPolarity() + 1);
 
 		return statistics;
+	}
+
+	public List<String> top5SponsorNumberActiveSponsorships() {
+		List<String> res = new ArrayList<String>();
+		if (this.adminRepository.top5SponsorNumberActiveSponsorships().size() > 5)
+			for (int i = 0; i < 5; i++)
+				res.add(this.adminRepository.top5SponsorNumberActiveSponsorships().get(i).getUserAccount()
+						.getUsername());
+		else
+			for (Sponsor s : this.adminRepository.top5SponsorNumberActiveSponsorships())
+				res.add(s.getUserAccount().getUsername());
+		return res;
 	}
 
 	public List<Chapter> chaptersThatCoordinateAtLeast() {

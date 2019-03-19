@@ -6,7 +6,6 @@ import java.util.List;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -14,6 +13,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.Index;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.Valid;
 import javax.validation.constraints.Digits;
@@ -43,7 +43,7 @@ public class Parade extends DomainEntity {
 
 	private List<Float> floats;
 	private List<Request> requests;
-	private List<Path> paths;
+	private Path path;
 
 	@Valid
 	public String getRejectedReason() {
@@ -155,13 +155,13 @@ public class Parade extends DomainEntity {
 	}
 
 	@Valid
-	@OneToMany(cascade = CascadeType.ALL)
-	public List<Path> getPaths() {
-		return this.paths;
+	@OneToOne(optional = true)
+	public Path getPath() {
+		return this.path;
 	}
 
-	public void setPaths(List<Path> paths) {
-		this.paths = paths;
+	public void setPath(Path path) {
+		this.path = path;
 	}
 
 }

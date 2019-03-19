@@ -1989,11 +1989,7 @@
 				<ref bean="float2" />
 			</list>
 		</property>	<!-- no hay request porque es draft -->	
-		<property name="paths">
-		<list>
-			<ref bean="path1" />
-		</list>
-		</property>
+		<property name="path" ref="path1"/>
 	</bean>
 	
 	<bean id ="parade2" class="domain.Parade">
@@ -2017,11 +2013,8 @@
 				<ref bean="request5"/> 
 			</list>
 		</property>		
-		<property name="paths">
-		<list>
-			<ref bean="path2" />
-		</list>
-		</property>	
+		<property name="path" ref="path2"/>
+
 	</bean>
 	
 	<bean id ="parade3" class="domain.Parade">
@@ -2045,11 +2038,8 @@
 				<ref bean="request6"/>
 			</list>
 		</property>	
-		<property name="paths">
-		<list>
-			<ref bean="path3" />
-		</list>
-		</property>		
+		<property name="path" ref="path3"/>
+
 	</bean>
 	
 		<!-- BROTHERHOOD 2 -->
@@ -2067,11 +2057,7 @@
 			<list>
 			</list>
 		</property>		<!-- No hay Request porque es Draft -->
-		<property name="paths">
-		<list>
-			<ref bean="path4" />
-		</list>
-		</property>
+		<property name="path" ref="path4"/>
 	</bean>
 	
 	<bean id ="parade5" class="domain.Parade">
@@ -2084,14 +2070,9 @@
 		<property value="1" name="columnNumber" />
 		<property name="paradeStatus" value="REJECTED" />
 		<property name="floats">
-		
 			<list>
 			</list>
 		</property>		<!-- No hay Request porque es Draft -->
-		<property name="paths">
-		<list>
-		</list>
-		</property>
 	</bean>
 	
 			<!-- BROTHERHOOD 3 -->
@@ -2112,10 +2093,6 @@
 			<list>
 			</list>
 		</property>	
-		<property name="paths">
-		<list>
-		</list>
-		</property>
 	</bean>
 	
 	<!-- FIN PARADE -->

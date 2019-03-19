@@ -41,6 +41,8 @@ public class ParadeService {
 	private BrotherhoodService brotherhoodService;
 	@Autowired
 	private SponsorService sponsorService;
+	@Autowired
+	private PathService pathService;
 
 	// Simple CRUD methods ------------------------------------------
 
@@ -55,9 +57,6 @@ public class ParadeService {
 		final Parade parade = new Parade();
 
 		final List<Float> floats = new ArrayList<>();
-		List<Path> paths = new ArrayList<>();
-
-		parade.setPaths(paths);
 		parade.setFloats(floats);
 
 		parade.setColumnNumber(0);
@@ -74,6 +73,8 @@ public class ParadeService {
 		parade.setTicker(ticker);
 
 		parade.setTitle("");
+
+		parade.setParadeStatus(ParadeStatus.SUBMITTED);
 
 		return parade;
 	}
@@ -105,6 +106,8 @@ public class ParadeService {
 		final Parade saved = this.save(parade);
 		parades.add(saved);
 		loggedBrotherhood.setParades(parades);
+
+		parade.setParadeStatus(ParadeStatus.SUBMITTED);
 
 		this.brotherhoodService.save(loggedBrotherhood);
 
@@ -184,8 +187,7 @@ public class ParadeService {
 		result.setRowNumber(formObjectParadeCoach.getRowNumber());
 		result.setColumnNumber(formObjectParadeCoach.getColumnNumber());
 		result.setId(0);
-		if (!formObjectParadeCoach.getIsDraftMode())
-			result.setParadeStatus(ParadeStatus.SUBMITTED);
+		result.setParadeStatus(ParadeStatus.SUBMITTED);
 
 		result.setTicker(this.generateTicker());
 
@@ -209,8 +211,7 @@ public class ParadeService {
 		result.setIsDraftMode(formObjectParadeFloatCheckbox.getIsDraftMode());
 		result.setRowNumber(formObjectParadeFloatCheckbox.getRowNumber());
 		result.setColumnNumber(formObjectParadeFloatCheckbox.getColumnNumber());
-		if (!formObjectParadeFloatCheckbox.getIsDraftMode())
-			result.setParadeStatus(ParadeStatus.SUBMITTED);
+		result.setParadeStatus(ParadeStatus.SUBMITTED);
 
 		// this.validator.validate(result, binding); //YA VIENE VALIDADO
 
@@ -327,7 +328,6 @@ public class ParadeService {
 		return chapter.getArea() != null;
 	}
 
-
 	public void flush() {
 		this.paradeRepository.flush();
 	}
@@ -340,6 +340,26 @@ public class ParadeService {
 
 		return parades;
 
+	}
+
+	public void paradeSecurity(Parade parade) {
+		this.brotherhoodService.securityAndBrotherhood();
+		Brotherhood brotherhood = this.brotherhoodService.loggedBrotherhood();
+		Assert.isTrue(brotherhood.getParades().contains(parade));
+	}
+
+	public void putOrDeletePath(Integer paradeId) {
+		Parade parade = this.findOne(paradeId);
+		Path path = parade.getPath();
+		this.paradeSecurity(parade);
+		if (path == null) {
+			path = new Path();
+			parade.setPath(path);
+		} else {
+			parade.setPath(null);
+			this.pathService.delete(path);
+		}
+		this.save(parade);
 	}
 
 }

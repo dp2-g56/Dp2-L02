@@ -78,7 +78,7 @@
 		<property name="systemName" value="Acme Parade" />
 		<property name="imageURL" value="https://i.ibb.co/HhytG1y/Untitled.jpg" />
 		<property name="VAT" value="21" />
-		<property name="fare" value="0.01" />
+		<property name="fare" value="1" />
 		
 	</bean>
 	

@@ -5,7 +5,6 @@ import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
-import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotBlank;
@@ -44,7 +43,6 @@ public class Sponsorship extends DomainEntity {
 	}
 
 	@NotNull
-	@Digits(integer = 9, fraction = 2)
 	public java.lang.Float getGain() {
 		return this.gain;
 	}

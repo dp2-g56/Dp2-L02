@@ -11,6 +11,7 @@ import domain.Admin;
 import domain.Brotherhood;
 import domain.Chapter;
 import domain.Member;
+import domain.Sponsor;
 
 @Repository
 public interface AdminRepository extends JpaRepository<Admin, Integer> {
@@ -220,4 +221,22 @@ public interface AdminRepository extends JpaRepository<Admin, Integer> {
 
 	@Query("select distinct (cast((select count(a1.paradeStatus) from Parade a1 where paradeStatus='REJECTED') as float)/ (select count(a2) from Parade a2 where a2.isDraftMode = false) * 100) from Configuration a")
 	public Float ratioParadesRejectedRequests();
+
+	@Query("select distinct (cast((select count(a1) from Sponsorship a1 where isActivated = true) as float)/ (select count(a2) from Sponsorship a2) * 100) from Configuration a")
+	public Float ratioActiveSponsorships();
+
+	@Query("select max(cast((select count(a) from Sponsorship a where a member of b.sponsorships and a.isActivated = true) as float)) from Sponsor b")
+	public Float maxSponsorshipsPerSponsor();
+
+	@Query("select min(cast((select count(a) from Sponsorship a where a member of b.sponsorships and a.isActivated = true) as float)) from Sponsor b")
+	public Float minSponsorshipsPerSponsor();
+
+	@Query("select avg(cast((select count(a) from Sponsorship a where a member of b.sponsorships and a.isActivated = true) as float)) from Sponsor b")
+	public Float avgSponsorshipsPerSponsor();
+
+	@Query("select stddev(cast((select count(a) from Sponsorship a where a member of b.sponsorships and a.isActivated = true) as float)) from Sponsor b")
+	public Float stddevSponsorshipsPerSponsor();
+
+	@Query("select distinct(s) from Sponsor s order by (cast((select count(a) from Sponsorship a where a member of s.sponsorships and a.isActivated = true) as float)) desc")
+	public List<Sponsor> top5SponsorNumberActiveSponsorships();
 }

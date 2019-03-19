@@ -49,6 +49,7 @@ public class AdministratorStatisticsController extends AbstractController {
 		String locale = LocaleContextHolder.getLocale().getLanguage().toUpperCase();
 
 		List<Float> statistics = this.adminService.showStatistics();
+		List<String> top5Sponsor = this.adminService.top5SponsorNumberActiveSponsorships();
 		List<Chapter> chaptersThatCoordinateAtLeast = this.adminService.chaptersThatCoordinateAtLeast();
 		List<String> broLargestHistory = this.adminService.broLargestHistory();
 		List<Brotherhood> broHistoryLargerThanAvg = this.adminService.broHistoryLargerThanAvg();
@@ -71,6 +72,7 @@ public class AdministratorStatisticsController extends AbstractController {
 		result = new ModelAndView("statistics/administrator/show");
 
 		result.addObject("statistics", statistics);
+		result.addObject("top5Sponsor", top5Sponsor);
 		result.addObject("chaptersThatCoordinateAtLeast", chaptersThatCoordinateAtLeast);
 		result.addObject("broLargestHistory", broLargestHistory);
 		result.addObject("broHistoryLargerThanAvg", broHistoryLargerThanAvg);

@@ -55,6 +55,8 @@
 			
 		</jstl:if>
 	</display:column> 
+	
+	<display:column property="ticker" titleKey="parade.ticker" /> 
 		
 	<display:column property="title" titleKey="parade.title" /> 
 	

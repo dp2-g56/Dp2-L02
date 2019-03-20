@@ -262,4 +262,15 @@ public class MemberService {
 		return result;
 	}
 
+	public void flush() {
+		this.memberRepository.flush();
+
+	}
+
+	public Member updateMember(Member member) {
+		this.loggedAsMember();
+		Assert.isTrue(member.getId() != 0 && this.loggedMember().getId() == member.getId());
+		return this.memberRepository.save(member);
+	}
+
 }

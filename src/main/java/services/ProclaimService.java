@@ -43,6 +43,10 @@ public class ProclaimService {
 		return this.proclaimRepository.findAll();
 	}
 
+	public void delete(Proclaim proclaim) {
+		this.proclaimRepository.delete(proclaim);
+	}
+
 	public Proclaim createProclaim() {
 		this.chapterService.loggedAsChapter();
 		Proclaim proclaim = new Proclaim();

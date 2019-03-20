@@ -47,8 +47,8 @@
 		
 		<display:column property="targetURL" titleKey="sponsorship.targetURL" style="color:${color}"/>
 		
-		<display:column titleKey="sponsorship.gain" style="color:${color}">
-			<fmt:formatNumber type="number" maxFractionDigits="2" value="${row.gain} "/> euros
+		<display:column titleKey="sponsorship.spentMoney" style="color:${color}">
+			<fmt:formatNumber type="number" maxFractionDigits="2" value="${row.spentMoney} "/> euros
 		</display:column>
 			
 		<display:column titleKey="sponsorship.creditCard" style="color:${color}">

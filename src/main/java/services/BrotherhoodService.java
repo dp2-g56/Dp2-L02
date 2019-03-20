@@ -277,7 +277,7 @@ public class BrotherhoodService {
 
 	public Brotherhood updateBrotherhood(Brotherhood brotherhood) {
 		this.loggedAsBrotherhood();
-		Assert.isTrue(brotherhood.getId() != 0);
+		Assert.isTrue(brotherhood.getId() != 0 && this.loggedBrotherhood().getId() == brotherhood.getId());
 		return this.brotherhoodRepository.save(brotherhood);
 	}
 
@@ -373,4 +373,13 @@ public class BrotherhoodService {
 		brotherhood.getPictures().add(picture);
 		return this.save(brotherhood);
 	}
+
+	public void flush() {
+		this.brotherhoodRepository.flush();
+
+	}
+	public Brotherhood getBrotherhoodByUsername(String username) {
+		return this.brotherhoodRepository.getBrotherhoodByUsername(username);
+	}
+
 }

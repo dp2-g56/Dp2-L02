@@ -354,6 +354,7 @@ public class ParadeService {
 		this.paradeSecurity(parade);
 		if (path == null) {
 			path = new Path();
+			path = this.pathService.save(path);
 			parade.setPath(path);
 		} else {
 			parade.setPath(null);

@@ -76,6 +76,18 @@
 				<font color="${color}"><jstl:out value="${row.paradeStatus}"/></font>
 	
 			</display:column>
+			
+			<display:column titleKey= "parade.path">
+			
+			<spring:url value="showAll/annonymous/path/list.do" var="pathUrl">
+			<spring:param name="paradeId" value="${row.id}"/>
+			<spring:param name="chapter" value="chapter"/>
+			</spring:url>
+			<a href="${pathUrl}">
+				<spring:message code="parade.path" />
+			</a>
+			
+			</display:column>
 	
 			<display:column>
 	

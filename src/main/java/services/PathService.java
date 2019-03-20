@@ -42,7 +42,7 @@ public class PathService {
 	}
 
 	public Path save(Path path) {
-		return this.save(path);
+		return this.pathRepository.save(path);
 	}
 
 	public void delete(Path path) {

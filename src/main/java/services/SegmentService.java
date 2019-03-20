@@ -67,8 +67,13 @@ public class SegmentService {
 		this.segmnentRepository.delete(segment);
 	}
 
+	public void flush() {
+		this.segmnentRepository.flush();
+	}
+
 	public List<Segment> getSegmentByParade(Integer paradeId) {
 		Parade parade = this.paradeService.findOne(paradeId);
+
 		return parade.getPath().getSegments();
 	}
 
@@ -84,14 +89,20 @@ public class SegmentService {
 
 		Parade parade = this.paradeService.findOne(paradeId);
 		List<Segment> segments = parade.getPath().getSegments();
+		Boolean isNew = segmentForm.getId() == 0;
 
 		if (!this.isOrigin(segmentForm, paradeId)) {
 			Segment segmentBefore = segments.get(segments.size() - 1);
 			result.setOriginLatitude(segmentBefore.getDestinationLatitude());
 			result.setOriginLongitude(segmentBefore.getDestinationLongitude());
-		} else {
+		} else if (isNew) {
 			result.setOriginLatitude(segmentForm.getOriginLatitude());
 			result.setOriginLongitude(segmentForm.getOriginLongitude());
+		} else {
+			Segment segmentOld = this.findOne(segmentForm.getId());
+			result.setOriginLatitude(segmentOld.getOriginLatitude());
+			result.setOriginLongitude(segmentOld.getOriginLongitude());
+			result.setVersion(segmentOld.getVersion());
 		}
 
 		result.setId(segmentForm.getId());
@@ -111,6 +122,12 @@ public class SegmentService {
 		List<Segment> segments = path.getSegments();
 		Boolean isNew = segment.getId() == 0;
 
+		if (!this.isLast(segment, path)) {
+			Segment segmentAfter = segments.get(segments.indexOf(segment) + 1);
+			segmentAfter.setOriginLatitude(segment.getDestinationLatitude());
+			segmentAfter.setOriginLongitude(segment.getDestinationLongitude());
+			this.save(segmentAfter);
+		}
 		segment = this.save(segment);
 
 		if (isNew) {
@@ -135,18 +152,27 @@ public class SegmentService {
 		return segments.indexOf(segment) == segments.size() - 1;
 	}
 
-	public void deleteSegment(Segment segment, Integer pathId) {
-		Path path = this.pathService.findOne(pathId);
+	public void deleteSegment(Segment segment, Integer paradeId) {
+		System.out.println("inicio");
+		Parade parade = this.paradeService.findOne(paradeId);
+		Path path = parade.getPath();
 		List<Segment> segments = path.getSegments();
+		segment = this.findOne(segment.getId());
 
-		if (!this.isOrigin(segment, pathId) && !this.isLast(segment, path)) {
+		this.segmentSecurity(paradeId);
+
+		if (!this.isOrigin(segment, paradeId) && !this.isLast(segment, path)) {
 			Segment segmentBefore = segments.get(segments.indexOf(segment) - 1);
 			Segment segmentAfter = segments.get(segments.indexOf(segment) + 1);
 			segmentAfter.setOriginLatitude(segmentBefore.getDestinationLatitude());
 			segmentAfter.setOriginLongitude(segmentBefore.getDestinationLongitude());
 			this.save(segmentAfter);
-		}
 
+		}
+		segments.remove(segment);
+		path.setSegments(segments);
+		parade.setPath(path);
+		this.paradeService.save(parade);
 		this.delete(segment);
 	}
 

@@ -30,8 +30,8 @@ public class PathController {
 		super();
 	}
 
-	// LIST
-	@RequestMapping(value = { "/brotherhood/list", "/list", "member/list" }, method = RequestMethod.GET)
+	// LIST BROTHERHOOD
+	@RequestMapping(value = "/brotherhood/list", method = RequestMethod.GET)
 	public ModelAndView paradesList(@RequestParam Integer paradeId) {
 		ModelAndView result;
 
@@ -50,9 +50,10 @@ public class PathController {
 	public ModelAndView pathCreateOrDelete(@RequestParam Integer paradeId) {
 		ModelAndView result;
 
-		this.paradeService.putOrDeletePath(paradeId);
+		Integer pathId = this.paradeService.findOne(paradeId).getId();
+		this.paradeService.putOrDeletePath(pathId);
 
-		result = new ModelAndView("redirect:brotherhood/list");
+		result = new ModelAndView("redirect:/parade/brotherhood/list.do");
 
 		return result;
 

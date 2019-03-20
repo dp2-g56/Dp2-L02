@@ -1,7 +1,5 @@
 package controllers;
 
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -47,6 +45,7 @@ public class SegmentController {
 
 		result = this.createEditModelAndView(segment);
 		result.addObject("isOrigin", isOrigin);
+		result.addObject("segmentId", segmentId);
 
 		return result;
 	}
@@ -57,39 +56,38 @@ public class SegmentController {
 		ModelAndView result;
 
 		Segment segment = this.segmentService.recontruct(segmentForm, paradeId, binding);
-		if (binding.hasErrors())
+		if (binding.hasErrors()) {
 			result = this.createEditModelAndView(segmentForm);
-		else
+			result.addObject("segmentId", segmentForm.getId());
+		} else
 			try {
-				System.out.println(segment);
-				segment = this.segmentService.editSegment(segment, paradeId);
-				System.out.println(segment);
-				System.out.println(this.paradeService.findOne(paradeId).getPath().getSegments());
+				this.segmentService.editSegment(segment, paradeId);
 				result = new ModelAndView("redirect:/path/brotherhood/list.do?" + paradeId);
 			} catch (Throwable oops) {
 				result = this.createEditModelAndView(segmentForm, "segment.commit.error");
 			}
 		result.addObject("paradeId", paradeId);
+		result.addObject("isOrigin", this.segmentService.isOrigin(segment, paradeId));
 		return result;
 
 	}
 
 	// Delete
 
-	@RequestMapping(value = "/edit", method = RequestMethod.DELETE)
-	public ModelAndView delete(Segment segmentForm, BindingResult binding, @Valid Integer paradeId) {
+	@RequestMapping(value = "/edit", method = RequestMethod.POST, params = "delete")
+	public ModelAndView delete(Segment segmentForm, BindingResult binding, @RequestParam Integer paradeId) {
 		ModelAndView result;
-		Integer pathId = this.paradeService.findOne(paradeId).getPath().getId();
-		if (binding.hasErrors())
+		if (binding.hasErrors()) {
 			result = this.createEditModelAndView(segmentForm);
-		else
+			result.addObject("segmentId", segmentForm.getId());
+		} else
 			try {
-				this.segmentService.deleteSegment(segmentForm, pathId);
-				result = new ModelAndView("redirect:list.do");
+				this.segmentService.deleteSegment(segmentForm, paradeId);
+				result = new ModelAndView("redirect:/path/brotherhood/list.do?paradeId=" + paradeId);
 			} catch (Throwable oops) {
 				result = this.createEditModelAndView(segmentForm, "segment.commit.error");
-				result.addObject("pathId", pathId);
 			}
+		result.addObject("paradeId", paradeId);
 		return result;
 
 	}

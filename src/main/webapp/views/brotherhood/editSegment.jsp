@@ -22,7 +22,7 @@
 
 		<acme:submit name="save" code="segment.save"/>
 		
-	<jstl:if test="${param.segmentId!=0}">
+	<jstl:if test="${segmentId!=0}">
 		<acme:delete code="segment.delete" confirmationMessage="segment.confirmDelete"/>
 	</jstl:if>
 	

@@ -114,6 +114,8 @@
 									
 					<li><a href="box/actor/list.do"><spring:message code="master.page.mailSystem" /> </a></li>
 					
+					<li><a href="authenticated/deleteUser.do" onClick="return confirm('<spring:message code="delete.user.confirmation" />')"><spring:message code="master.page.deleteUser" /> </a></li>
+					
 					<li><a href="j_spring_security_logout"><spring:message code="master.page.logout" /> </a></li>
 				</ul>
 			</li>

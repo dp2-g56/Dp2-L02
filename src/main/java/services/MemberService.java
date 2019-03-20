@@ -291,6 +291,8 @@ public class MemberService {
 		this.messageService.updateSendedMessageByLogguedActor();
 		this.messageService.updateReceivedMessageToLogguedActor();
 
+		this.messageService.deleteAllMessageFromActor();
+
 		List<Request> requestsToDelete = member.getRequests();
 
 		List<Parade> parades = this.paradeService.findAll();

@@ -112,14 +112,15 @@ public class SponsorshipService {
 		Assert.isTrue(this.creditCardService.validateDateCreditCard(sponsorship.getCreditCard()));
 		Assert.isTrue(this.creditCardService.validateCvvCreditCard(sponsorship.getCreditCard()));
 
-		Sponsorship spon = this.save(sponsorship);
-		result = spon;
+		result = this.save(sponsorship);
 
 		if (sponsorship.getId() == 0) {
 			List<Sponsorship> sps = sponsor.getSponsorships();
 			sps.add(result);
 			this.sponsorService.save(sponsor);
 		}
+
+		this.flush();
 
 		return result;
 	}

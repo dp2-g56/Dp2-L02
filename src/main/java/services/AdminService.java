@@ -21,11 +21,13 @@ import domain.Admin;
 import domain.Area;
 import domain.Box;
 import domain.Brotherhood;
+import domain.Chapter;
 import domain.Member;
 import domain.Message;
 import domain.Parade;
 import domain.Position;
 import domain.SocialProfile;
+import domain.Sponsor;
 import forms.FormObjectMember;
 import repositories.AdminRepository;
 import security.Authority;
@@ -71,6 +73,9 @@ public class AdminService {
 
 	@Autowired
 	private HistoryService historyService;
+
+	@Autowired
+	private SponsorshipService sponsorshipService;
 
 	// 1. Create user accounts for new administrators.
 	public void loggedAsAdmin() {
@@ -434,8 +439,50 @@ public class AdminService {
 			statistics.add(this.adminRepository.stddevRecordsPerHistory());
 		}
 
-		if (this.adminRepository.numberNonEmptyFinders() == 0)
+		if (this.adminRepository.ratioAreasNotCoordinated() == 0)
 			statistics.add((float) -1);
+		else
+			statistics.add(this.adminRepository.ratioAreasNotCoordinated());
+
+		if (this.paradeService.findAll().isEmpty()) {
+			statistics.add((float) 0);
+			statistics.add((float) 0);
+			statistics.add((float) 0);
+			statistics.add((float) 0);
+			statistics.add((float) 0);
+			statistics.add((float) 0);
+			statistics.add((float) 0);
+			statistics.add((float) 0);
+
+		} else {
+			statistics.add(this.adminRepository.minParadesCoordinated());
+			statistics.add(this.adminRepository.maxParadesCoordinated());
+			statistics.add(this.adminRepository.avgParadesCoordinated());
+			statistics.add(this.adminRepository.stddevParadesCoordinated());
+			statistics.add(this.adminRepository.paradesDraftVSFinal());
+			statistics.add(this.adminRepository.ratioParadesAcceptedRequests());
+			statistics.add(this.adminRepository.ratioParadesRejectedRequests());
+			statistics.add(this.adminRepository.ratioParadesSubmittedRequests());
+
+		}
+
+		if (this.sponsorshipService.findAll().isEmpty()) {
+			statistics.add((float) 0);
+			statistics.add((float) 0);
+			statistics.add((float) 0);
+			statistics.add((float) 0);
+			statistics.add((float) 0);
+
+		} else {
+			statistics.add(this.adminRepository.ratioActiveSponsorships());
+			statistics.add(this.adminRepository.minSponsorshipsPerSponsor());
+			statistics.add(this.adminRepository.maxSponsorshipsPerSponsor());
+			statistics.add(this.adminRepository.avgSponsorshipsPerSponsor());
+			statistics.add(this.adminRepository.stddevSponsorshipsPerSponsor());
+		}
+
+		if (this.adminRepository.numberNonEmptyFinders() == null)
+			statistics.add((float) 0);
 		else
 			statistics.add(this.adminRepository.ratioEmptyFinder());
 
@@ -455,8 +502,27 @@ public class AdminService {
 		return statistics;
 	}
 
-	public Brotherhood broLargestHistory() {
-		return this.adminRepository.broLargestHistory();
+	public List<String> top5SponsorNumberActiveSponsorships() {
+		List<String> res = new ArrayList<String>();
+		if (this.adminRepository.top5SponsorNumberActiveSponsorships().size() > 5)
+			for (int i = 0; i < 5; i++)
+				res.add(this.adminRepository.top5SponsorNumberActiveSponsorships().get(i).getUserAccount()
+						.getUsername());
+		else
+			for (Sponsor s : this.adminRepository.top5SponsorNumberActiveSponsorships())
+				res.add(s.getUserAccount().getUsername());
+		return res;
+	}
+
+	public List<Chapter> chaptersThatCoordinateAtLeast() {
+		return this.adminRepository.chaptersThatCoordinateAtLeast();
+	}
+
+	public List<String> broLargestHistory() {
+		List<String> res = new ArrayList<String>();
+		for (Brotherhood b : this.adminRepository.broLargestHistory())
+			res.add(b.getName());
+		return res;
 	}
 
 	public List<Brotherhood> broHistoryLargerThanAvg() {

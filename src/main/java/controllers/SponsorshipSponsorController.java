@@ -161,7 +161,7 @@ public class SponsorshipSponsorController extends AbstractController {
 	}
 
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
-	public ModelAndView paradeList() {
+	public ModelAndView sponsorshipList() {
 		ModelAndView result;
 
 		Collection<Sponsorship> sponsorships = this.sponsorshipService.getSponsorships(null);
@@ -169,12 +169,13 @@ public class SponsorshipSponsorController extends AbstractController {
 		result = new ModelAndView("sponsor/sponsorships");
 
 		result.addObject("sponsorships", sponsorships);
+		result.addObject("requestURI", "sponsorship/sponsor/list.do");
 
 		return result;
 	}
 
-	@RequestMapping(value = "/filter", method = RequestMethod.POST, params = "refresh")
-	public ModelAndView requestsFilter(@Valid String fselect) {
+	@RequestMapping(value = "/filter", method = { RequestMethod.POST, RequestMethod.GET }, params = "refresh")
+	public ModelAndView requestsFilter(@RequestParam String fselect) {
 		ModelAndView result;
 
 		if (fselect.equals("ALL") || (!fselect.equals("ACTIVATED") && !fselect.equals("DEACTIVATED")))
@@ -191,6 +192,7 @@ public class SponsorshipSponsorController extends AbstractController {
 			result = new ModelAndView("sponsor/sponsorships");
 
 			result.addObject("sponsorships", sponsorships);
+			result.addObject("requestURI", "sponsorship/sponsor/filter.do");
 		}
 
 		return result;
@@ -205,7 +207,8 @@ public class SponsorshipSponsorController extends AbstractController {
 			this.sponsorshipService.changeStatus(sponsorshipId);
 			result = new ModelAndView("redirect:list.do");
 		} catch (Throwable oops) {
-			result = new ModelAndView("redirect:list.do");
+			result = this.sponsorshipList();
+			result.addObject("message", "sponsorship.changeStatus.error");
 		}
 
 		return result;

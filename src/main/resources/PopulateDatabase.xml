@@ -54,6 +54,7 @@
 				<value>MASTER</value>
 				<value>DINNERS</value>
 				<value>AMEX</value>
+				<value>FLY</value>
 			</list>
 		</property>
 		<property name="priorityLvlSpa">
@@ -78,7 +79,7 @@
 		<property name="systemName" value="Acme Parade" />
 		<property name="imageURL" value="https://i.ibb.co/HhytG1y/Untitled.jpg" />
 		<property name="VAT" value="21" />
-		<property name="fare" value="0.01" />
+		<property name="fare" value="1" />
 		
 	</bean>
 	
@@ -570,6 +571,7 @@
 				<ref bean="enrolment8" />
 			</list>
 		</property>
+		<property name="history" ref="history1" />
 	</bean>
 	
 		<!-- BROTHERHOOD2 -->
@@ -628,6 +630,7 @@
 				<ref bean="enrolment6" />
 			</list>
 		</property>
+		<property name="history" ref="history2" />
 		
 	</bean>
 	
@@ -685,6 +688,7 @@
 				<ref bean="enrolment9" />
 			</list>
 		</property>
+		<property name="history" ref="history3" />
 		
 	</bean>
 	
@@ -934,6 +938,7 @@
 		<property name="sponsorships">
 			<list>
 				<ref bean="sponsorship1" />
+				<ref bean="sponsorship2" />
 			</list>
 		</property>		
 	</bean>
@@ -948,6 +953,15 @@
 		<property name="parade" ref="parade3" />
 	</bean>
 	
+	<bean id="sponsorship2" class="domain.Sponsorship">
+		<property name="banner" value="https://www.eff.org/files/banner_library/https-everywhere-logo.png" />
+		<property name="targetURL" value="https://www.eff.org/files/banner_library/https-everywhere-logo.png" />
+		<property name="gain" value="31" />
+		<property name="isActivated" value="true" />
+		<property name="creditCard" ref="creditCard2" />
+		<property name="parade" ref="parade3" />
+	</bean>
+	
 	<!-- CREDITCARD -->
 	<bean id="creditCard1" class="domain.CreditCard">
 		<property name="holderName" value="David" />
@@ -956,6 +970,15 @@
 		<property name="expirationMonth" value="12" />
 		<property name="expirationYear" value="23" />
 		<property name="cvvCode" value="123" />
+	</bean>
+	
+	<bean id="creditCard2" class="domain.CreditCard">
+		<property name="holderName" value="David" />
+		<property name="brandName" value="VISA" />
+		<property name="number" value="4880576829512546" />
+		<property name="expirationMonth" value="12" />
+		<property name="expirationYear" value="18" />
+		<property name="cvvCode" value="234" />
 	</bean>
 	
 	<!-- SOCIAL PROFILES -->

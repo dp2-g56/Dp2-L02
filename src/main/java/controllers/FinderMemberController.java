@@ -4,7 +4,9 @@ package controllers;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,26 +16,29 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import domain.Finder;
+import domain.Member;
+import domain.Parade;
+import domain.Sponsorship;
 import security.LoginService;
 import security.UserAccount;
 import services.ConfigurationService;
 import services.FinderService;
 import services.MemberService;
-import domain.Finder;
-import domain.Member;
-import domain.Parade;
+import services.SponsorshipService;
 
 @Controller
 @RequestMapping("/finder/member/")
 public class FinderMemberController extends AbstractController {
 
 	@Autowired
-	private FinderService			finderService;
+	private FinderService finderService;
 	@Autowired
-	private MemberService			memberService;
+	private MemberService memberService;
 	@Autowired
-	private ConfigurationService	configurationService;
-
+	private ConfigurationService configurationService;
+	@Autowired
+	private SponsorshipService sponsorshipService;
 
 	// Constructors -----------------------------------------------------------
 
@@ -41,7 +46,7 @@ public class FinderMemberController extends AbstractController {
 		super();
 	}
 
-	//List
+	// List
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public ModelAndView paradesList() {
 		ModelAndView result;
@@ -51,7 +56,7 @@ public class FinderMemberController extends AbstractController {
 
 		Finder finder = member.getFinder();
 
-		//Current Date
+		// Current Date
 		Date currentDate = new Date();
 
 		Calendar calendar = Calendar.getInstance();
@@ -61,7 +66,7 @@ public class FinderMemberController extends AbstractController {
 		Integer currentYear = calendar.get(Calendar.YEAR);
 		Integer currentHour = calendar.get(Calendar.HOUR);
 
-		//LastEdit Finder
+		// LastEdit Finder
 		Date lasEdit = finder.getLastEdit();
 		calendar.setTime(lasEdit);
 		Integer lastEditDay = calendar.get(Calendar.DATE);
@@ -74,7 +79,8 @@ public class FinderMemberController extends AbstractController {
 		List<Parade> parades = new ArrayList<>();
 		List<Parade> finderParades = finder.getParades();
 
-		if (currentDay.equals(lastEditDay) && currentMonth.equals(lastEditMonth) && currentYear.equals(lastEditYear) && lastEditHour < (currentHour + time)) {
+		if (currentDay.equals(lastEditDay) && currentMonth.equals(lastEditMonth) && currentYear.equals(lastEditYear)
+				&& lastEditHour < (currentHour + time)) {
 			Integer numFinderResult = this.configurationService.getConfiguration().getFinderResult();
 
 			if (finderParades.size() > numFinderResult)
@@ -86,13 +92,22 @@ public class FinderMemberController extends AbstractController {
 
 		result = new ModelAndView("member/finderResult");
 
+		Map<Integer, Sponsorship> randomSpo = new HashMap<Integer, Sponsorship>();
+		for (Parade p : parades) {
+			Sponsorship spo = this.sponsorshipService.getRandomSponsorship(p.getId());
+			randomSpo.put(p.getId(), spo);
+			if (spo.getId() > 0)
+				this.sponsorshipService.updateGainOfSponsorship(p.getId(), spo.getId());
+		}
+		result.addObject("randomSpo", randomSpo);
+
 		result.addObject("parades", parades);
 		result.addObject("member", member);
 
 		return result;
 	}
 
-	//Create
+	// Create
 	@RequestMapping(value = "/edit", method = RequestMethod.GET)
 	public ModelAndView edit() {
 		ModelAndView result;
@@ -107,7 +122,8 @@ public class FinderMemberController extends AbstractController {
 		return result;
 
 	}
-	//Save
+
+	// Save
 	@RequestMapping(value = "/edit", method = RequestMethod.POST, params = "save")
 	public ModelAndView save(Finder finderForm, BindingResult binding) {
 		ModelAndView result;
@@ -128,7 +144,8 @@ public class FinderMemberController extends AbstractController {
 			}
 		return result;
 	}
-	//Clean Filter
+
+	// Clean Filter
 	@RequestMapping(value = "/clean", method = RequestMethod.POST, params = "save")
 	public ModelAndView save() {
 		ModelAndView result;
@@ -155,7 +172,8 @@ public class FinderMemberController extends AbstractController {
 		return result;
 
 	}
-	//CreateEditModelAndView
+
+	// CreateEditModelAndView
 	protected ModelAndView createEditModelAndView(Finder finder) {
 		ModelAndView result;
 

@@ -15,7 +15,7 @@
 
 <display:table
 	pagesize="5" name="parades" id="row"
-	requestURI="${requestURI}" >
+	requestURI="${requestURI}">
 	
 	<display:column property="ticker" titleKey="parade.ticker" />
 	
@@ -28,6 +28,23 @@
 	<display:column property="rowNumber" titleKey="parade.rowNumber" />
 	
 	<display:column property="columnNumber" titleKey="parade.columnNumber" />
+	
+	<security:authorize access="hasRole('SPONSOR')">
+		<display:column titleKey="sponsorship.create.action">
+			<spring:url var="createSponsorship" value="/sponsorship/sponsor/create.do">
+				<spring:param name="paradeId" value="${row.id}" />
+			</spring:url>
+			<a href="${createSponsorship}">
+				<spring:message code="parade.create.sponsorship" />				
+			</a>
+		</display:column>
+	</security:authorize>
+	
+	<display:column titleKey="parade.sponsorship">
+		<jstl:if test="${randomSpo.get(row.id).id>0}">
+			<a href="${randomSpo.get(row.id).targetURL}"><img src="${randomSpo.get(row.id).banner}" style="width:auto; height:50px;" alt="<spring:message code='parade.sponsorship'/>"/></a>
+		</jstl:if>
+	</display:column>
 	
 </display:table>	
 

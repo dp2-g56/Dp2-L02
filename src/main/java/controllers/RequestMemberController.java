@@ -1,8 +1,8 @@
 /*
  * CustomerController.java
- * 
+ *
  * Copyright (C) 2018 Universidad de Sevilla
- * 
+ *
  * The use of this project is hereby constrained to the conditions of the
  * TDG Licence, a copy of which you may download from
  * http://www.tdg-seville.info/License.html
@@ -16,8 +16,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-import javax.validation.Valid;
-
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -26,26 +24,25 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import services.ConfigurationService;
-import services.MemberService;
-import services.RequestService;
 import domain.Finder;
 import domain.Member;
 import domain.Parade;
 import domain.Request;
 import domain.Status;
+import services.ConfigurationService;
+import services.MemberService;
+import services.RequestService;
 
 @Controller
 @RequestMapping("/request/member/")
 public class RequestMemberController extends AbstractController {
 
 	@Autowired
-	private RequestService			requestService;
+	private RequestService requestService;
 	@Autowired
-	private MemberService			memberService;
+	private MemberService memberService;
 	@Autowired
-	private ConfigurationService	configurationService;
-
+	private ConfigurationService configurationService;
 
 	// Constructors -----------------------------------------------------------
 
@@ -53,7 +50,7 @@ public class RequestMemberController extends AbstractController {
 		super();
 	}
 
-	// List ---------------------------------------------------------------		
+	// List ---------------------------------------------------------------
 
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public ModelAndView requestsList() {
@@ -65,12 +62,13 @@ public class RequestMemberController extends AbstractController {
 		result = new ModelAndView("member/requests");
 
 		result.addObject("requests", requests);
+		result.addObject("requestURI", "request/member/list.do");
 
 		return result;
 	}
 
-	@RequestMapping(value = "/filter", method = RequestMethod.POST, params = "refresh")
-	public ModelAndView requestsFilter(@Valid String fselect) {
+	@RequestMapping(value = "/filter", method = { RequestMethod.POST, RequestMethod.GET }, params = "refresh")
+	public ModelAndView requestsFilter(@RequestParam String fselect) {
 		ModelAndView result;
 
 		if (fselect.equals("ALL"))
@@ -89,6 +87,7 @@ public class RequestMemberController extends AbstractController {
 			result = new ModelAndView("member/requests");
 
 			result.addObject("requests", requests);
+			result.addObject("requestURI", "request/member/filter.do");
 		}
 
 		return result;
@@ -127,7 +126,7 @@ public class RequestMemberController extends AbstractController {
 	}
 
 	@RequestMapping(value = "/create", method = RequestMethod.GET
-	//RequestMethod.POST, params = "saveRequest"
+	// RequestMethod.POST, params = "saveRequest"
 	)
 	public ModelAndView requestCreate(@RequestParam int paradeId) {
 		ModelAndView result;
@@ -139,7 +138,7 @@ public class RequestMemberController extends AbstractController {
 		Hibernate.initialize(member.getFinder());
 		Finder finder = member.getFinder();
 
-		//Current Date
+		// Current Date
 		Date currentDate = new Date();
 
 		Calendar calendar = Calendar.getInstance();
@@ -149,7 +148,7 @@ public class RequestMemberController extends AbstractController {
 		Integer currentYear = calendar.get(Calendar.YEAR);
 		Integer currentHour = calendar.get(Calendar.HOUR);
 
-		//LastEdit Finder
+		// LastEdit Finder
 		Date lasEdit = finder.getLastEdit();
 		calendar.setTime(lasEdit);
 		Integer lastEditDay = calendar.get(Calendar.DATE);
@@ -163,7 +162,8 @@ public class RequestMemberController extends AbstractController {
 		Hibernate.initialize(finder.getParades());
 		List<Parade> finderParades = finder.getParades();
 
-		if (currentDay.equals(lastEditDay) && currentMonth.equals(lastEditMonth) && currentYear.equals(lastEditYear) && lastEditHour < (currentHour + time)) {
+		if (currentDay.equals(lastEditDay) && currentMonth.equals(lastEditMonth) && currentYear.equals(lastEditYear)
+				&& lastEditHour < (currentHour + time)) {
 			Integer numFinderResult = this.configurationService.getConfiguration().getFinderResult();
 
 			if (finderParades.size() > numFinderResult)

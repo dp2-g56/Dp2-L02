@@ -3,6 +3,7 @@ package services;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import javax.validation.ConstraintViolationException;
 
@@ -37,33 +38,61 @@ public class SponsorshipServiceTest extends AbstractTest {
 	@Autowired
 	private SponsorService sponsorService;
 
+	/**
+	 * Test the use case detailed in requirement 16.1: Manage his or her
+	 * sponsorships, which includes creating them
+	 */
 	@Test
 	public void driverAddSponsorship() {
+		// Accepted parade
 		Parade parade = (new ArrayList<Parade>(this.paradeService.getAcceptedParades())).get(0);
+		// Draft parade
 		Parade parade2 = (new ArrayList<Parade>(this.paradeService.getDraftParades())).get(0);
 
 		Object testingData[][] = {
+				// Positive test
 				{ "https://www.imagen.com.mx/assets/img/imagen_share.png",
 						"https://www.imagen.com.mx/assets/img/imagen_share.png", "David", "VISA", 4980003406100008L, 3,
 						24, 778, parade, "sponsor1", null },
+				// Negative test: Trying to create a sponsorship with a different role
 				{ "https://www.imagen.com.mx/assets/img/imagen_share.png",
 						"https://www.imagen.com.mx/assets/img/imagen_share.png", "David", "VISA", 4980003406100008L, 3,
 						24, 778, parade, "admin1", IllegalArgumentException.class },
+				// Negative test: Trying to create a sponsorship with a type of credit card not
+				// allowed
 				{ "https://www.imagen.com.mx/assets/img/imagen_share.png",
 						"https://www.imagen.com.mx/assets/img/imagen_share.png", "David", "OTHERCARDTYPE",
 						4980003406100008L, 3, 24, 778, parade, "sponsor1", IllegalArgumentException.class },
+				// Negative test: Trying to create a sponsorship with a credit card whose number
+				// is invalid
 				{ "https://www.imagen.com.mx/assets/img/imagen_share.png",
-						"https://www.imagen.com.mx/assets/img/imagen_share.png", "David", "VISA", 1L, 3, 24, 778,
-						parade, "sponsor1", IllegalArgumentException.class },
+						"https://www.imagen.com.mx/assets/img/imagen_share.png", "David", "VISA", 4980000011112222L, 3,
+						24, 778, parade, "sponsor1", IllegalArgumentException.class },
+				// Negative test: Trying to create a sponsorship with an expired credit card
 				{ "https://www.imagen.com.mx/assets/img/imagen_share.png",
 						"https://www.imagen.com.mx/assets/img/imagen_share.png", "David", "VISA", 4980003406100008L, 3,
 						16, 778, parade, "sponsor1", IllegalArgumentException.class },
+				// Negative test: Trying to create an sponsorship with a credit card whose CVV
+				// is invalid
 				{ "https://www.imagen.com.mx/assets/img/imagen_share.png",
 						"https://www.imagen.com.mx/assets/img/imagen_share.png", "David", "VISA", 4980003406100008L, 3,
 						24, 1, parade, "sponsor1", IllegalArgumentException.class },
+				// Negative test: Trying to create a sponsorship to an unaccepted parade
 				{ "https://www.imagen.com.mx/assets/img/imagen_share.png",
 						"https://www.imagen.com.mx/assets/img/imagen_share.png", "David", "VISA", 4980003406100008L, 3,
-						24, 778, parade2, "sponsor1", IllegalArgumentException.class } };
+						24, 778, parade2, "sponsor1", IllegalArgumentException.class },
+				// Negative test: Trying to create a sponsorship with the banner and the
+				// targetURL in blank
+				{ "", "", "David", "VISA", 4980003406100008L, 3, 24, 778, parade, "sponsor1",
+						ConstraintViolationException.class },
+				// Negative test: Trying to create a sponsorship with holderName in blank
+				{ "https://www.imagen.com.mx/assets/img/imagen_share.png",
+						"https://www.imagen.com.mx/assets/img/imagen_share.png", "", "VISA", 4980003406100008L, 3, 24,
+						778, parade, "sponsor1", ConstraintViolationException.class },
+				// Negative test: Trying to create a sponsorship with number as null
+				{ "https://www.imagen.com.mx/assets/img/imagen_share.png",
+						"https://www.imagen.com.mx/assets/img/imagen_share.png", "David", "VISA", null, 3, 24, 778,
+						parade, "sponsor1", ConstraintViolationException.class } };
 
 		for (int i = 0; i < testingData.length; i++)
 			this.templateAddSponsorship((String) testingData[i][0], (String) testingData[i][1],
@@ -134,18 +163,16 @@ public class SponsorshipServiceTest extends AbstractTest {
 				Assert.isTrue(sponsorships.size() == sponsorshipsOfSpo.size());
 			else if (isActivated == true) {
 				int size = 0;
-				for (Sponsorship s : sponsorshipsOfSpo) {
+				for (Sponsorship s : sponsorshipsOfSpo)
 					if (s.getIsActivated() == true)
 						size = size + 1;
-					Assert.isTrue(sponsorships.size() == size);
-				}
+				Assert.isTrue(sponsorships.size() == size);
 			} else {
 				int size = 0;
-				for (Sponsorship s : sponsorshipsOfSpo) {
+				for (Sponsorship s : sponsorshipsOfSpo)
 					if (s.getIsActivated() == false)
 						size = size + 1;
-					Assert.isTrue(sponsorships.size() == size);
-				}
+				Assert.isTrue(sponsorships.size() == size);
 			}
 			super.unauthenticate();
 		} catch (Throwable oops) {
@@ -226,9 +253,13 @@ public class SponsorshipServiceTest extends AbstractTest {
 		Sponsor sponsor = this.sponsorService.getSponsorByUsername("sponsor1");
 		Sponsorship sponsorship = (new ArrayList<Sponsorship>(
 				this.sponsorshipService.getActivatedSponsorshipsOfSponsor(sponsor.getId()))).get(0);
+		Sponsorship sponsorship2 = (new ArrayList<Sponsorship>(
+				this.sponsorshipService.getActivatedSponsorshipsOfSponsor(sponsor.getId()))).get(1);
 
 		Object testingData[][] = { { sponsorship.getId(), "sponsor1", null },
-				{ sponsorship.getId(), "admin1", IllegalArgumentException.class } };
+				{ sponsorship.getId(), "admin1", IllegalArgumentException.class },
+				{ sponsorship2.getId(), "sponsor1", null },
+				{ sponsorship2.getId(), "sponsor1", IllegalArgumentException.class } };
 
 		for (int i = 0; i < testingData.length; i++)
 			this.templateDeleteSponsorship((Integer) testingData[i][0], (String) testingData[i][1],
@@ -244,6 +275,105 @@ public class SponsorshipServiceTest extends AbstractTest {
 			this.sponsorshipService.changeStatus(sponsorshipId);
 			this.sponsorshipService.flush();
 			super.unauthenticate();
+		} catch (Throwable oops) {
+			caught = oops.getClass();
+		}
+
+		super.checkExceptions(expected, caught);
+
+	}
+
+	@Test
+	public void driverListSponsorshipsAsAdmin() {
+
+		Object testingData[][] = { { null, "admin1", null }, { true, "admin1", null }, { false, "admin1", null },
+				{ null, "sponsor1", IllegalArgumentException.class },
+				{ true, "sponsor1", IllegalArgumentException.class },
+				{ false, "sponsor1", IllegalArgumentException.class } };
+
+		for (int i = 0; i < testingData.length; i++)
+			this.templateListSponsorshipsAsAdmin((Boolean) testingData[i][0], (String) testingData[i][1],
+					(Class<?>) testingData[i][2]);
+	}
+
+	private void templateListSponsorshipsAsAdmin(Boolean isActivated, String username, Class<?> expected) {
+
+		Class<?> caught = null;
+
+		try {
+			super.authenticate(username);
+			Collection<Sponsorship> sponsorships = this.sponsorshipService.findAll();
+			Collection<Sponsorship> sponsorshipsAsAdmin = this.sponsorshipService.getSponsorshipsAsAdmin(isActivated);
+			if (isActivated == null)
+				Assert.isTrue(sponsorships.size() == sponsorshipsAsAdmin.size());
+			else
+				Assert.isTrue(sponsorships
+						.size() == (sponsorshipsAsAdmin.size() + (sponsorships.size() - sponsorshipsAsAdmin.size())));
+			super.unauthenticate();
+		} catch (Throwable oops) {
+			caught = oops.getClass();
+		}
+
+		super.checkExceptions(expected, caught);
+
+	}
+
+	@Test
+	public void driverCheckAndDeactivateSponsorshipsAsAdmin() {
+
+		Object testingData[][] = { { "admin1", null }, { "sponsor1", IllegalArgumentException.class } };
+
+		for (int i = 0; i < testingData.length; i++)
+			this.templateCheckAndDeactivateSponsorshipsAsAdmin((String) testingData[i][0],
+					(Class<?>) testingData[i][1]);
+	}
+
+	private void templateCheckAndDeactivateSponsorshipsAsAdmin(String username, Class<?> expected) {
+
+		Class<?> caught = null;
+
+		try {
+			super.authenticate(username);
+			Integer activeSponsorships = this.sponsorshipService.getActivatedSponsorshipsAsAdmin().size();
+			this.sponsorshipService.checkAndDeactivateSponsorships();
+			Assert.isTrue(this.sponsorshipService.getActivatedSponsorshipsAsAdmin().size() + 1 == activeSponsorships);
+			super.unauthenticate();
+			this.sponsorshipService.flush();
+		} catch (Throwable oops) {
+			caught = oops.getClass();
+		}
+
+		super.checkExceptions(expected, caught);
+
+	}
+
+	// AQUI
+	@Test
+	public void driverUpdateGainOfSponsorship() {
+		Sponsor sponsor = this.sponsorService.getSponsorByUsername("sponsor1");
+		List<Sponsorship> sponsorships = (List<Sponsorship>) this.sponsorshipService
+				.getActivatedSponsorshipsOfSponsor(sponsor.getId());
+
+		Sponsorship sponsorship = sponsorships.get(0);
+		Parade parade = sponsorship.getParade();
+
+		Integer anotherParadeId = 637;
+
+		Object testingData[][] = { { parade.getId(), sponsorship.getId(), null },
+				{ anotherParadeId, sponsorship.getId(), IllegalArgumentException.class } };
+
+		for (int i = 0; i < testingData.length; i++)
+			this.templateUpdateGainOfSponsorship((Integer) testingData[i][0], (Integer) testingData[i][1],
+					(Class<?>) testingData[i][2]);
+	}
+
+	private void templateUpdateGainOfSponsorship(int paradeId, int sponsorshipId, Class<?> expected) {
+
+		Class<?> caught = null;
+
+		try {
+			this.sponsorshipService.updateGainOfSponsorship(paradeId, sponsorshipId);
+			this.sponsorshipService.flush();
 		} catch (Throwable oops) {
 			caught = oops.getClass();
 		}

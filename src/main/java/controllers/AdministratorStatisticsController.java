@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import domain.Brotherhood;
+import domain.Chapter;
 import domain.Member;
 import domain.Position;
 import services.AdminService;
@@ -48,7 +49,9 @@ public class AdministratorStatisticsController extends AbstractController {
 		String locale = LocaleContextHolder.getLocale().getLanguage().toUpperCase();
 
 		List<Float> statistics = this.adminService.showStatistics();
-		String broLargestHistory = this.adminService.broLargestHistory().getName();
+		List<String> top5Sponsor = this.adminService.top5SponsorNumberActiveSponsorships();
+		List<Chapter> chaptersThatCoordinateAtLeast = this.adminService.chaptersThatCoordinateAtLeast();
+		List<String> broLargestHistory = this.adminService.broLargestHistory();
 		List<Brotherhood> broHistoryLargerThanAvg = this.adminService.broHistoryLargerThanAvg();
 		List<Member> membersTenPercent = this.adminService.membersAtLeastTenPercentRequestsApproved();
 		List<String> largestBrotherhoods = this.adminService.largestBrotherhoods();
@@ -69,6 +72,8 @@ public class AdministratorStatisticsController extends AbstractController {
 		result = new ModelAndView("statistics/administrator/show");
 
 		result.addObject("statistics", statistics);
+		result.addObject("top5Sponsor", top5Sponsor);
+		result.addObject("chaptersThatCoordinateAtLeast", chaptersThatCoordinateAtLeast);
 		result.addObject("broLargestHistory", broLargestHistory);
 		result.addObject("broHistoryLargerThanAvg", broHistoryLargerThanAvg);
 		result.addObject("membersTenPercent", membersTenPercent);

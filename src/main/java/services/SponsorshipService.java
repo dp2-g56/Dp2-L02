@@ -3,6 +3,7 @@ package services;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Random;
 
 import javax.transaction.Transactional;
 
@@ -12,6 +13,7 @@ import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
 
+import domain.Configuration;
 import domain.CreditCard;
 import domain.Parade;
 import domain.ParadeStatus;
@@ -34,6 +36,8 @@ public class SponsorshipService {
 	private SponsorService sponsorService;
 	@Autowired
 	private CreditCardService creditCardService;
+	@Autowired
+	private AdminService adminService;
 
 	public List<Sponsorship> findAll() {
 		return this.sponsorshipRepository.findAll();
@@ -146,6 +150,18 @@ public class SponsorshipService {
 		return this.sponsorshipRepository.getDeactivatedSponsorshipsOfSponsor(sponsorId);
 	}
 
+	public Collection<Sponsorship> getAllSponsorshipsAsAdmin() {
+		return this.sponsorshipRepository.getAllSponsorshipsAsAdmin();
+	}
+
+	public Collection<Sponsorship> getActivatedSponsorshipsAsAdmin() {
+		return this.sponsorshipRepository.getActivatedSponsorshipsAsAdmin();
+	}
+
+	public Collection<Sponsorship> getDeactivatedSponsorshipsAsAdmin() {
+		return this.sponsorshipRepository.getDeactivatedSponsorshipsAsAdmin();
+	}
+
 	public Sponsor getSponsorOfSponsorship(int sponsorshipId) {
 		return this.sponsorshipRepository.getSponsorOfSponsorship(sponsorshipId);
 	}
@@ -158,10 +174,80 @@ public class SponsorshipService {
 
 		if (sponsorship.getIsActivated() == true)
 			sponsorship.setIsActivated(false);
-		else
+		else {
+			Assert.isTrue(this.creditCardService.validateNumberCreditCard(sponsorship.getCreditCard()));
+			Assert.isTrue(this.creditCardService.validateDateCreditCard(sponsorship.getCreditCard()));
+			Assert.isTrue(this.creditCardService.validateCvvCreditCard(sponsorship.getCreditCard()));
 			sponsorship.setIsActivated(true);
+		}
 
 		this.save(sponsorship);
+	}
+
+	public Collection<Sponsorship> getSponsorshipsAsAdmin(Boolean isActivated) {
+		this.adminService.loggedAsAdmin();
+
+		Collection<Sponsorship> sponsorships;
+		if (isActivated == null)
+			sponsorships = this.sponsorshipRepository.getAllSponsorshipsAsAdmin();
+		else if (isActivated == true)
+			sponsorships = this.sponsorshipRepository.getActivatedSponsorshipsAsAdmin();
+		else
+			sponsorships = this.sponsorshipRepository.getDeactivatedSponsorshipsAsAdmin();
+
+		return sponsorships;
+	}
+
+	public void checkAndDeactivateSponsorships() {
+		this.adminService.loggedAsAdmin();
+
+		Collection<Sponsorship> sponsorships = this.findAll();
+
+		for (Sponsorship s : sponsorships) {
+			CreditCard card = s.getCreditCard();
+			if (!(this.creditCardService.validateNumberCreditCard(card)
+					&& this.creditCardService.validateDateCreditCard(card)
+					&& this.creditCardService.validateCvvCreditCard(card)) && s.getIsActivated()) {
+				s.setIsActivated(false);
+				this.save(s);
+			}
+		}
+	}
+
+	public List<Sponsorship> getSponsorshipsOfParade(int paradeId) {
+		return this.sponsorshipRepository.getSponsorshipsOfParade(paradeId);
+	}
+
+	public List<Sponsorship> getActivatedSponsorshipsOfParade(int paradeId) {
+		return this.sponsorshipRepository.getActivatedSponsorshipsOfParade(paradeId);
+	}
+
+	public Sponsorship getRandomSponsorship(int paradeId) {
+		List<Sponsorship> sponsorships = this.getActivatedSponsorshipsOfParade(paradeId);
+
+		Random random = new Random();
+		if (sponsorships.size() == 0)
+			return this.createSponsorship();
+		else
+			return sponsorships.get(random.nextInt(sponsorships.size()));
+	}
+
+	public void updateGainOfSponsorship(int paradeId, int sponsorshipId) {
+		Assert.isTrue(sponsorshipId > 0 && paradeId > 0);
+
+		Sponsorship sponsorship = this.findOne(sponsorshipId);
+
+		Assert.isTrue(paradeId == sponsorship.getParade().getId());
+		Assert.isTrue(sponsorship.getIsActivated());
+
+		Configuration conf = this.configurationService.getConfiguration();
+		java.lang.Float newGain = sponsorship.getGain() + conf.getFare() * conf.getVAT() / 100;
+
+		sponsorship.setGain(newGain);
+
+		this.save(sponsorship);
+
+		this.flush();
 	}
 
 }

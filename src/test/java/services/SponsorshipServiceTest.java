@@ -303,17 +303,32 @@ public class SponsorshipServiceTest extends AbstractTest {
 
 	}
 
+	/**
+	 * Test the use case detailed in requirement 16.1: Manage his or her
+	 * sponsorships, which includes removing them. Note that removing a sponsorship
+	 * does not actually delete it from the system, but de-activates it. A
+	 * de-activated sponsorship can be re-activated later.
+	 */
 	@Test
 	public void driverDeleteSponsorship() {
 		Sponsor sponsor = this.sponsorService.getSponsorByUsername("sponsor1");
+		// Activated sponsorship with a valid credit card
 		Sponsorship sponsorship = (new ArrayList<Sponsorship>(
 				this.sponsorshipService.getActivatedSponsorshipsOfSponsor(sponsor.getId()))).get(0);
+		// Activated sponsorship with an expired credit card
 		Sponsorship sponsorship2 = (new ArrayList<Sponsorship>(
 				this.sponsorshipService.getActivatedSponsorshipsOfSponsor(sponsor.getId()))).get(1);
 
-		Object testingData[][] = { { sponsorship.getId(), "sponsor1", null },
+		Object testingData[][] = {
+				// Positive case: Deactivating an active sponsorship
+				{ sponsorship.getId(), "sponsor1", null },
+				// Negative case: Trying to activate the sponsorship that we have deactivated in
+				// the last test with a different role
 				{ sponsorship.getId(), "admin1", IllegalArgumentException.class },
+				// Positive case: Deactivating an active sponsorship
 				{ sponsorship2.getId(), "sponsor1", null },
+				// Negative case: Trying to activate the sponsorship that we have deactivated in
+				// the last test, but the credit card has expired
 				{ sponsorship2.getId(), "sponsor1", IllegalArgumentException.class } };
 
 		for (int i = 0; i < testingData.length; i++)
@@ -338,12 +353,27 @@ public class SponsorshipServiceTest extends AbstractTest {
 
 	}
 
+	/**
+	 * Test the specific list that is shown to the admin of the sponsorships
+	 */
 	@Test
 	public void driverListSponsorshipsAsAdmin() {
 
-		Object testingData[][] = { { null, "admin1", null }, { true, "admin1", null }, { false, "admin1", null },
+		Object testingData[][] = {
+				// Positive test: Listing all sponsorships
+				{ null, "admin1", null },
+				// Positive test: Listing activated sponsorships
+				{ true, "admin1", null },
+				// Positive test: Listing deactivated sponsorships
+				{ false, "admin1", null },
+				// Negative test: Trying to list all sponsorships with a
+				// different role
 				{ null, "sponsor1", IllegalArgumentException.class },
+				// Negative test: Trying to list activated sponsorships with a
+				// different role
 				{ true, "sponsor1", IllegalArgumentException.class },
+				// Negative test: Trying to list deactivated sponsorships with a
+				// different role
 				{ false, "sponsor1", IllegalArgumentException.class } };
 
 		for (int i = 0; i < testingData.length; i++)
@@ -373,10 +403,18 @@ public class SponsorshipServiceTest extends AbstractTest {
 
 	}
 
+	/**
+	 * Test the use case detailed in requirement 18.1: Launch a process that
+	 * automatically de-activates the sponsorships whose credit cards have expired.
+	 */
 	@Test
 	public void driverCheckAndDeactivateSponsorshipsAsAdmin() {
 
-		Object testingData[][] = { { "admin1", null }, { "sponsor1", IllegalArgumentException.class } };
+		Object testingData[][] = {
+				// Positive case
+				{ "admin1", null },
+				// Negative case: Trying to launch the process
+				{ "sponsor1", IllegalArgumentException.class } };
 
 		for (int i = 0; i < testingData.length; i++)
 			this.templateCheckAndDeactivateSponsorshipsAsAdmin((String) testingData[i][0],
@@ -402,7 +440,11 @@ public class SponsorshipServiceTest extends AbstractTest {
 
 	}
 
-	// AQUI
+	/**
+	 * Test the non-functional requirement detailed in 20: Every time a
+	 * sponsorship's selected, the system must charge a flat fare to the
+	 * corresponding sponsorship. The fare must include the current VAT percentage
+	 */
 	@Test
 	public void driverUpdateGainOfSponsorship() {
 		Sponsor sponsor = this.sponsorService.getSponsorByUsername("sponsor1");
@@ -414,7 +456,11 @@ public class SponsorshipServiceTest extends AbstractTest {
 
 		Integer anotherParadeId = 637;
 
-		Object testingData[][] = { { parade.getId(), sponsorship.getId(), null },
+		Object testingData[][] = {
+				// Positive test
+				{ parade.getId(), sponsorship.getId(), null },
+				// Negative test: The parade of the sponsorship does not agree with the
+				// indicated parade
 				{ anotherParadeId, sponsorship.getId(), IllegalArgumentException.class } };
 
 		for (int i = 0; i < testingData.length; i++)

@@ -18,11 +18,18 @@ public class ParadeServiceTest extends AbstractTest {
 	@Autowired
 	private ParadeService paradeService;
 
+	/**
+	 * Test the specific list that is shown to the sponsor of the accepted parades,
+	 * which may sponsor.
+	 */
 	@Test
 	public void driverListParadesIfSponsor() {
 
-		Object testingData[][] = { { "sponsor1", null }, { "member1", IllegalArgumentException.class } };
-
+		Object testingData[][] = {
+				// Positive test
+				{ "sponsor1", null },
+				// Negative test: Trying to access with a different role
+				{ "member1", IllegalArgumentException.class } };
 		for (int i = 0; i < testingData.length; i++)
 			this.templateListParadesIfSponsor((String) testingData[i][0], (Class<?>) testingData[i][1]);
 	}

@@ -218,8 +218,12 @@ public class SponsorshipService {
 		return this.sponsorshipRepository.getSponsorshipsOfParade(paradeId);
 	}
 
+	public List<Sponsorship> getActivatedSponsorshipsOfParade(int paradeId) {
+		return this.sponsorshipRepository.getActivatedSponsorshipsOfParade(paradeId);
+	}
+
 	public Sponsorship getRandomSponsorship(int paradeId) {
-		List<Sponsorship> sponsorships = this.getSponsorshipsOfParade(paradeId);
+		List<Sponsorship> sponsorships = this.getActivatedSponsorshipsOfParade(paradeId);
 
 		Random random = new Random();
 		if (sponsorships.size() == 0)
@@ -234,6 +238,7 @@ public class SponsorshipService {
 		Sponsorship sponsorship = this.findOne(sponsorshipId);
 
 		Assert.isTrue(paradeId == sponsorship.getParade().getId());
+		Assert.isTrue(sponsorship.getIsActivated());
 
 		Configuration conf = this.configurationService.getConfiguration();
 		java.lang.Float newGain = sponsorship.getGain() + conf.getFare() * conf.getVAT() / 100;

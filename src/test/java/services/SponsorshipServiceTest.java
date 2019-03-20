@@ -38,33 +38,61 @@ public class SponsorshipServiceTest extends AbstractTest {
 	@Autowired
 	private SponsorService sponsorService;
 
+	/**
+	 * Test the use case detailed in requirement 16.1: Manage his or her
+	 * sponsorships, which includes creating them
+	 */
 	@Test
 	public void driverAddSponsorship() {
+		// Accepted parade
 		Parade parade = (new ArrayList<Parade>(this.paradeService.getAcceptedParades())).get(0);
+		// Draft parade
 		Parade parade2 = (new ArrayList<Parade>(this.paradeService.getDraftParades())).get(0);
 
 		Object testingData[][] = {
+				// Positive test
 				{ "https://www.imagen.com.mx/assets/img/imagen_share.png",
 						"https://www.imagen.com.mx/assets/img/imagen_share.png", "David", "VISA", 4980003406100008L, 3,
 						24, 778, parade, "sponsor1", null },
+				// Negative test: Trying to create a sponsorship with a different role
 				{ "https://www.imagen.com.mx/assets/img/imagen_share.png",
 						"https://www.imagen.com.mx/assets/img/imagen_share.png", "David", "VISA", 4980003406100008L, 3,
 						24, 778, parade, "admin1", IllegalArgumentException.class },
+				// Negative test: Trying to create a sponsorship with a type of credit card not
+				// allowed
 				{ "https://www.imagen.com.mx/assets/img/imagen_share.png",
 						"https://www.imagen.com.mx/assets/img/imagen_share.png", "David", "OTHERCARDTYPE",
 						4980003406100008L, 3, 24, 778, parade, "sponsor1", IllegalArgumentException.class },
+				// Negative test: Trying to create a sponsorship with a credit card whose number
+				// is invalid
 				{ "https://www.imagen.com.mx/assets/img/imagen_share.png",
-						"https://www.imagen.com.mx/assets/img/imagen_share.png", "David", "VISA", 1L, 3, 24, 778,
-						parade, "sponsor1", IllegalArgumentException.class },
+						"https://www.imagen.com.mx/assets/img/imagen_share.png", "David", "VISA", 4980000011112222L, 3,
+						24, 778, parade, "sponsor1", IllegalArgumentException.class },
+				// Negative test: Trying to create a sponsorship with an expired credit card
 				{ "https://www.imagen.com.mx/assets/img/imagen_share.png",
 						"https://www.imagen.com.mx/assets/img/imagen_share.png", "David", "VISA", 4980003406100008L, 3,
 						16, 778, parade, "sponsor1", IllegalArgumentException.class },
+				// Negative test: Trying to create an sponsorship with a credit card whose CVV
+				// is invalid
 				{ "https://www.imagen.com.mx/assets/img/imagen_share.png",
 						"https://www.imagen.com.mx/assets/img/imagen_share.png", "David", "VISA", 4980003406100008L, 3,
 						24, 1, parade, "sponsor1", IllegalArgumentException.class },
+				// Negative test: Trying to create a sponsorship to an unaccepted parade
 				{ "https://www.imagen.com.mx/assets/img/imagen_share.png",
 						"https://www.imagen.com.mx/assets/img/imagen_share.png", "David", "VISA", 4980003406100008L, 3,
-						24, 778, parade2, "sponsor1", IllegalArgumentException.class } };
+						24, 778, parade2, "sponsor1", IllegalArgumentException.class },
+				// Negative test: Trying to create a sponsorship with the banner and the
+				// targetURL in blank
+				{ "", "", "David", "VISA", 4980003406100008L, 3, 24, 778, parade, "sponsor1",
+						ConstraintViolationException.class },
+				// Negative test: Trying to create a sponsorship with holderName in blank
+				{ "https://www.imagen.com.mx/assets/img/imagen_share.png",
+						"https://www.imagen.com.mx/assets/img/imagen_share.png", "", "VISA", 4980003406100008L, 3, 24,
+						778, parade, "sponsor1", ConstraintViolationException.class },
+				// Negative test: Trying to create a sponsorship with number as null
+				{ "https://www.imagen.com.mx/assets/img/imagen_share.png",
+						"https://www.imagen.com.mx/assets/img/imagen_share.png", "David", "VISA", null, 3, 24, 778,
+						parade, "sponsor1", ConstraintViolationException.class } };
 
 		for (int i = 0; i < testingData.length; i++)
 			this.templateAddSponsorship((String) testingData[i][0], (String) testingData[i][1],

@@ -125,6 +125,20 @@
 		<property name="isNotLocked" value="True" />
 	</bean> 
 	
+		<!-- DELETED -->
+	<bean id="userAccount16" class="security.UserAccount">
+		<property name="username" value="DELETED" />
+		<property name="password" value="63c2867fdcae0e8e8413d7ac21b69b59" />
+		<property name="authorities">
+			<list>
+				<bean class="security.Authority">
+					<property name="authority" value="ADMIN" />
+				</bean>
+			</list>
+		</property>
+		<property name="isNotLocked" value="False" />
+	</bean> 
+	
 	<!-- brotherhood1 -->
 	<bean id="userAccount4" class="security.UserAccount">
 		<property name="username" value="brotherhood1" />
@@ -393,6 +407,29 @@
 			</list>
 		</property>
 		<property name="userAccount" ref="userAccount3" />
+		<property name="hasSpam" value = "false"/>
+		<property name="polarity" value ="0.0"/>
+	</bean>
+	
+		<!-- DELETED -->
+	<bean id="DELETED" class="domain.Admin">
+		<property name="name" value="DELETED" />
+		<property name="middleName" value="" />
+		<property name="surname" value="ACTOR" />
+		<property name="photo" value="https://www.url.com/system" />
+		<property name="email" value="notifications2@acmehandyworker.com" />
+		<property name="phoneNumber" value="+34676958523" />
+		<property name="address" value="Central Offices of Heaven" />
+		<property name="boxes">
+			<list>
+				<ref bean="inBoxDELETED" />
+				<ref bean="outBoxDELETED" />
+				<ref bean="trashBoxDELETED" />
+				<ref bean="spamBoxDELETED" />
+				<ref bean="notificationBoxDELETED" />
+			</list>
+		</property>
+		<property name="userAccount" ref="userAccount16" />
 		<property name="hasSpam" value = "false"/>
 		<property name="polarity" value ="0.0"/>
 	</bean>
@@ -1296,6 +1333,53 @@
 					</property>
 				</bean>
 			<!-- FIN ADMIN3 -->
+			
+			<!-- DELETED -->
+				<bean class="domain.Box" id="inBoxDELETED">
+					<property value="INBOX" name="name" />
+					<property value="true" name="isSystem" />
+					<property name="messages">
+						<list>
+						</list>
+					</property>
+				</bean>
+				
+				<bean class="domain.Box" id="outBoxDELETED">
+					<property value="OUTBOX" name="name" />
+					<property value="true" name="isSystem" />
+					<property name="messages">
+						<list>
+						</list>
+					</property>
+				</bean>
+				
+				<bean class="domain.Box" id="trashBoxDELETED">
+					<property value="TRASHBOX" name="name" />
+					<property value="true" name="isSystem" />
+					<property name="messages">
+						<list>
+						</list>
+					</property>
+				</bean>
+				
+				<bean class="domain.Box" id="spamBoxDELETED">
+					<property value="SPAMBOX" name="name" />
+					<property value="true" name="isSystem" />
+					<property name="messages">
+						<list>
+						</list>
+					</property>
+				</bean>
+				
+				<bean class="domain.Box" id="notificationBoxDELETED">
+					<property value="NOTIFICATIONBOX" name="name" />
+					<property value="true" name="isSystem" />
+					<property name="messages">
+						<list>
+						</list>
+					</property>
+				</bean>
+			<!-- FIN DELETED -->
 		<!-- FIN ADMIN -->
 		
 		<!-- CHAPTER -->

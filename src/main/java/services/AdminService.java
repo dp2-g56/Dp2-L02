@@ -76,7 +76,7 @@ public class AdminService {
 	public void loggedAsAdmin() {
 		UserAccount userAccount;
 		userAccount = LoginService.getPrincipal();
-		final List<Authority> authorities = (List<Authority>) userAccount.getAuthorities();
+		List<Authority> authorities = (List<Authority>) userAccount.getAuthorities();
 		Assert.isTrue(authorities.get(0).toString().equals("ADMIN"));
 	}
 
@@ -122,40 +122,38 @@ public class AdminService {
 		return admin;
 	}
 
-	public Admin createAdmin(final String name, final String middleName, final String surname, final String photo,
-			final String email, final String phoneNumber, final String address, final String userName,
-			final String password) {
+	public Admin createAdmin(String name, String middleName, String surname, String photo, String email, String phoneNumber, String address, String userName, String password) {
 
-		final Admin admin = new Admin();
+		Admin admin = new Admin();
 
-		final List<SocialProfile> socialProfiles = new ArrayList<SocialProfile>();
-		final List<Box> boxes = new ArrayList<Box>();
+		List<SocialProfile> socialProfiles = new ArrayList<SocialProfile>();
+		List<Box> boxes = new ArrayList<Box>();
 
-		final UserAccount userAccountAdmin = new UserAccount();
+		UserAccount userAccountAdmin = new UserAccount();
 
 		userAccountAdmin.setUsername(userName);
 		userAccountAdmin.setPassword(password);
 
-		final Box spamBox = new Box();
-		final List<Message> messages1 = new ArrayList<>();
+		Box spamBox = new Box();
+		List<Message> messages1 = new ArrayList<>();
 		spamBox.setIsSystem(true);
 		spamBox.setMessages(messages1);
 		spamBox.setName("Spam");
 
-		final Box trashBox = new Box();
-		final List<Message> messages2 = new ArrayList<>();
+		Box trashBox = new Box();
+		List<Message> messages2 = new ArrayList<>();
 		trashBox.setIsSystem(true);
 		trashBox.setMessages(messages2);
 		trashBox.setName("Trash");
 
-		final Box sentBox = new Box();
-		final List<Message> messages3 = new ArrayList<>();
+		Box sentBox = new Box();
+		List<Message> messages3 = new ArrayList<>();
 		sentBox.setIsSystem(true);
 		sentBox.setMessages(messages3);
 		sentBox.setName("Sent messages");
 
-		final Box receivedBox = new Box();
-		final List<Message> messages4 = new ArrayList<>();
+		Box receivedBox = new Box();
+		List<Message> messages4 = new ArrayList<>();
 		receivedBox.setIsSystem(true);
 		receivedBox.setMessages(messages4);
 		receivedBox.setName("Received messages");
@@ -176,9 +174,9 @@ public class AdminService {
 		admin.setBoxes(boxes);
 		admin.setHasSpam(false);
 
-		final List<Authority> authorities = new ArrayList<Authority>();
+		List<Authority> authorities = new ArrayList<Authority>();
 
-		final Authority authority = new Authority();
+		Authority authority = new Authority();
 		authority.setAuthority(Authority.ADMIN);
 		authorities.add(authority);
 		userAccountAdmin.setAuthorities(authorities);
@@ -349,7 +347,7 @@ public class AdminService {
 
 	}
 
-	public void banSuspiciousActor(final Actor a) {
+	public void banSuspiciousActor(Actor a) {
 		this.loggedAsAdmin();
 
 		a.getUserAccount().setIsNotLocked(false);
@@ -368,11 +366,11 @@ public class AdminService {
 	}
 
 	/*
-	 * public Admin getAdminByUsername(final String a) { return
+	 * public Admin getAdminByUsername( String a) { return
 	 * this.adminRepository.getAdminByUserName(a); }
 	 */
 
-	public Admin findOne(final int adminId) {
+	public Admin findOne(int adminId) {
 		return this.findOne(adminId);
 	}
 
@@ -677,5 +675,19 @@ public class AdminService {
 		 */
 
 		return result;
+	}
+
+	public void flush() {
+		this.adminRepository.flush();
+
+	}
+
+	public Admin getAdminByUsername(String username) {
+		return this.adminRepository.getAdminByUsername(username);
+	}
+	public Admin updateAdmin(Admin admin) {
+		this.loggedAsAdmin();
+		Assert.isTrue(admin.getId() != 0 && this.loggedAdmin().getId() == admin.getId());
+		return this.adminRepository.save(admin);
 	}
 }

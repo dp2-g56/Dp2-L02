@@ -296,10 +296,7 @@ public class ChapterServiceTest extends AbstractTest {
 
 	protected void templateRegister(String username, String name, String surname, String email, String title, String photo, Area area, Class<?> expected) {
 
-		Chapter chapter = new Chapter();
-		chapter.setAddress("");
-		chapter.setMiddleName("");
-		chapter.setPhoneNumber("");
+		Chapter chapter = this.chapterService.createChapter();
 		chapter.setArea(area);
 		chapter.setEmail(email);
 		chapter.setName(name);
@@ -566,6 +563,8 @@ public class ChapterServiceTest extends AbstractTest {
 
 	@Test
 	public void testDelete() {
-		this.chapterService.delete(this.chapterService.getChapterByUsername("Chapter1"));
+		super.authenticate("chapter1");
+		this.chapterService.deleteAccount();
+		super.unauthenticate();
 	}
 }

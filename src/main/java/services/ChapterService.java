@@ -270,6 +270,11 @@ public class ChapterService {
 	}
 
 	public void delete(Chapter chapter) {
+		this.chapterRepository.delete(chapter);
+	}
+
+	public void deleteAccount() {
+		Chapter chapter = this.loggedChapter();
 		this.messageService.updateSendedMessageByLogguedActor();
 		this.messageService.deleteAllMessageFromActor();
 

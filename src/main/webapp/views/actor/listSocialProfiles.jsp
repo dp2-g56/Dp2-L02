@@ -8,6 +8,22 @@
 <%@taglib prefix="display" uri="http://displaytag.sf.net"%>
 
 <br/>
+
+
+<script type="text/javascript">
+
+  function confirmAndRedirect() {
+
+  var x = confirm("<spring:message code="actor.confirmDeleteAccount" />");
+  
+  if(x == true){
+	  window.alert("<spring:message code="actor.accountDeleted" />");
+	  window.location.href = "authenticated/deleteAccount.do";
+  }
+
+ 
+}
+   </script>
 <security:authorize access="hasAnyRole('ADMIN', 'MEMBER', 'SPONSOR')">
 
 <table>
@@ -123,6 +139,10 @@
 
 </table>
 
+<button type="button" onclick="javascript: relativeRedir('authenticated/deleteAccount.do')" >
+					<spring:message code="parade.copy" />
+				</button>	
+
 <h2> <spring:message code="socialProfile.mySocialProfiles"  /></h2>
 
 <display:table
@@ -208,3 +228,9 @@
 <a href="authenticated/socialProfile/create.do"><spring:message code="socialProfile.create" /></a>
 
 </security:authorize>
+<br/>
+<br/>
+<br/>
+<button type="button" onclick="confirmAndRedirect()" >
+					<spring:message code="actor.deleteAccount" />
+				</button>

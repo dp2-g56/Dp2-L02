@@ -66,6 +66,31 @@ public class SocialProfileController extends AbstractController {
 	private ChapterService			chapterService;
 
 
+	@RequestMapping(value = "/deleteAccount", method = RequestMethod.GET)
+	public ModelAndView deleteAccount() {
+		ModelAndView result;
+		Actor a = this.actorService.loggedActor();
+		String authority = ((List<Authority>) a.getUserAccount().getAuthorities()).get(0).toString();
+
+		switch (authority) {
+
+		case "CHAPTER":
+			this.chapterService.deleteAccount();
+			break;
+
+		case "SPONSOR":
+			break;
+
+		case "MEMBER":
+			break;
+
+		case "BROTHERHOOD":
+			break;
+		}
+
+		result = new ModelAndView("redirect:/j_spring_security_logout");
+		return result;
+	}
 	//-------------------------------------------------------------------
 	//---------------------------LIST BROTHERHOOD------------------------------------
 	@RequestMapping(value = "/showProfile", method = RequestMethod.GET)

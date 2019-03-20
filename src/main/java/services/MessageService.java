@@ -524,6 +524,24 @@ public class MessageService {
 
 	}
 
+	public void deleteAllMessageFromActor() {
+		Actor a = this.actorService.loggedActor();
+		List<Message> messages = this.messageRepository.getAllMessagesFromActor(a.getId());
+		for (Message m : messages) {
+			this.messageRepository.delete(m);
+		}
+	}
+
+	public void updateSendedMessageByLogguedActor() {
+		Actor actor = this.actorService.loggedActor();
+		Actor deleted = this.actorService.getActorByUsername("DELETED");
+		List<Message> messages = this.messageRepository.getSendedMessagesByActor(actor.getId());
+		for (Message m : messages) {
+			m.setSender(deleted);
+			this.messageRepository.save(m);
+		}
+	}
+
 	public void flush() {
 		this.messageRepository.flush();
 	}

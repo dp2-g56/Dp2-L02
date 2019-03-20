@@ -33,7 +33,7 @@ public class ActorService {
 	private ConfigurationService	configurationService;
 
 
-	public Actor flushSave(final Actor actor) {
+	public Actor flushSave(Actor actor) {
 		return this.actorRepository.saveAndFlush(actor);
 	}
 
@@ -44,26 +44,27 @@ public class ActorService {
 	public List<Actor> findAllExceptAdmin() {
 
 		List<Actor> actors = new ArrayList<Actor>();
-		final List<Actor> actorsNoAdmin = new ArrayList<Actor>();
+		List<Actor> actorsNoAdmin = new ArrayList<Actor>();
 
 		actors = this.actorRepository.findAll();
 
-		for (final Actor a : actors) {
+		for (Actor a : actors) {
 			List<Authority> authorities = new ArrayList<Authority>();
 
 			authorities = (List<Authority>) a.getUserAccount().getAuthorities();
-			if (!(authorities.get(0).toString().equals("ADMIN")))
+			if (!(authorities.get(0).toString().equals("ADMIN"))) {
 				actorsNoAdmin.add(a);
+			}
 		}
 
 		return actorsNoAdmin;
 	}
 
-	public Actor findOne(final int id) {
+	public Actor findOne(int id) {
 		return this.actorRepository.findOne(id);
 	}
 
-	public Actor getActorByUsername(final String a) {
+	public Actor getActorByUsername(String a) {
 		return this.actorRepository.getActorByUserName(a);
 	}
 
@@ -81,44 +82,45 @@ public class ActorService {
 		Boolean res = false;
 		UserAccount userAccount;
 		userAccount = LoginService.getPrincipal();
-		if (userAccount.getAuthorities().size() > 0)
+		if (userAccount.getAuthorities().size() > 0) {
 			res = true;
-		else
+		} else {
 			res = false;
+		}
 		return res;
 	}
 
 	public Actor createActor() {
 
-		final Actor actor = new Actor();
-		final List<SocialProfile> socialProfiles = new ArrayList<SocialProfile>();
-		final List<Box> boxes = new ArrayList<Box>();
+		Actor actor = new Actor();
+		List<SocialProfile> socialProfiles = new ArrayList<SocialProfile>();
+		List<Box> boxes = new ArrayList<Box>();
 
-		final UserAccount userAccountActor = new UserAccount();
+		UserAccount userAccountActor = new UserAccount();
 
 		userAccountActor.setUsername("");
 		userAccountActor.setPassword("");
 
-		final Box spamBox = new Box();
-		final List<Message> messages1 = new ArrayList<>();
+		Box spamBox = new Box();
+		List<Message> messages1 = new ArrayList<>();
 		spamBox.setIsSystem(true);
 		spamBox.setMessages(messages1);
 		spamBox.setName("Spam");
 
-		final Box trashBox = new Box();
-		final List<Message> messages2 = new ArrayList<>();
+		Box trashBox = new Box();
+		List<Message> messages2 = new ArrayList<>();
 		trashBox.setIsSystem(true);
 		trashBox.setMessages(messages2);
 		trashBox.setName("Trash");
 
-		final Box sentBox = new Box();
-		final List<Message> messages3 = new ArrayList<>();
+		Box sentBox = new Box();
+		List<Message> messages3 = new ArrayList<>();
 		sentBox.setIsSystem(true);
 		sentBox.setMessages(messages3);
 		sentBox.setName("Sent messages");
 
-		final Box receivedBox = new Box();
-		final List<Message> messages4 = new ArrayList<>();
+		Box receivedBox = new Box();
+		List<Message> messages4 = new ArrayList<>();
 		receivedBox.setIsSystem(true);
 		receivedBox.setMessages(messages4);
 		receivedBox.setName("Received messages");
@@ -142,37 +144,37 @@ public class ActorService {
 		return actor;
 	}
 
-	public Actor createActor(final String name, final String middleName, final String surname, final String photo, final String email, final String phoneNumber, final String address, final String userName, final String password) {
+	public Actor createActor(String name, String middleName, String surname, String photo, String email, String phoneNumber, String address, String userName, String password) {
 
-		final Actor actor = new Actor();
-		final List<SocialProfile> socialProfiles = new ArrayList<SocialProfile>();
-		final List<Box> boxes = new ArrayList<Box>();
+		Actor actor = new Actor();
+		List<SocialProfile> socialProfiles = new ArrayList<SocialProfile>();
+		List<Box> boxes = new ArrayList<Box>();
 
-		final UserAccount userAccountActor = new UserAccount();
+		UserAccount userAccountActor = new UserAccount();
 
 		userAccountActor.setUsername(userName);
 		userAccountActor.setPassword(password);
 
-		final Box spamBox = new Box();
-		final List<Message> messages1 = new ArrayList<>();
+		Box spamBox = new Box();
+		List<Message> messages1 = new ArrayList<>();
 		spamBox.setIsSystem(true);
 		spamBox.setMessages(messages1);
 		spamBox.setName("Spam");
 
-		final Box trashBox = new Box();
-		final List<Message> messages2 = new ArrayList<>();
+		Box trashBox = new Box();
+		List<Message> messages2 = new ArrayList<>();
 		trashBox.setIsSystem(true);
 		trashBox.setMessages(messages2);
 		trashBox.setName("Trash");
 
-		final Box sentBox = new Box();
-		final List<Message> messages3 = new ArrayList<>();
+		Box sentBox = new Box();
+		List<Message> messages3 = new ArrayList<>();
 		sentBox.setIsSystem(true);
 		sentBox.setMessages(messages3);
 		sentBox.setName("Sent messages");
 
-		final Box receivedBox = new Box();
-		final List<Message> messages4 = new ArrayList<>();
+		Box receivedBox = new Box();
+		List<Message> messages4 = new ArrayList<>();
 		receivedBox.setIsSystem(true);
 		receivedBox.setMessages(messages4);
 		receivedBox.setName("Received messages");
@@ -196,7 +198,7 @@ public class ActorService {
 		return actor;
 	}
 
-	public Actor updateActor(final Actor actor, final String name, final String middleName, final String surname, final String photo, final String email, final String phoneNumber, final String address) {
+	public Actor updateActor(Actor actor, String name, String middleName, String surname, String photo, String email, String phoneNumber, String address) {
 
 		// LA COMPROBACION DE QUE ESTAS LOGUEADO SE HACE EN EL ACTOR
 		actor.setName(name);
@@ -212,7 +214,7 @@ public class ActorService {
 		return actor;
 	}
 
-	public Actor save(final Actor a) {
+	public Actor save(Actor a) {
 		return this.actorRepository.save(a);
 	}
 
@@ -222,7 +224,7 @@ public class ActorService {
 	 * this.actorRepository.save(actor); }
 	 */
 
-	public SocialProfile updateSocialProfiles(final SocialProfile socialProfile, final String nick, final String name, final String profileLink) {
+	public SocialProfile updateSocialProfiles(SocialProfile socialProfile, String nick, String name, String profileLink) {
 		/*
 		 * UserAccount userAccount; userAccount = LoginService.getPrincipal();
 		 * Actor actor = new Actor(); actor =
@@ -248,12 +250,12 @@ public class ActorService {
 	 * the list of tutorials that he or she’s written.
 	 */
 
-	public List<Box> getlistOfBoxes(final Actor actor) {
+	public List<Box> getlistOfBoxes(Actor actor) {
 
 		return this.actorRepository.listOfBoxes(actor);
 	}
 
-	public void updateActorSpam(final Actor a) {
+	public void updateActorSpam(Actor a) {
 
 		if (this.configurationService.isActorSuspicious(a)) {
 			a.setHasSpam(true);

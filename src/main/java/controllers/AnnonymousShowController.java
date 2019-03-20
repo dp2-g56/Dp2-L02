@@ -64,7 +64,7 @@ public class AnnonymousShowController extends AbstractController {
 			Sponsorship spo = this.sponsorshipService.getRandomSponsorship(p.getId());
 			randomSpo.put(p.getId(), spo);
 			if (spo.getId() > 0)
-				this.sponsorshipService.updateGainOfSponsorship(p.getId(), spo.getId());
+				this.sponsorshipService.updateSpentMoneyOfSponsorship(p.getId(), spo.getId());
 		}
 		result.addObject("randomSpo", randomSpo);
 

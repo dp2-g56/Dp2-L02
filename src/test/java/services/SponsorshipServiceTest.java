@@ -118,7 +118,7 @@ public class SponsorshipServiceTest extends AbstractTest {
 
 		spo.setBanner(banner);
 		spo.setTargetURL(targetURL);
-		spo.setGain(0f);
+		spo.setSpentMoney(0f);
 		spo.setParade(parade);
 		spo.setIsActivated(true);
 		spo.setCreditCard(card);
@@ -446,7 +446,7 @@ public class SponsorshipServiceTest extends AbstractTest {
 	 * corresponding sponsorship. The fare must include the current VAT percentage
 	 */
 	@Test
-	public void driverUpdateGainOfSponsorship() {
+	public void driverUpdateSpentMoneyOfSponsorship() {
 		Sponsor sponsor = this.sponsorService.getSponsorByUsername("sponsor1");
 		List<Sponsorship> sponsorships = (List<Sponsorship>) this.sponsorshipService
 				.getActivatedSponsorshipsOfSponsor(sponsor.getId());
@@ -464,16 +464,16 @@ public class SponsorshipServiceTest extends AbstractTest {
 				{ anotherParadeId, sponsorship.getId(), IllegalArgumentException.class } };
 
 		for (int i = 0; i < testingData.length; i++)
-			this.templateUpdateGainOfSponsorship((Integer) testingData[i][0], (Integer) testingData[i][1],
+			this.templateUpdateSpentMoneyOfSponsorship((Integer) testingData[i][0], (Integer) testingData[i][1],
 					(Class<?>) testingData[i][2]);
 	}
 
-	private void templateUpdateGainOfSponsorship(int paradeId, int sponsorshipId, Class<?> expected) {
+	private void templateUpdateSpentMoneyOfSponsorship(int paradeId, int sponsorshipId, Class<?> expected) {
 
 		Class<?> caught = null;
 
 		try {
-			this.sponsorshipService.updateGainOfSponsorship(paradeId, sponsorshipId);
+			this.sponsorshipService.updateSpentMoneyOfSponsorship(paradeId, sponsorshipId);
 			this.sponsorshipService.flush();
 		} catch (Throwable oops) {
 			caught = oops.getClass();

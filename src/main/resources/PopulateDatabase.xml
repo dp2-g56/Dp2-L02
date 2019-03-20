@@ -947,7 +947,7 @@
 	<bean id="sponsorship1" class="domain.Sponsorship">
 		<property name="banner" value="https://boluda.com/files/pasar-wordpress-a-ssl.jpg" />
 		<property name="targetURL" value="https://boluda.com/files/pasar-wordpress-a-ssl.jpg" />
-		<property name="gain" value="20" />
+		<property name="spentMoney" value="20" />
 		<property name="isActivated" value="true" />
 		<property name="creditCard" ref="creditCard1" />
 		<property name="parade" ref="parade3" />
@@ -956,7 +956,7 @@
 	<bean id="sponsorship2" class="domain.Sponsorship">
 		<property name="banner" value="https://www.eff.org/files/banner_library/https-everywhere-logo.png" />
 		<property name="targetURL" value="https://www.eff.org/files/banner_library/https-everywhere-logo.png" />
-		<property name="gain" value="31" />
+		<property name="spentMoney" value="31" />
 		<property name="isActivated" value="true" />
 		<property name="creditCard" ref="creditCard2" />
 		<property name="parade" ref="parade3" />

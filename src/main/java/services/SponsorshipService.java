@@ -70,7 +70,7 @@ public class SponsorshipService {
 
 		spo.setBanner("");
 		spo.setTargetURL("");
-		spo.setGain(0f);
+		spo.setSpentMoney(0f);
 
 		CreditCard card = new CreditCard();
 
@@ -88,7 +88,7 @@ public class SponsorshipService {
 		if (formObject.getId() == 0 && parade != null) {
 			spo = new Sponsorship();
 			spo.setIsActivated(true);
-			spo.setGain(0f);
+			spo.setSpentMoney(0f);
 			spo.setParade(parade);
 		} else
 			spo = this.findOne(formObject.getId());
@@ -257,7 +257,7 @@ public class SponsorshipService {
 
 	}
 
-	public void updateGainOfSponsorship(int paradeId, int sponsorshipId) {
+	public void updateSpentMoneyOfSponsorship(int paradeId, int sponsorshipId) {
 		Sponsor sponsor = this.getSponsorOfSponsorship(sponsorshipId);
 
 		Assert.isTrue(sponsorshipId > 0 && paradeId > 0);
@@ -268,9 +268,9 @@ public class SponsorshipService {
 		Assert.isTrue(sponsorship.getIsActivated());
 
 		Configuration conf = this.configurationService.getConfiguration();
-		java.lang.Float newGain = sponsorship.getGain() + conf.getFare() + conf.getFare() * conf.getVAT() / 100;
+		java.lang.Float newSpentMoney = sponsorship.getSpentMoney() + conf.getFare() + conf.getFare() * conf.getVAT() / 100;
 
-		sponsorship.setGain(newGain);
+		sponsorship.setSpentMoney(newSpentMoney);
 
 		Actor actor = this.actorService.loggedActor();
 

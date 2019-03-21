@@ -51,6 +51,8 @@ public class MemberService {
 	private EnrolmentService enrolmentService;
 	@Autowired
 	private BrotherhoodService brotherhoodService;
+	@Autowired
+	private ActorService actorService;
 
 	// Simple CRUD methods ------------------------------------------
 

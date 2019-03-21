@@ -60,4 +60,12 @@ public class Segment extends DomainEntity {
 		this.time = time;
 	}
 
+	@Override
+	public String toString() {
+		return "Segment [getOriginLatitude()=" + this.getOriginLatitude() + ", getOriginLongitude()="
+				+ this.getOriginLongitude() + ", getDestinationLatitude()=" + this.getDestinationLatitude()
+				+ ", getDestinationLongitude()=" + this.getDestinationLongitude() + ", getTime()=" + this.getTime()
+				+ "]";
+	}
+
 }

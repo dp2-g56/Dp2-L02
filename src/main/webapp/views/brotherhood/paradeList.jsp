@@ -88,7 +88,7 @@
 	<display:column  titleKey="parade.columnNumber" >
 	<font color="${color}"><jstl:out value="${row.columnNumber}"/></font>
 	</display:column>
-		
+	
 	<display:column titleKey="parade.floats">
         <jstl:set var="floatsSize" value="${row.floats.size()}" />
         <spring:url var="floatsUrl" value="/parade/brotherhood/float/list.do?paradeId={paradeId}">
@@ -99,7 +99,6 @@
              <font color="${color}"> <jstl:out value="${viewFloats1}(${floatsSize})" />    </font>
         </a>
     </display:column>
-    
     
     <display:column titleKey="parade.requests">
     	
@@ -132,12 +131,27 @@
 		</jstl:if>
 	</display:column>
 	
-	
-		<display:column titleKey="parade.copy">
+	<display:column titleKey="parade.copy">
 				<button type="button" onclick="javascript: relativeRedir('parade/brotherhood/copy.do?paradeId='+${row.id})" >
 					<spring:message code="parade.copy" />
 				</button>	
-		</display:column>
+	</display:column>
+
+	<display:column>
+		
+		<jstl:choose>
+		<jstl:when test="${row.path==null}">
+			<a href="path/brotherhood/create.do?paradeId=${row.id}">
+				<spring:message code="parade.path.create" />
+			</a>
+		</jstl:when>
+		<jstl:otherwise>
+			<a href="path/brotherhood/list.do?paradeId=${row.id}">
+				<spring:message code="parade.path" />
+			</a>
+		</jstl:otherwise>
+		</jstl:choose>
+	</display:column>
 	
 												
 </display:table>

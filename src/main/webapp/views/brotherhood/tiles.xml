@@ -102,4 +102,14 @@
 		<put-attribute name="body" value="/views/brotherhood/assignPosition.jsp" />
 	</definition>
 	
+	<definition name="segment/brotherhood/create" extends="master.page">	
+		<put-attribute name="title" value="Segment" />
+		<put-attribute name="body" value="/views/brotherhood/editSegment.jsp" />
+	</definition>
+	
+	<definition name="path/brotherhood/list" extends="master.page">	
+		<put-attribute name="title" value="Path List" />
+		<put-attribute name="body" value="/views/brotherhood/pathList.jsp" />
+	</definition>
+	
 </tiles-definitions>

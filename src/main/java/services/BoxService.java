@@ -46,8 +46,8 @@ public class BoxService {
 		// userAccount = LoginService.getPrincipal();
 		// Actor actor =
 		// this.actorService.getActorByUsername(userAccount.getUsername());
-		final Box box = new Box();
-		final List<Message> messages = new ArrayList<Message>();
+		Box box = new Box();
+		List<Message> messages = new ArrayList<Message>();
 
 		box.setName("");
 		box.setIsSystem(false);
@@ -59,8 +59,8 @@ public class BoxService {
 	}
 
 	public Box createSystem() { // Crear cajas del sistema
-		final Box box = new Box();
-		final List<Message> messages = new ArrayList<Message>();
+		Box box = new Box();
+		List<Message> messages = new ArrayList<Message>();
 
 		box.setName("");
 		box.setIsSystem(true);
@@ -70,28 +70,28 @@ public class BoxService {
 		return box;
 	}
 
-	public Box create(final String name, final Box fatherBox) {
+	public Box create(String name, Box fatherBox) {
 
 		this.actorService.loggedAsActor();
 		UserAccount userAccount;
 		userAccount = LoginService.getPrincipal();
-		final Actor actor = this.actorService.getActorByUsername(userAccount.getUsername());
+		Actor actor = this.actorService.getActorByUsername(userAccount.getUsername());
 
-		final Box box = new Box();
-		final List<Message> messages = new ArrayList<Message>();
+		Box box = new Box();
+		List<Message> messages = new ArrayList<Message>();
 		box.setName(name);
 		box.setIsSystem(false);
 		box.setMessages(messages);
 		box.setFatherBox(fatherBox);
 
-		final List<Box> newBoxes = actor.getBoxes();
+		List<Box> newBoxes = actor.getBoxes();
 		newBoxes.add(box);
 		actor.setBoxes(newBoxes);
 
 		return box;
 	}
 
-	public Box saveSystem(final Box box) {
+	public Box saveSystem(Box box) {
 		return this.boxRepository.save(box);
 	}
 
@@ -107,6 +107,7 @@ public class BoxService {
 
 		Assert.isTrue((fatherBox == null) || actor.getBoxes().contains(box.getFatherBox()));
 
+
 		Box savedBox = new Box();
 		savedBox = this.boxRepository.save(box);
 		actor.getBoxes().add(savedBox);
@@ -119,7 +120,7 @@ public class BoxService {
 		this.actorService.loggedAsActor();
 		UserAccount userAccount;
 		userAccount = LoginService.getPrincipal();
-		final Actor actor = this.actorService.getActorByUsername(userAccount.getUsername());
+		Actor actor = this.actorService.getActorByUsername(userAccount.getUsername());
 
 		Assert.isTrue(!box.getIsSystem());
 
@@ -129,14 +130,15 @@ public class BoxService {
 		if (actor.getBoxes().contains(savedBox)) {
 			actor.getBoxes().remove(savedBox);
 			actor.getBoxes().add(savedBox);
-		} else
+		} else {
 			actor.getBoxes().add(savedBox);
+		}
 
 		this.actorService.save(actor);
 		return savedBox;
 	}
 
-	public void deleteBox(final Box box) {
+	public void deleteBox(Box box) {
 		this.actorService.loggedAsActor();
 		Assert.isTrue(!box.getIsSystem());
 		UserAccount userAccount;
@@ -171,52 +173,105 @@ public class BoxService {
 
 		Assert.isTrue(actor.getBoxes().contains(box));
 
-		final List<Box> sonBoxes = this.boxRepository.getSonsBox(box);
+		List<Box> sonBoxes = this.boxRepository.getSonsBox(box);
 		if (sonBoxes.size() == 0) {
-			for (final Message m : box.getMessages())
+			for (Message m : box.getMessages()) {
 				this.messageService.delete(m);
+			}
 			box.getMessages().removeAll(box.getMessages());
 
 			actor.getBoxes().remove(box);
 			this.boxRepository.delete(box);
 			this.actorService.save(actor);
 
-		} else
-			for (final Box sonBox : sonBoxes)
+		} else {
+			for (Box sonBox : sonBoxes) {
 				this.deleteBox(sonBox);
-		// this.actorService.save(actor);
+				// this.actorService.save(actor);
+			}
+		}
 
+	}
+
+	public void deleteBoxSystem(Box box) {
+		this.actorService.loggedAsActor();
+
+		UserAccount userAccount;
+		userAccount = LoginService.getPrincipal();
+		Actor actor = this.actorService.getActorByUsername(userAccount.getUsername());
+
+		List<Box> sonBoxes = this.boxRepository.getSonsBox(box);
+		if (sonBoxes.size() == 0) {
+			List<Message> messages = box.getMessages();
+			box.getMessages().removeAll(messages);
+
+			if (!messages.isEmpty()) {
+				this.messageService.delete(messages.get(0));
+			}
+			this.boxRepository.save(box);
+		} else {
+			for (Box sonBox : sonBoxes) {
+				this.deleteBox(sonBox);
+				// this.actorService.save(actor);
+			}
+		}
+
+	}
+
+	public void deleteAllBoxes(List<Box> boxes) {
+		this.actorService.loggedAsActor();
+
+		UserAccount userAccount;
+		userAccount = LoginService.getPrincipal();
+		Actor actor = this.actorService.getActorByUsername(userAccount.getUsername());
+		for (Box box : boxes) {
+			List<Box> sonBoxes = this.boxRepository.getSonsBox(box);
+			if (sonBoxes.size() == 0) {
+				List<Message> messages = box.getMessages();
+				box.getMessages().removeAll(messages);
+				this.boxRepository.save(box);
+				if (!messages.isEmpty()) {
+					this.messageService.delete(messages.get(0));
+				}
+
+			} else {
+				for (Box sonBox : sonBoxes) {
+					this.deleteBoxSystem(sonBox);
+					// this.actorService.save(actor);
+				}
+			}
+		}
 	}
 
 	public List<Box> findAll() {
 		return this.boxRepository.findAll();
 	}
 
-	public Box findOne(final int id) {
+	public Box findOne(int id) {
 		return this.boxRepository.findOne(id);
 	}
 
-	public Box getRecievedBoxByActor(final Actor a) {
+	public Box getRecievedBoxByActor(Actor a) {
 		return this.boxRepository.getRecievedBoxByActor(a);
 	}
 
-	public Box getSpamBoxByActor(final Actor a) {
+	public Box getSpamBoxByActor(Actor a) {
 		return this.boxRepository.getSpamBoxByActor(a);
 	}
 
-	public Box getTrashBoxByActor(final Actor a) {
+	public Box getTrashBoxByActor(Actor a) {
 		return this.boxRepository.getTrashBoxByActor(a);
 	}
 
-	public Box getNotificationBoxByActor(final Actor a) {
+	public Box getNotificationBoxByActor(Actor a) {
 		return this.boxRepository.getNotificationBoxByActor(a);
 	}
 
-	public Box getSentBoxByActor(final Actor a) {
+	public Box getSentBoxByActor(Actor a) {
 		return this.boxRepository.getSentBoxByActor(a);
 	}
 
-	public List<Box> getCurrentBoxByMessage(final Message m) {
+	public List<Box> getCurrentBoxByMessage(Message m) {
 		return this.boxRepository.getCurrentBoxByMessage(m);
 
 	}
@@ -224,13 +279,14 @@ public class BoxService {
 	public List<Integer> getActorBoxesId() {
 
 		this.actorService.loggedAsActor();
-		final List<Integer> idBoxes = new ArrayList<Integer>();
+		List<Integer> idBoxes = new ArrayList<Integer>();
 
 		UserAccount userAccount;
 		userAccount = LoginService.getPrincipal();
-		final Actor actor = this.actorService.getActorByUsername(userAccount.getUsername());
-		for (int i = 0; i < actor.getBoxes().size(); i++)
+		Actor actor = this.actorService.getActorByUsername(userAccount.getUsername());
+		for (int i = 0; i < actor.getBoxes().size(); i++) {
 			idBoxes.add(actor.getBoxes().get(i).getId());
+		}
 
 		return idBoxes;
 	}
@@ -239,7 +295,7 @@ public class BoxService {
 		this.actorService.loggedAsActor();
 		UserAccount userAccount;
 		userAccount = LoginService.getPrincipal();
-		final Actor actor = this.actorService.getActorByUsername(userAccount.getUsername());
+		Actor actor = this.actorService.getActorByUsername(userAccount.getUsername());
 		return actor.getBoxes();
 	}
 

@@ -5,6 +5,7 @@
 <%@taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@taglib prefix="security" uri="http://www.springframework.org/security/tags"%>
 <%@taglib prefix="display" uri="http://displaytag.sf.net"%>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <security:authorize access="hasRole('SPONSOR')">		 	
 
@@ -26,7 +27,7 @@
 	<br/>
 
 	<display:table pagesize="5" name="sponsorships" id="row" class="displaytag" 
-					requestURI="sponsorship/sponsor/list.do">
+					requestURI="${requestURI}">
 					
 		<jstl:choose>
 			<jstl:when test="${row.isActivated==true}">
@@ -46,7 +47,9 @@
 		
 		<display:column property="targetURL" titleKey="sponsorship.targetURL" style="color:${color}"/>
 		
-		<display:column property="gain" titleKey="sponsorship.gain" style="color:${color}"/>
+		<display:column titleKey="sponsorship.spentMoney" style="color:${color}">
+			<fmt:formatNumber type="number" maxFractionDigits="2" value="${row.spentMoney} "/> euros
+		</display:column>
 			
 		<display:column titleKey="sponsorship.creditCard" style="color:${color}">
 			<jstl:set var="number" value="${row.creditCard.number.toString()}"/>

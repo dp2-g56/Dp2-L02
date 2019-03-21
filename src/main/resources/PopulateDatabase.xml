@@ -54,6 +54,7 @@
 				<value>MASTER</value>
 				<value>DINNERS</value>
 				<value>AMEX</value>
+				<value>FLY</value>
 			</list>
 		</property>
 		<property name="priorityLvlSpa">
@@ -78,7 +79,7 @@
 		<property name="systemName" value="Acme Parade" />
 		<property name="imageURL" value="https://i.ibb.co/HhytG1y/Untitled.jpg" />
 		<property name="VAT" value="21" />
-		<property name="fare" value="0.01" />
+		<property name="fare" value="1" />
 		
 	</bean>
 	
@@ -123,6 +124,20 @@
 			</list>
 		</property>
 		<property name="isNotLocked" value="True" />
+	</bean> 
+	
+		<!-- DELETED -->
+	<bean id="userAccount16" class="security.UserAccount">
+		<property name="username" value="DELETED" />
+		<property name="password" value="63c2867fdcae0e8e8413d7ac21b69b59" />
+		<property name="authorities">
+			<list>
+				<bean class="security.Authority">
+					<property name="authority" value="ADMIN" />
+				</bean>
+			</list>
+		</property>
+		<property name="isNotLocked" value="False" />
 	</bean> 
 	
 	<!-- brotherhood1 -->
@@ -413,6 +428,8 @@
 		<property name="polarity" value ="0.0"/>
 	</bean>
 	
+		<!-- DELETED -->
+
 	<bean id="DELETED" class="domain.Admin">
 		<property name="name" value="DELETED" />
 		<property name="middleName" value="" />
@@ -571,6 +588,7 @@
 				<ref bean="enrolment8" />
 			</list>
 		</property>
+		<property name="history" ref="history1" />
 	</bean>
 	
 		<!-- BROTHERHOOD2 -->
@@ -629,6 +647,7 @@
 				<ref bean="enrolment6" />
 			</list>
 		</property>
+		<property name="history" ref="history2" />
 		
 	</bean>
 	
@@ -686,6 +705,7 @@
 				<ref bean="enrolment9" />
 			</list>
 		</property>
+		<property name="history" ref="history3" />
 		
 	</bean>
 	
@@ -944,16 +964,16 @@
 	<bean id="sponsorship1" class="domain.Sponsorship">
 		<property name="banner" value="https://boluda.com/files/pasar-wordpress-a-ssl.jpg" />
 		<property name="targetURL" value="https://boluda.com/files/pasar-wordpress-a-ssl.jpg" />
-		<property name="gain" value="20" />
+		<property name="spentMoney" value="20" />
 		<property name="isActivated" value="true" />
 		<property name="creditCard" ref="creditCard1" />
 		<property name="parade" ref="parade3" />
 	</bean>
 	
 	<bean id="sponsorship2" class="domain.Sponsorship">
-		<property name="banner" value="https://boluda.com/files/pasar-wordpress-a-ssl.jpg" />
-		<property name="targetURL" value="https://boluda.com/files/pasar-wordpress-a-ssl.jpg" />
-		<property name="gain" value="31" />
+		<property name="banner" value="https://www.eff.org/files/banner_library/https-everywhere-logo.png" />
+		<property name="targetURL" value="https://www.eff.org/files/banner_library/https-everywhere-logo.png" />
+		<property name="spentMoney" value="31" />
 		<property name="isActivated" value="true" />
 		<property name="creditCard" ref="creditCard2" />
 		<property name="parade" ref="parade3" />
@@ -1375,7 +1395,9 @@
 				</bean>
 			<!-- FIN ADMIN3 -->
 			
-			<bean class="domain.Box" id="inBoxDELETED">
+
+			<!-- DELETED -->
+				<bean class="domain.Box" id="inBoxDELETED">
 					<property value="INBOX" name="name" />
 					<property value="true" name="isSystem" />
 					<property name="messages">
@@ -1419,6 +1441,7 @@
 						</list>
 					</property>
 				</bean>
+			<!-- FIN DELETED -->
 		<!-- FIN ADMIN -->
 		
 		<!-- CHAPTER -->

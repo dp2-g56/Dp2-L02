@@ -21,8 +21,10 @@ import domain.CreditCard;
 import domain.Parade;
 import domain.Sponsorship;
 import forms.FormObjectSponsorshipCreditCard;
+import services.ActorService;
 import services.ConfigurationService;
 import services.CreditCardService;
+import services.MemberService;
 import services.ParadeService;
 import services.SponsorService;
 import services.SponsorshipService;
@@ -41,6 +43,11 @@ public class SponsorshipSponsorController extends AbstractController {
 	private SponsorService sponsorService;
 	@Autowired
 	private ConfigurationService configurationService;
+
+	@Autowired
+	private MemberService memberService;
+	@Autowired
+	private ActorService actorService;
 
 	// Constructors -----------------------------------------------------------
 
@@ -169,12 +176,13 @@ public class SponsorshipSponsorController extends AbstractController {
 		result = new ModelAndView("sponsor/sponsorships");
 
 		result.addObject("sponsorships", sponsorships);
+		result.addObject("requestURI", "sponsorship/sponsor/list.do");
 
 		return result;
 	}
 
-	@RequestMapping(value = "/filter", method = RequestMethod.POST, params = "refresh")
-	public ModelAndView requestsFilter(@Valid String fselect) {
+	@RequestMapping(value = "/filter", method = { RequestMethod.POST, RequestMethod.GET }, params = "refresh")
+	public ModelAndView requestsFilter(@RequestParam String fselect) {
 		ModelAndView result;
 
 		if (fselect.equals("ALL") || (!fselect.equals("ACTIVATED") && !fselect.equals("DEACTIVATED")))
@@ -191,6 +199,7 @@ public class SponsorshipSponsorController extends AbstractController {
 			result = new ModelAndView("sponsor/sponsorships");
 
 			result.addObject("sponsorships", sponsorships);
+			result.addObject("requestURI", "sponsorship/sponsor/filter.do");
 		}
 
 		return result;

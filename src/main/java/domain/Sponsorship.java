@@ -5,7 +5,6 @@ import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
-import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotBlank;
@@ -17,7 +16,7 @@ public class Sponsorship extends DomainEntity {
 
 	private String banner;
 	private String targetURL;
-	private java.lang.Float gain;
+	private java.lang.Float spentMoney;
 	private Boolean isActivated;
 
 	private CreditCard creditCard;
@@ -44,13 +43,12 @@ public class Sponsorship extends DomainEntity {
 	}
 
 	@NotNull
-	@Digits(integer = 9, fraction = 2)
-	public java.lang.Float getGain() {
-		return this.gain;
+	public java.lang.Float getSpentMoney() {
+		return this.spentMoney;
 	}
 
-	public void setGain(java.lang.Float gain) {
-		this.gain = gain;
+	public void setSpentMoney(java.lang.Float spentMoney) {
+		this.spentMoney = spentMoney;
 	}
 
 	@NotNull

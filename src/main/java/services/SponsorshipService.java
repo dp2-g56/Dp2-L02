@@ -4,6 +4,7 @@ package services;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Random;
 
 import javax.transaction.Transactional;
 
@@ -13,7 +14,10 @@ import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
 
+import domain.Actor;
+import domain.Configuration;
 import domain.CreditCard;
+import domain.Message;
 import domain.Parade;
 import domain.ParadeStatus;
 import domain.Sponsor;
@@ -37,6 +41,10 @@ public class SponsorshipService {
 	private CreditCardService creditCardService;
 	@Autowired
 	private AdminService adminService;
+	@Autowired
+	private MessageService messageService;
+	@Autowired
+	private ActorService actorService;
 
 	public List<Sponsorship> findAll() {
 		return this.sponsorshipRepository.findAll();
@@ -63,7 +71,7 @@ public class SponsorshipService {
 
 		spo.setBanner("");
 		spo.setTargetURL("");
-		spo.setGain(0f);
+		spo.setSpentMoney(0f);
 
 		CreditCard card = new CreditCard();
 
@@ -81,7 +89,7 @@ public class SponsorshipService {
 		if (formObject.getId() == 0 && parade != null) {
 			spo = new Sponsorship();
 			spo.setIsActivated(true);
-			spo.setGain(0f);
+			spo.setSpentMoney(0f);
 			spo.setParade(parade);
 		} else
 			spo = this.findOne(formObject.getId());
@@ -111,14 +119,15 @@ public class SponsorshipService {
 		Assert.isTrue(this.creditCardService.validateDateCreditCard(sponsorship.getCreditCard()));
 		Assert.isTrue(this.creditCardService.validateCvvCreditCard(sponsorship.getCreditCard()));
 
-		Sponsorship spon = this.save(sponsorship);
-		result = spon;
+		result = this.save(sponsorship);
 
 		if (sponsorship.getId() == 0) {
 			List<Sponsorship> sps = sponsor.getSponsorships();
 			sps.add(result);
 			this.sponsorService.save(sponsor);
 		}
+
+		this.flush();
 
 		return result;
 	}
@@ -211,6 +220,7 @@ public class SponsorshipService {
 		}
 	}
 
+
 	public void deleteAllSponsorships() {
 		Sponsor sponsor = this.sponsorService.loggedSponsor();
 		Integer cont = sponsor.getSponsorships().size();
@@ -231,4 +241,66 @@ public class SponsorshipService {
 
 		this.sponsorshipRepository.delete(sponsorship);
 	}
+
+	public List<Sponsorship> getSponsorshipsOfParade(int paradeId) {
+		return this.sponsorshipRepository.getSponsorshipsOfParade(paradeId);
+	}
+
+	public List<Sponsorship> getActivatedSponsorshipsOfParade(int paradeId) {
+		return this.sponsorshipRepository.getActivatedSponsorshipsOfParade(paradeId);
+	}
+
+	public Sponsorship getRandomSponsorship(int paradeId) {
+		List<Sponsorship> sponsorships = this.getActivatedSponsorshipsOfParade(paradeId);
+
+		Random random = new Random();
+		if (sponsorships.size() == 0)
+			return this.createSponsorship();
+		else
+			return sponsorships.get(random.nextInt(sponsorships.size()));
+	}
+
+	public void sendMessageToSponsor(Sponsor sponsor) {
+		java.lang.Float amount = this.configurationService.getConfiguration().getFare()
+				+ this.configurationService.getConfiguration().getFare()
+						* this.configurationService.getConfiguration().getVAT() / 100;
+
+		String subject = "New charge for advertising / Nuevo cargo por publicidad";
+
+		String body = "You have paid: " + amount.toString()
+				+ " euros for advertising one of your sponsorship / Has pagado: " + amount.toString()
+				+ " euros por publicitar uno de tus patrocinios";
+
+		Message message = this.messageService.createNotification(subject, body, "NEUTRAL", "Notification, Sponsorship",
+				sponsor);
+
+		this.messageService.sendMessageAnotherSender(message);
+
+	}
+
+	public void updateSpentMoneyOfSponsorship(int paradeId, int sponsorshipId) {
+		Sponsor sponsor = this.getSponsorOfSponsorship(sponsorshipId);
+
+		Assert.isTrue(sponsorshipId > 0 && paradeId > 0);
+
+		Sponsorship sponsorship = this.findOne(sponsorshipId);
+
+		Assert.isTrue(paradeId == sponsorship.getParade().getId());
+		Assert.isTrue(sponsorship.getIsActivated());
+
+		Configuration conf = this.configurationService.getConfiguration();
+		java.lang.Float newSpentMoney = sponsorship.getSpentMoney() + conf.getFare() + conf.getFare() * conf.getVAT() / 100;
+
+		sponsorship.setSpentMoney(newSpentMoney);
+
+		Actor actor = this.actorService.loggedActor();
+
+		if (actor.getId() != sponsor.getId()) {
+			this.save(sponsorship);
+			this.sendMessageToSponsor(sponsor);
+			this.flush();
+		}
+	}
+
+
 }

@@ -21,11 +21,13 @@ import domain.Admin;
 import domain.Area;
 import domain.Box;
 import domain.Brotherhood;
+import domain.Chapter;
 import domain.Member;
 import domain.Message;
 import domain.Parade;
 import domain.Position;
 import domain.SocialProfile;
+import domain.Sponsor;
 import forms.FormObjectMember;
 import repositories.AdminRepository;
 import security.Authority;
@@ -72,11 +74,14 @@ public class AdminService {
 	@Autowired
 	private HistoryService historyService;
 
+	@Autowired
+	private SponsorshipService sponsorshipService;
+
 	// 1. Create user accounts for new administrators.
 	public void loggedAsAdmin() {
 		UserAccount userAccount;
 		userAccount = LoginService.getPrincipal();
-		final List<Authority> authorities = (List<Authority>) userAccount.getAuthorities();
+		List<Authority> authorities = (List<Authority>) userAccount.getAuthorities();
 		Assert.isTrue(authorities.get(0).toString().equals("ADMIN"));
 	}
 
@@ -122,40 +127,38 @@ public class AdminService {
 		return admin;
 	}
 
-	public Admin createAdmin(final String name, final String middleName, final String surname, final String photo,
-			final String email, final String phoneNumber, final String address, final String userName,
-			final String password) {
+	public Admin createAdmin(String name, String middleName, String surname, String photo, String email, String phoneNumber, String address, String userName, String password) {
 
-		final Admin admin = new Admin();
+		Admin admin = new Admin();
 
-		final List<SocialProfile> socialProfiles = new ArrayList<SocialProfile>();
-		final List<Box> boxes = new ArrayList<Box>();
+		List<SocialProfile> socialProfiles = new ArrayList<SocialProfile>();
+		List<Box> boxes = new ArrayList<Box>();
 
-		final UserAccount userAccountAdmin = new UserAccount();
+		UserAccount userAccountAdmin = new UserAccount();
 
 		userAccountAdmin.setUsername(userName);
 		userAccountAdmin.setPassword(password);
 
-		final Box spamBox = new Box();
-		final List<Message> messages1 = new ArrayList<>();
+		Box spamBox = new Box();
+		List<Message> messages1 = new ArrayList<>();
 		spamBox.setIsSystem(true);
 		spamBox.setMessages(messages1);
 		spamBox.setName("Spam");
 
-		final Box trashBox = new Box();
-		final List<Message> messages2 = new ArrayList<>();
+		Box trashBox = new Box();
+		List<Message> messages2 = new ArrayList<>();
 		trashBox.setIsSystem(true);
 		trashBox.setMessages(messages2);
 		trashBox.setName("Trash");
 
-		final Box sentBox = new Box();
-		final List<Message> messages3 = new ArrayList<>();
+		Box sentBox = new Box();
+		List<Message> messages3 = new ArrayList<>();
 		sentBox.setIsSystem(true);
 		sentBox.setMessages(messages3);
 		sentBox.setName("Sent messages");
 
-		final Box receivedBox = new Box();
-		final List<Message> messages4 = new ArrayList<>();
+		Box receivedBox = new Box();
+		List<Message> messages4 = new ArrayList<>();
 		receivedBox.setIsSystem(true);
 		receivedBox.setMessages(messages4);
 		receivedBox.setName("Received messages");
@@ -176,9 +179,9 @@ public class AdminService {
 		admin.setBoxes(boxes);
 		admin.setHasSpam(false);
 
-		final List<Authority> authorities = new ArrayList<Authority>();
+		List<Authority> authorities = new ArrayList<Authority>();
 
-		final Authority authority = new Authority();
+		Authority authority = new Authority();
 		authority.setAuthority(Authority.ADMIN);
 		authorities.add(authority);
 		userAccountAdmin.setAuthorities(authorities);
@@ -349,7 +352,7 @@ public class AdminService {
 
 	}
 
-	public void banSuspiciousActor(final Actor a) {
+	public void banSuspiciousActor(Actor a) {
 		this.loggedAsAdmin();
 
 		a.getUserAccount().setIsNotLocked(false);
@@ -368,11 +371,11 @@ public class AdminService {
 	}
 
 	/*
-	 * public Admin getAdminByUsername(final String a) { return
+	 * public Admin getAdminByUsername( String a) { return
 	 * this.adminRepository.getAdminByUserName(a); }
 	 */
 
-	public Admin findOne(final int adminId) {
+	public Admin findOne(int adminId) {
 		return this.findOne(adminId);
 	}
 
@@ -436,8 +439,50 @@ public class AdminService {
 			statistics.add(this.adminRepository.stddevRecordsPerHistory());
 		}
 
-		if (this.adminRepository.numberNonEmptyFinders() == 0)
+		if (this.adminRepository.ratioAreasNotCoordinated() == 0)
 			statistics.add((float) -1);
+		else
+			statistics.add(this.adminRepository.ratioAreasNotCoordinated());
+
+		if (this.paradeService.findAll().isEmpty()) {
+			statistics.add((float) 0);
+			statistics.add((float) 0);
+			statistics.add((float) 0);
+			statistics.add((float) 0);
+			statistics.add((float) 0);
+			statistics.add((float) 0);
+			statistics.add((float) 0);
+			statistics.add((float) 0);
+
+		} else {
+			statistics.add(this.adminRepository.minParadesCoordinated());
+			statistics.add(this.adminRepository.maxParadesCoordinated());
+			statistics.add(this.adminRepository.avgParadesCoordinated());
+			statistics.add(this.adminRepository.stddevParadesCoordinated());
+			statistics.add(this.adminRepository.paradesDraftVSFinal());
+			statistics.add(this.adminRepository.ratioParadesAcceptedRequests());
+			statistics.add(this.adminRepository.ratioParadesRejectedRequests());
+			statistics.add(this.adminRepository.ratioParadesSubmittedRequests());
+
+		}
+
+		if (this.sponsorshipService.findAll().isEmpty()) {
+			statistics.add((float) 0);
+			statistics.add((float) 0);
+			statistics.add((float) 0);
+			statistics.add((float) 0);
+			statistics.add((float) 0);
+
+		} else {
+			statistics.add(this.adminRepository.ratioActiveSponsorships());
+			statistics.add(this.adminRepository.minSponsorshipsPerSponsor());
+			statistics.add(this.adminRepository.maxSponsorshipsPerSponsor());
+			statistics.add(this.adminRepository.avgSponsorshipsPerSponsor());
+			statistics.add(this.adminRepository.stddevSponsorshipsPerSponsor());
+		}
+
+		if (this.adminRepository.numberNonEmptyFinders() == null)
+			statistics.add((float) 0);
 		else
 			statistics.add(this.adminRepository.ratioEmptyFinder());
 
@@ -457,8 +502,27 @@ public class AdminService {
 		return statistics;
 	}
 
-	public Brotherhood broLargestHistory() {
-		return this.adminRepository.broLargestHistory();
+	public List<String> top5SponsorNumberActiveSponsorships() {
+		List<String> res = new ArrayList<String>();
+		if (this.adminRepository.top5SponsorNumberActiveSponsorships().size() > 5)
+			for (int i = 0; i < 5; i++)
+				res.add(this.adminRepository.top5SponsorNumberActiveSponsorships().get(i).getUserAccount()
+						.getUsername());
+		else
+			for (Sponsor s : this.adminRepository.top5SponsorNumberActiveSponsorships())
+				res.add(s.getUserAccount().getUsername());
+		return res;
+	}
+
+	public List<Chapter> chaptersThatCoordinateAtLeast() {
+		return this.adminRepository.chaptersThatCoordinateAtLeast();
+	}
+
+	public List<String> broLargestHistory() {
+		List<String> res = new ArrayList<String>();
+		for (Brotherhood b : this.adminRepository.broLargestHistory())
+			res.add(b.getName());
+		return res;
 	}
 
 	public List<Brotherhood> broHistoryLargerThanAvg() {
@@ -677,5 +741,19 @@ public class AdminService {
 		 */
 
 		return result;
+	}
+
+	public void flush() {
+		this.adminRepository.flush();
+
+	}
+
+	public Admin getAdminByUsername(String username) {
+		return this.adminRepository.getAdminByUsername(username);
+	}
+	public Admin updateAdmin(Admin admin) {
+		this.loggedAsAdmin();
+		Assert.isTrue(admin.getId() != 0 && this.loggedAdmin().getId() == admin.getId());
+		return this.adminRepository.save(admin);
 	}
 }

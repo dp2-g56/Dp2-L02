@@ -253,12 +253,12 @@ public class SocialProfileController extends AbstractController {
 		} else {
 			try {
 				if (admin.getPhoneNumber().matches("(\\+[0-9]{1,3})(\\([0-9]{1,3}\\))([0-9]{4,})$") || admin.getPhoneNumber().matches("(\\+[0-9]{1,3})([0-9]{4,})$")) {
-					this.adminService.save(admin);
+					this.adminService.updateAdmin(admin);
 				} else if (admin.getPhoneNumber().matches("([0-9]{4,})$")) {
 					admin.setPhoneNumber(prefix + admin.getPhoneNumber());
-					this.adminService.save(admin);
+					this.adminService.updateAdmin(admin);
 				} else {
-					this.adminService.save(admin);
+					this.adminService.updateAdmin(admin);
 				}
 				result = new ModelAndView("redirect:/authenticated/showProfile.do");
 			} catch (Throwable oops) {
@@ -292,12 +292,12 @@ public class SocialProfileController extends AbstractController {
 					}
 
 				} else if (member.getPhoneNumber().matches("(\\+[0-9]{1,3})(\\([0-9]{1,3}\\))([0-9]{4,})$") || member.getPhoneNumber().matches("(\\+[0-9]{1,3})([0-9]{4,})$")) {
-					this.memberService.save(member);
+					this.memberService.updateMember(member);
 				} else if (member.getPhoneNumber().matches("([0-9]{4,})$")) {
 					member.setPhoneNumber(prefix + member.getPhoneNumber());
-					this.memberService.save(member);
+					this.memberService.updateMember(member);
 				} else {
-					this.memberService.save(member);
+					this.memberService.updateMember(member);
 				}
 				result = new ModelAndView("redirect:/authenticated/showProfile.do");
 			} catch (Throwable oops) {

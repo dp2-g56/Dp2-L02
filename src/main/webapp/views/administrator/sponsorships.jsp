@@ -26,7 +26,7 @@
 	<br/>
 
 	<display:table pagesize="5" name="sponsorships" id="row" class="displaytag" 
-					requestURI="sponsorship/administrator/list.do">
+					requestURI="${requestURI}">
 					
 		<jstl:choose>
 			<jstl:when test="${row.isActivated==true}">
@@ -60,7 +60,7 @@
 		
 		<display:column property="targetURL" titleKey="sponsorship.targetURL" style="color:${color}"/>
 		
-		<display:column property="gain" titleKey="sponsorship.gain" style="color:${color}"/>
+		<display:column property="spentMoney" titleKey="sponsorship.spentMoney" style="color:${color}"/>
 			
 		<display:column titleKey="sponsorship.creditCard" style="color:${color}">
 			<jstl:set var="number" value="${row.creditCard.number.toString()}"/>

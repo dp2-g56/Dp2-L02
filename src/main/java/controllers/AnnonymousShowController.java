@@ -2,7 +2,9 @@
 package controllers;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,22 +14,26 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import services.BrotherhoodService;
-import services.FloatService;
 import domain.Brotherhood;
 import domain.Member;
 import domain.Parade;
+import domain.Sponsorship;
+import services.BrotherhoodService;
+import services.FloatService;
+import services.SponsorshipService;
 
 @Controller
 @RequestMapping("/showAll/annonymous")
 public class AnnonymousShowController extends AbstractController {
 
 	@Autowired
-	private BrotherhoodService	brotherhoodService;
+	private BrotherhoodService brotherhoodService;
 
 	@Autowired
-	private FloatService		floatService;
+	private FloatService floatService;
 
+	@Autowired
+	private SponsorshipService sponsorshipService;
 
 	@RequestMapping(value = "/brotherhood/list", method = RequestMethod.GET)
 	public ModelAndView listBrotherhood() {
@@ -50,7 +56,17 @@ public class AnnonymousShowController extends AbstractController {
 
 		brotherhood = this.brotherhoodService.findOne(brotherhoodId);
 		parades = this.brotherhoodService.getParadesByBrotherhoodFinal(brotherhood);
+
 		result = new ModelAndView("showAll/annonymous/parade/list");
+
+		Map<Integer, Sponsorship> randomSpo = new HashMap<Integer, Sponsorship>();
+		for (Parade p : parades) {
+			Sponsorship spo = this.sponsorshipService.getRandomSponsorship(p.getId());
+			randomSpo.put(p.getId(), spo);
+			if (spo.getId() > 0)
+				this.sponsorshipService.updateSpentMoneyOfSponsorship(p.getId(), spo.getId());
+		}
+		result.addObject("randomSpo", randomSpo);
 
 		result.addObject("parades", parades);
 		result.addObject("requestURI", "showAll/annonymous/parade/list.do");

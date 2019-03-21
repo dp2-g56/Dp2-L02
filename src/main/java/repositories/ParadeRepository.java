@@ -23,4 +23,25 @@ public interface ParadeRepository extends JpaRepository<Parade, Integer> {
 	@Query("select p from Brotherhood b join b.parades p where p.isDraftMode = false and b.area = ?1")
 	public List<Parade> getParadesByArea(Area area);
 
+	@Query("select p from Brotherhood b join b.parades p where p.isDraftMode = true and b.id = ?1")
+	public List<Parade> getDraftParadesByBrotherhood(int id);
+
+	@Query("select p from Brotherhood b join b.parades p where p.paradeStatus = 'SUBMITTED' and b.id = ?1")
+	public List<Parade> getSubmittedParadesByBrotherhood(int id);
+
+	@Query("select p from Brotherhood b join b.parades p where p.paradeStatus = 'ACCEPTED' and b.id = ?1")
+	public List<Parade> getAcceptedParadesByBrotherhood(int id);
+
+	@Query("select p from Brotherhood b join b.parades p where p.paradeStatus = 'REJECTED' and b.id = ?1")
+	public List<Parade> getRejectedParadesByBrotherhood(int id);
+
+	@Query("select p from Brotherhood b join b.parades p where p.paradeStatus = 'SUBMITTED' and b.area = ?1")
+	public List<Parade> getSubmittedParadesByChapter(Area area);
+
+	@Query("select p from Brotherhood b join b.parades p where p.paradeStatus = 'ACCEPTED' and b.area = ?1")
+	public List<Parade> getAcceptedParadesByChapter(Area area);
+
+	@Query("select p from Brotherhood b join b.parades p where p.paradeStatus = 'REJECTED' and b.area = ?1")
+	public List<Parade> getRejectedParadesByChapter(Area area);
+
 }

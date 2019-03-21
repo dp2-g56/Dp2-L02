@@ -38,7 +38,7 @@ public class Message extends DomainEntity {
 		return this.moment;
 	}
 
-	public void setMoment(final Date moment) {
+	public void setMoment(Date moment) {
 		this.moment = moment;
 	}
 
@@ -47,7 +47,7 @@ public class Message extends DomainEntity {
 		return this.subject;
 	}
 
-	public void setSubject(final String subject) {
+	public void setSubject(String subject) {
 		this.subject = subject;
 	}
 
@@ -56,7 +56,7 @@ public class Message extends DomainEntity {
 		return this.body;
 	}
 
-	public void setBody(final String body) {
+	public void setBody(String body) {
 		this.body = body;
 	}
 
@@ -66,7 +66,7 @@ public class Message extends DomainEntity {
 		return this.priority;
 	}
 
-	public void setPriority(final String priority) {
+	public void setPriority(String priority) {
 		this.priority = priority;
 	}
 
@@ -74,7 +74,7 @@ public class Message extends DomainEntity {
 		return this.tags;
 	}
 
-	public void setTags(final String tags) {
+	public void setTags(String tags) {
 		this.tags = tags;
 	}
 
@@ -84,7 +84,7 @@ public class Message extends DomainEntity {
 		return this.sender;
 	}
 
-	public void setSender(final Actor sender) {
+	public void setSender(Actor sender) {
 		this.sender = sender;
 	}
 
@@ -94,7 +94,7 @@ public class Message extends DomainEntity {
 		return this.receiver;
 	}
 
-	public void setReceiver(final Actor receiver) {
+	public void setReceiver(Actor receiver) {
 		this.receiver = receiver;
 	}
 

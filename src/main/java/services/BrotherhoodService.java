@@ -239,6 +239,10 @@ public class BrotherhoodService {
 		return brother;
 	}
 
+	public Brotherhood getBrotherhoodByUsername(String username) {
+		return this.brotherhoodRepository.getBrotherhoodByUsername(username);
+	}
+
 	public Brotherhood securityAndBrotherhood() {
 		UserAccount userAccount = LoginService.getPrincipal();
 		String username = userAccount.getUsername();

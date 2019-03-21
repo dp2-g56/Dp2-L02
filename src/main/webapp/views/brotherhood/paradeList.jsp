@@ -163,6 +163,14 @@
 	<display:column titleKey="parade.rejectedReason">
 		<jstl:if test="${row.paradeStatus == 'REJECTED'}" >
 				<font color="${color}"><jstl:out value="${row.rejectedReason}"/></font>
+
+</jstl:if>
+</display:column>
+	<display:column>
+		<jstl:if test="${row.isDraftMode}">
+			<a href="parade/brotherhood/editCheckbox.do?paradeId=${row.id}">
+				<spring:message code="parade.edit" />
+			</a>
 		</jstl:if>
 	</display:column>
 	

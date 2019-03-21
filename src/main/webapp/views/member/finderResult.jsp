@@ -64,6 +64,26 @@
 	
 	<display:column property="moment" titleKey="parade.moment" /> 
 	
+	<display:column titleKey="parade.path" > 
+	
+	<jstl:choose>
+		<jstl:when test="${row.path==null}">
+			N/A
+		</jstl:when>
+		<jstl:otherwise>
+		
+		<spring:url value="showAll/annonymous/path/list.do" var="pathUrl">
+			<spring:param name="paradeId" value="${row.id}"/>
+			<spring:param name="finder" value="yes"/>
+		</spring:url>
+			<a href="${pathUrl}">
+				<spring:message code="parade.path" />
+			</a>
+		</jstl:otherwise>
+		</jstl:choose>
+	
+	</display:column>
+	
 	<display:column titleKey="parade.sponsorship">
 		<jstl:if test="${randomSpo.get(row.id).id>0}">
 			<a href="${randomSpo.get(row.id).targetURL}"><img src="${randomSpo.get(row.id).banner}" style="width:auto; height:50px;" alt="<spring:message code='parade.sponsorship'/>"/></a>

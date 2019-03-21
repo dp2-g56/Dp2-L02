@@ -29,6 +29,26 @@
 	
 	<display:column property="columnNumber" titleKey="parade.columnNumber" />
 	
+	<display:column titleKey="parade.path" > 
+	
+	<jstl:choose>
+		<jstl:when test="${row.path==null}">
+			N/A
+		</jstl:when>
+		<jstl:otherwise>
+		
+		<spring:url value="showAll/annonymous/path/list.do" var="pathUrl">
+			<spring:param name="paradeId" value="${row.id}"/>
+			<spring:param name="brotherhoodId" value="${param.brotherhoodId}"/>
+		</spring:url>
+			<a href="${pathUrl}">
+				<spring:message code="parade.path" />
+			</a>
+		</jstl:otherwise>
+		</jstl:choose>
+	
+	</display:column>
+	
 	<security:authorize access="hasRole('SPONSOR')">
 		<display:column titleKey="sponsorship.create.action">
 			<spring:url var="createSponsorship" value="/sponsorship/sponsor/create.do">

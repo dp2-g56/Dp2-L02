@@ -62,7 +62,8 @@
 		<security:intercept-url pattern="/request/brotherhood/**" access="hasRole('BROTHERHOOD')" />
 		<security:intercept-url pattern="/member/brotherhood/**" access="hasRole('BROTHERHOOD')" />
 		<security:intercept-url pattern="/enrolment/brotherhood/**" access="hasRole('BROTHERHOOD')" />
-		
+		<security:intercept-url pattern="/segment/brotherhood/**" access="hasRole('BROTHERHOOD')" />
+		<security:intercept-url pattern="/path/brotherhood/**" access="hasRole('BROTHERHOOD')" />
 		<!-- Member -->
 		<security:intercept-url pattern="/request/member/**" access="hasRole('MEMBER')" /> 
 		<security:intercept-url pattern="/finder/member/**" access="hasRole('MEMBER')" /> 

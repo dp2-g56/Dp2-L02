@@ -126,20 +126,6 @@
 		<property name="isNotLocked" value="True" />
 	</bean> 
 	
-		<!-- DELETED -->
-	<bean id="userAccount16" class="security.UserAccount">
-		<property name="username" value="DELETED" />
-		<property name="password" value="63c2867fdcae0e8e8413d7ac21b69b59" />
-		<property name="authorities">
-			<list>
-				<bean class="security.Authority">
-					<property name="authority" value="ADMIN" />
-				</bean>
-			</list>
-		</property>
-		<property name="isNotLocked" value="False" />
-	</bean> 
-	
 	<!-- brotherhood1 -->
 	<bean id="userAccount4" class="security.UserAccount">
 		<property name="username" value="brotherhood1" />

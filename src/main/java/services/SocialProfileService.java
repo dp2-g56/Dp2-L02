@@ -1,32 +1,35 @@
 
 package services;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
 
-import domain.Actor;
-import domain.SocialProfile;
 import repositories.SocialProfileRepository;
 import security.LoginService;
+import domain.Actor;
+import domain.SocialProfile;
 
 @Service
 @Transactional
 public class SocialProfileService {
 
 	@Autowired
-	private SocialProfileRepository socialProfileRepository;
+	private SocialProfileRepository	socialProfileRepository;
 
 	@Autowired
-	private ActorService actorService;
+	private ActorService			actorService;
 
 	@Autowired
-	private Validator validator;
+	private Validator				validator;
+
 
 	public SocialProfile save(SocialProfile socialProfile) {
 		return this.socialProfileRepository.save(socialProfile);

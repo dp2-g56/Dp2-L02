@@ -413,7 +413,7 @@ public class SponsorshipServiceTest extends AbstractTest {
 		Object testingData[][] = {
 				// Positive case
 				{ "admin1", null },
-				// Negative case: Trying to launch the process
+				// Negative case: Trying to launch the process with a different role
 				{ "sponsor1", IllegalArgumentException.class } };
 
 		for (int i = 0; i < testingData.length; i++)

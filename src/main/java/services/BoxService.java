@@ -101,7 +101,11 @@ public class BoxService {
 
 		UserAccount userAccount;
 		userAccount = LoginService.getPrincipal();
-		final Actor actor = this.actorService.getActorByUsername(userAccount.getUsername());
+		Actor actor = this.actorService.getActorByUsername(userAccount.getUsername());
+
+		Box fatherBox = box.getFatherBox();
+
+		Assert.isTrue((fatherBox == null) || actor.getBoxes().contains(box.getFatherBox()));
 
 		Box savedBox = new Box();
 		savedBox = this.boxRepository.save(box);
@@ -137,7 +141,35 @@ public class BoxService {
 		Assert.isTrue(!box.getIsSystem());
 		UserAccount userAccount;
 		userAccount = LoginService.getPrincipal();
-		final Actor actor = this.actorService.getActorByUsername(userAccount.getUsername());
+		Actor actor = this.actorService.getActorByUsername(userAccount.getUsername());
+
+		Assert.isTrue(actor.getBoxes().contains(box));
+
+		final List<Box> sonBoxes = this.boxRepository.getSonsBox(box);
+		if (sonBoxes.size() == 0) {
+			for (final Message m : box.getMessages())
+				this.messageService.delete(m);
+			box.getMessages().removeAll(box.getMessages());
+
+			actor.getBoxes().remove(box);
+			this.boxRepository.delete(box);
+			this.actorService.save(actor);
+
+		} else
+			for (final Box sonBox : sonBoxes)
+				this.deleteBox(sonBox);
+		// this.actorService.save(actor);
+
+	}
+
+	public void deleteBoxEvenIsSystem(final Box box) {
+		this.actorService.loggedAsActor();
+		//Assert.isTrue(!box.getIsSystem());
+		UserAccount userAccount;
+		userAccount = LoginService.getPrincipal();
+		Actor actor = this.actorService.getActorByUsername(userAccount.getUsername());
+
+		Assert.isTrue(actor.getBoxes().contains(box));
 
 		final List<Box> sonBoxes = this.boxRepository.getSonsBox(box);
 		if (sonBoxes.size() == 0) {
@@ -237,5 +269,20 @@ public class BoxService {
 
 	public void flush() {
 		this.boxRepository.flush();
+	}
+
+	public void deleteAllBoxes() {
+		//FatherBox a null con query
+		Actor actor = this.actorService.loggedActor();
+
+		Integer cont = this.boxRepository.fatherBoxesByActor(actor).size();
+		List<Box> boxes = new ArrayList<Box>();
+		boxes = this.boxRepository.fatherBoxesByActor(actor);
+		//boxes.add(this.getRecievedBoxByActor(actor));
+
+		for (int i = 0; i < cont; i++)
+			this.deleteBoxEvenIsSystem(boxes.get(i));
+		List<Box> deletedBoxes = new ArrayList<Box>();
+		deletedBoxes = actor.getBoxes();
 	}
 }

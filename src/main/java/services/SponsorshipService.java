@@ -1,6 +1,7 @@
 
 package services;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Random;
@@ -212,13 +213,33 @@ public class SponsorshipService {
 
 		for (Sponsorship s : sponsorships) {
 			CreditCard card = s.getCreditCard();
-			if (!(this.creditCardService.validateNumberCreditCard(card)
-					&& this.creditCardService.validateDateCreditCard(card)
-					&& this.creditCardService.validateCvvCreditCard(card)) && s.getIsActivated()) {
+			if (!(this.creditCardService.validateNumberCreditCard(card) && this.creditCardService.validateDateCreditCard(card) && this.creditCardService.validateCvvCreditCard(card)) && s.getIsActivated()) {
 				s.setIsActivated(false);
 				this.save(s);
 			}
 		}
+	}
+
+
+	public void deleteAllSponsorships() {
+		Sponsor sponsor = this.sponsorService.loggedSponsor();
+		Integer cont = sponsor.getSponsorships().size();
+		List<Sponsorship> sponsorships = new ArrayList<Sponsorship>();
+		List<Sponsorship> deletedSponsorships = new ArrayList<Sponsorship>();
+		sponsorships = sponsor.getSponsorships();
+
+		for (int i = 0; i < cont; i++)
+			//sponsorships.get(0).setParade(null);
+			//sponsorships.get(0).setCreditCard(null);
+			this.deleteSponsorship(sponsorships.get(0));
+	}
+
+	public void deleteSponsorship(Sponsorship sponsorship) {
+		Sponsor sponsor = this.sponsorService.loggedSponsor();
+
+		sponsor.getSponsorships().remove(sponsorship);
+
+		this.sponsorshipRepository.delete(sponsorship);
 	}
 
 	public List<Sponsorship> getSponsorshipsOfParade(int paradeId) {
@@ -280,5 +301,6 @@ public class SponsorshipService {
 			this.flush();
 		}
 	}
+
 
 }

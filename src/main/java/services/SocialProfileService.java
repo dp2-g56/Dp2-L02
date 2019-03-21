@@ -65,7 +65,10 @@ public class SocialProfileService {
 	}
 
 	public void deleteSocialProfile(SocialProfile socialProfile) {
+
 		Actor logguedActor = this.actorService.getActorByUsername(LoginService.getPrincipal().getUsername());
+
+		Assert.isTrue(logguedActor.getSocialProfiles().contains(socialProfile));
 		List<SocialProfile> socialProfiles = logguedActor.getSocialProfiles();
 
 		socialProfiles.remove(socialProfile);
@@ -88,5 +91,24 @@ public class SocialProfileService {
 		this.validator.validate(result, binding);
 		return result;
 
+	}
+
+	public void flush() {
+		this.socialProfileRepository.flush();
+	}
+
+	public void deleteAllSocialProfiles() {
+		Actor actor = this.actorService.loggedActor();
+
+		Integer cont = actor.getSocialProfiles().size();
+		List<SocialProfile> socialprofiles = new ArrayList<SocialProfile>();
+		socialprofiles = actor.getSocialProfiles();
+
+		for (int i = 0; i < cont; i++)
+			this.deleteSocialProfile(socialprofiles.get(0));
+
+		List<SocialProfile> deletedSocialprofiles = new ArrayList<SocialProfile>();
+		deletedSocialprofiles = actor.getSocialProfiles();
+		System.out.println();
 	}
 }

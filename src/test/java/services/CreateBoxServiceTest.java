@@ -23,7 +23,7 @@ public class CreateBoxServiceTest extends AbstractTest {
 
 
 	@Test
-	public void driverUpdateMessage() {
+	public void driverCreateBox() {
 
 		Object testingData[][] = {
 			{
@@ -48,10 +48,10 @@ public class CreateBoxServiceTest extends AbstractTest {
 		};
 
 		for (int i = 0; i < testingData.length; i++)
-			this.templateUpdateMessage((String) testingData[i][0], (String) testingData[i][1], (String) testingData[i][2], (Class<?>) testingData[i][3]);
+			this.templateCreateBox((String) testingData[i][0], (String) testingData[i][1], (String) testingData[i][2], (Class<?>) testingData[i][3]);
 	}
 
-	protected void templateUpdateMessage(String username, String name, String fatherbox, Class<?> expected) {
+	protected void templateCreateBox(String username, String name, String fatherbox, Class<?> expected) {
 
 		Class<?> caught = null;
 

@@ -9,44 +9,43 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import utilities.AbstractTest;
-import domain.Box;
+import domain.SocialProfile;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
 	"classpath:spring/junit.xml"
 })
 @Transactional
-public class DeleteBoxServiceTest extends AbstractTest {
+public class DeleteSocialProfileServiceTest extends AbstractTest {
 
 	@Autowired
-	private BoxService	boxService;
+	private ActorService			actorService;
+
+	@Autowired
+	private SocialProfileService	socialProfileService;
 
 
 	@Test
-	public void driverDeleteBox() {
+	public void driverDeleteSocialprofile() {
 
 		Object testingData[][] = {
 			{
-				//Positive test, deleting a no system box that admin1 own
-				"admin1", "noSystemBoxAdmin1", null
+				//Positive test, its your social profile
+				"member1", "socialProfile10", null
 			}, {
-				//Negative test, deleting a system box
-				"admin1", "spamBoxAdmin1", IllegalArgumentException.class
+				//Positive test, its your social profile
+				"member1", "socialProfile11", null
 			}, {
-				//Negative test, not logged
-				"", "noSystemBoxAdmin1", IllegalArgumentException.class
-			}, {
-				//Negative test, deleting a no system box that is not yours
-				"admin1", "noSystemBoxAdmin2", IllegalArgumentException.class
+				//Negative test, try to delete a social profile that is not yours
+				"member1", "socialProfile1", IllegalArgumentException.class
 			}
-
 		};
 
 		for (int i = 0; i < testingData.length; i++)
-			this.templateDeleteBox((String) testingData[i][0], (String) testingData[i][1], (Class<?>) testingData[i][2]);
+			this.templateDeleteSocialProfile((String) testingData[i][0], (String) testingData[i][1], (Class<?>) testingData[i][2]);
 	}
 
-	protected void templateDeleteBox(String username, String boxName, Class<?> expected) {
+	protected void templateDeleteSocialProfile(String username, String socialProfileRe, Class<?> expected) {
 
 		Class<?> caught = null;
 
@@ -57,13 +56,10 @@ public class DeleteBoxServiceTest extends AbstractTest {
 
 			super.authenticate(username);
 
-			Box box = new Box();
+			SocialProfile socialProfile = this.socialProfileService.findOne(super.getEntityId(socialProfileRe));
 
-			box = this.boxService.findOne(super.getEntityId(boxName));
-
-			this.boxService.deleteBox(box);
-
-			this.boxService.flush();
+			this.socialProfileService.deleteSocialProfile(socialProfile);
+			this.socialProfileService.flush();
 
 			super.authenticate(null);
 

@@ -94,8 +94,12 @@ public class MessageService {
 
 		this.actorService.loggedAsActor();
 
+		Actor loggedActor = this.actorService.loggedActor();
+
 		Actor actorRecieved = message.getReceiver();
 		Actor senderActor = message.getSender();
+
+		Assert.isTrue(loggedActor.equals(senderActor));
 
 		Box boxRecieved = new Box();
 		Box boxSpam = new Box();
@@ -307,8 +311,7 @@ public class MessageService {
 		Box boxNotification = new Box();
 
 		Message messageSaved = this.messageRepository.save(message);
-		Message messageCopy = this.createNotification(messageSaved.getSubject(), messageSaved.getBody(),
-				messageSaved.getPriority(), message.getTags(), messageSaved.getReceiver());
+		Message messageCopy = this.createNotification(messageSaved.getSubject(), messageSaved.getBody(), messageSaved.getPriority(), message.getTags(), messageSaved.getReceiver());
 		Message messageCopySaved = this.messageRepository.save(messageCopy);
 
 		boxSpam = this.boxService.getSpamBoxByActor(actorRecieved);
@@ -498,6 +501,7 @@ public class MessageService {
 		UserAccount userAccount;
 		userAccount = LoginService.getPrincipal();
 		Actor actor = this.actorService.getActorByUsername(userAccount.getUsername());
+		Assert.isTrue(actor.getBoxes().contains(box));
 
 		for (Box b : actor.getBoxes())
 			if (b.getName().equals(box.getName())) {
@@ -601,5 +605,15 @@ public class MessageService {
 
 	public void flush() {
 		this.messageRepository.flush();
+	}
+
+	public void updateSendedMessageByLogguedActor() {
+		Actor actor = this.actorService.loggedActor();
+		Actor deleted = this.actorService.getActorByUsername("DELETED");
+		List<Message> messages = this.messageRepository.getSendedMessagesByActor(actor.getId());
+		for (Message m : messages) {
+			m.setSender(deleted);
+			this.messageRepository.save(m);
+		}
 	}
 }

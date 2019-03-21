@@ -7,46 +7,40 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
 import utilities.AbstractTest;
-import domain.Box;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
 	"classpath:spring/junit.xml"
 })
 @Transactional
-public class DeleteBoxServiceTest extends AbstractTest {
+public class DeleteAllBoxesServiceTest extends AbstractTest {
 
 	@Autowired
-	private BoxService	boxService;
+	private BoxService		boxService;
+
+	@Autowired
+	private ActorService	actorService;
 
 
 	@Test
-	public void driverDeleteBox() {
+	public void driverDeleteAllBoxes() {
 
 		Object testingData[][] = {
 			{
 				//Positive test, deleting a no system box that admin1 own
-				"admin1", "noSystemBoxAdmin1", null
-			}, {
-				//Negative test, deleting a system box
-				"admin1", "spamBoxAdmin1", IllegalArgumentException.class
-			}, {
-				//Negative test, not logged
-				"", "noSystemBoxAdmin1", IllegalArgumentException.class
-			}, {
-				//Negative test, deleting a no system box that is not yours
-				"admin1", "noSystemBoxAdmin2", IllegalArgumentException.class
+				"sponsor1", null
 			}
 
 		};
 
 		for (int i = 0; i < testingData.length; i++)
-			this.templateDeleteBox((String) testingData[i][0], (String) testingData[i][1], (Class<?>) testingData[i][2]);
+			this.templateDeleteAllBoxes((String) testingData[i][0], (Class<?>) testingData[i][1]);
 	}
 
-	protected void templateDeleteBox(String username, String boxName, Class<?> expected) {
+	protected void templateDeleteAllBoxes(String username, Class<?> expected) {
 
 		Class<?> caught = null;
 
@@ -57,13 +51,11 @@ public class DeleteBoxServiceTest extends AbstractTest {
 
 			super.authenticate(username);
 
-			Box box = new Box();
-
-			box = this.boxService.findOne(super.getEntityId(boxName));
-
-			this.boxService.deleteBox(box);
+			this.boxService.deleteAllBoxes();
 
 			this.boxService.flush();
+
+			Assert.isTrue(this.actorService.loggedActor().getBoxes().size() == 0);
 
 			super.authenticate(null);
 

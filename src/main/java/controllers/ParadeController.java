@@ -2,6 +2,7 @@
 package controllers;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +12,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -20,6 +22,7 @@ import org.springframework.web.servlet.ModelAndView;
 import domain.Brotherhood;
 import domain.Float;
 import domain.Parade;
+import domain.ParadeStatus;
 import domain.Request;
 import forms.FormObjectParadeFloat;
 import forms.FormObjectParadeFloatCheckbox;
@@ -60,13 +63,93 @@ public class ParadeController extends AbstractController {
 
 		parades = loggedBrotherhood.getParades();
 
+		List<ParadeStatus> paradeStatus = Arrays.asList(ParadeStatus.values());
+
 		String locale = LocaleContextHolder.getLocale().getLanguage();
+
+		List<String> statusName = new ArrayList<>();
+
+		if (locale == "es") {
+			statusName.add("PRESENTADO");
+			statusName.add("ACEPTADO");
+			statusName.add("RECHAZADO");
+		} else if (locale == "en") {
+			statusName.add("SUBMITTED");
+			statusName.add("ACCEPTED");
+			statusName.add("REJECTED");
+		}
 
 		result = new ModelAndView("parade/brotherhood/list");
 		result.addObject("parades", parades);
 		result.addObject("requestURI", "parade/brotherhood/list.do");
 		result.addObject("hasArea", hasArea);
+		result.addObject("paradeStatus", paradeStatus);
+		result.addObject("statusName", statusName);
+
+		return result;
+	}
+
+	@RequestMapping(value = "/copy", method = RequestMethod.GET)
+	public ModelAndView copy(@RequestParam int paradeId) {
+
+		ModelAndView result;
+
+		this.brotherhoodService.loggedAsBrotherhood();
+
+		Brotherhood loggedBrotherhood = this.brotherhoodService.loggedBrotherhood();
+
+		try {
+			Parade paradeCopy = this.paradeService.create();
+			Parade paradeToCopy = this.paradeService.findOne(paradeId);
+			Assert.notNull(paradeToCopy);
+			Assert.isTrue(loggedBrotherhood.getParades().contains(paradeToCopy));
+			this.paradeService.copy(paradeToCopy, paradeCopy);
+
+		} catch (Throwable oops) {
+
+		}
+
+		result = new ModelAndView("redirect:/parade/brotherhood/list.do");
+		return result;
+	}
+
+	@RequestMapping(value = "/filter", method = {
+		RequestMethod.POST, RequestMethod.GET
+	}, params = "refresh")
+	public ModelAndView paradeFilter(@RequestParam String fselect) {
+		ModelAndView result;
+
+		Brotherhood loggedBro = this.brotherhoodService.loggedBrotherhood();
+
+		Boolean hasArea = !(loggedBro.getArea() == null);
+
+		List<ParadeStatus> paradeStatus = Arrays.asList(ParadeStatus.values());
+
+		String locale = LocaleContextHolder.getLocale().getLanguage();
+
+		List<String> statusName = new ArrayList<>();
+
+		if (locale == "es") {
+			statusName.add("PRESENTADO");
+			statusName.add("ACEPTADO");
+			statusName.add("RECHAZADO");
+		} else if (locale == "en") {
+			statusName.add("SUBMITTED");
+			statusName.add("ACCEPTED");
+			statusName.add("REJECTED");
+		}
+
+		List<Parade> parades = this.paradeService.filterParadesBrotherhood(loggedBro, fselect);
+
+		result = new ModelAndView("parade/brotherhood/list");
+
+		result.addObject("parades", parades);
+		result.addObject("requestURI", "parade/brotherhood/filter.do");
+		result.addObject("hasArea", hasArea);
+		result.addObject("paradeStatus", paradeStatus);
+		result.addObject("statusName", statusName);
 		result.addObject("locale", locale);
+
 
 		return result;
 	}
@@ -145,11 +228,13 @@ public class ParadeController extends AbstractController {
 		Brotherhood brother = new Brotherhood();
 		brother = this.brotherhoodService.loggedBrotherhood();
 
-		if (!parade.getIsDraftMode())
+		if (!parade.getIsDraftMode()) {
 			return this.list();
+		}
 
-		if (!(brother.getParades().contains(parade)))
+		if (!(brother.getParades().contains(parade))) {
 			return this.list();
+		}
 
 		FormObjectParadeFloatCheckbox formObjectParadeFloatCheckbox = this.paradeService
 				.prepareFormObjectParadeFloatCheckbox(paradeId);
@@ -169,9 +254,9 @@ public class ParadeController extends AbstractController {
 		Parade parade = new Parade();
 		parade = this.paradeService.create();
 
-		if (binding.hasErrors())
+		if (binding.hasErrors()) {
 			result = this.createEditModelAndView(parade);
-		else
+		} else {
 			try {
 
 				List<domain.Float> floats = this.floatService.reconstructList(formObjectParadeFloatCheckbox);
@@ -187,6 +272,7 @@ public class ParadeController extends AbstractController {
 				result = this.createEditModelAndView(parade, "brotherhood.commit.error");
 
 			}
+		}
 		return result;
 	}
 
@@ -274,9 +360,9 @@ public class ParadeController extends AbstractController {
 		parade = this.paradeService.reconstruct(formObjectParadeFloat, binding);
 		coach = this.floatService.reconstructForm(formObjectParadeFloat, binding);
 
-		if (binding.hasErrors())
+		if (binding.hasErrors()) {
 			result = this.createEditModelAndView1(parade);
-		else
+		} else {
 			try {
 				domain.Float savedFloat = this.floatService.save(coach);
 				this.paradeService.saveAssign(parade, savedFloat);
@@ -286,6 +372,7 @@ public class ParadeController extends AbstractController {
 				result = this.createEditModelAndView1(parade, "brotherhood.commit.error");
 
 			}
+		}
 		return result;
 	}
 

@@ -26,6 +26,11 @@
 		<put-attribute name="body" value="/views/brotherhood/paradeList.jsp" />
 	</definition>
 	
+	<definition name="parade/brotherhood/copy" extends="master.page">	
+		<put-attribute name="title" value="Desfiles" />
+		<put-attribute name="body" value="/views/brotherhood/paradeList.jsp" />
+	</definition>
+	
 	<definition name="area/brotherhood/selectArea" extends="master.page">	
 		<put-attribute name="title" value="Seleccionar area" />
 		<put-attribute name="body" value="/views/brotherhood/selectArea.jsp" />

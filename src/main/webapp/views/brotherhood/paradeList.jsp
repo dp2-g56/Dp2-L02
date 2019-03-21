@@ -5,11 +5,29 @@
 <%@taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@taglib prefix="security" uri="http://www.springframework.org/security/tags"%>
 <%@taglib prefix="display" uri="http://displaytag.sf.net"%>
+<%@ taglib prefix="acme" tagdir="/WEB-INF/tags" %>
 
 
 <p><spring:message code="brotherhood.parade.list" /></p>
 
 <security:authorize access="hasRole('BROTHERHOOD')">
+
+	<form name="filter" id="filter" action="parade/brotherhood/filter.do" method="post">
+		<label for="filter"><spring:message code="request.filter"/></label>
+	
+		<br/>
+	
+		<select name="fselect">
+  			<option value="ALL">-</option>
+  			<option value="SUBMITTED"><spring:message code="parade.status.submitted"/></option>
+ 			<option value="ACCEPTED"><spring:message code="parade.status.accepted"/></option>
+  			<option value="REJECTED"><spring:message code="request.status.rejected"/></option>
+  			<option value="DRAFT"><spring:message code="parade.status.draft"/></option>
+		</select>
+		
+		<input type="submit" name="refresh" id="refresh" value="<spring:message code ="request.filter.button"/>"/>
+	
+	</form>
 	
 	<jstl:choose>
 	
@@ -22,7 +40,8 @@
 	<display:table
 	pagesize="5" name="parades" id="row"
 	requestURI="${requestURI}" >
-	
+
+
 	
 	
 	<jstl:choose>
@@ -87,6 +106,7 @@
 		<jstl:if test="${!row.isDraftMode}" >
 			<font color="${color}">	<spring:message code="parade.finalMode" /> </font>
 		</jstl:if>
+
 	</display:column>
 	
 	<display:column titleKey="parade.paradeStatus" >
@@ -110,13 +130,13 @@
         </spring:url>
         <a href="${floatsUrl}">
               <spring:message var ="viewFloats1" code="parade.viewFloats" />
-              <jstl:out value="${viewFloats1}(${floatsSize})" />    
+             <font color="${color}"> <jstl:out value="${viewFloats1}(${floatsSize})" />    </font>
         </a>
     </display:column>
     
     
     <display:column titleKey="parade.requests">
-    	<jstl:if test="${!row.isDraftMode}">
+    	
     		<jstl:set var="requestsSize" value="${row.requests.size()}" />
     		
        		<spring:url var="requestsUrl" value="/parade/brotherhood/request/list.do?paradeId={paradeId}">
@@ -125,21 +145,35 @@
         	
         	<a href="${requestsUrl}">
               <spring:message var ="viewRequests1" code="parade.viewRequests" />
-              <jstl:out value="${viewRequests1}(${requestsSize})" />    
+             <font color="${color}">  <jstl:out value="${viewRequests1}(${requestsSize})" />  </font>  
         	</a>
         	
-    	</jstl:if>
+    	
     </display:column>
-
-	
-	<display:column>
-		<jstl:if test="${row.isDraftMode}">
-			<a href="parade/brotherhood/editCheckbox.do?paradeId=${row.id}">
-				<spring:message code="parade.edit" />
-			</a>
+    
+      <display:column titleKey="parade.paradeStatus" sortable= "true">
+		<jstl:if test="${row.isDraftMode}" >
+				<spring:message code="parade.draftMode" />
+		</jstl:if>
+		<jstl:if test="${!row.isDraftMode}" >
+				<font color="${color}"><jstl:out value="${statusName.get(paradeStatus.lastIndexOf(row.paradeStatus))}"/></font>
 		</jstl:if>
 	</display:column>
 	
+	<display:column titleKey="parade.rejectedReason">
+		<jstl:if test="${row.paradeStatus == 'REJECTED'}" >
+				<font color="${color}"><jstl:out value="${row.rejectedReason}"/></font>
+		</jstl:if>
+	</display:column>
+	
+
+	
+		<display:column titleKey="parade.copy">
+				<button type="button" onclick="javascript: relativeRedir('parade/brotherhood/copy.do?paradeId='+${row.id})" >
+					<spring:message code="parade.copy" />
+				</button>	
+		</display:column>
+
 		<display:column>
 		
 		<jstl:choose>

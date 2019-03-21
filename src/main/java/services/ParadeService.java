@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
 
+import repositories.ParadeRepository;
+import utilities.RandomString;
 import domain.Area;
 import domain.Brotherhood;
 import domain.Chapter;
@@ -26,8 +28,6 @@ import domain.Path;
 import domain.Request;
 import forms.FormObjectParadeFloat;
 import forms.FormObjectParadeFloatCheckbox;
-import repositories.ParadeRepository;
-import utilities.RandomString;
 
 @Service
 @Transactional
@@ -36,9 +36,9 @@ public class ParadeService {
 	// Managed repository ------------------------------------------
 
 	@Autowired
-	private ParadeRepository paradeRepository;
+	private ParadeRepository	paradeRepository;
 	@Autowired
-	private BrotherhoodService brotherhoodService;
+	private BrotherhoodService	brotherhoodService;
 	@Autowired
 	private SponsorService sponsorService;
 	@Autowired
@@ -54,9 +54,9 @@ public class ParadeService {
 		Brotherhood loggedBrotherhood = this.brotherhoodService.loggedBrotherhood();
 		Assert.isTrue(!(loggedBrotherhood.getArea().equals(null)));
 
-		final Parade parade = new Parade();
+		Parade parade = new Parade();
 
-		final List<Float> floats = new ArrayList<>();
+		fList<Float> floats = new ArrayList<>();
 		parade.setFloats(floats);
 
 		parade.setColumnNumber(0);
@@ -79,12 +79,11 @@ public class ParadeService {
 		return parade;
 	}
 
-	public Parade edit(Parade parade, int columnNumber, int rowNumber, String description, boolean isDraftMode,
-			String title, Date moment) {
+	public Parade edit(Parade parade, int columnNumber, int rowNumber, String description, boolean isDraftMode, String title, Date moment) {
 
 		// Security
 		this.brotherhoodService.loggedAsBrotherhood();
-		final Brotherhood loggedBrotherhood = this.brotherhoodService.loggedBrotherhood();
+		Brotherhood loggedBrotherhood = this.brotherhoodService.loggedBrotherhood();
 		Assert.isTrue(!(loggedBrotherhood.getArea().equals(null)));
 		Assert.isTrue(parade.getIsDraftMode());
 		Assert.isTrue(loggedBrotherhood.getParades().contains(parade));
@@ -103,7 +102,7 @@ public class ParadeService {
 
 		parade.setTitle(title);
 
-		final Parade saved = this.save(parade);
+		Parade saved = this.save(parade);
 		parades.add(saved);
 		loggedBrotherhood.setParades(parades);
 
@@ -118,7 +117,7 @@ public class ParadeService {
 
 		// Security
 		this.brotherhoodService.loggedAsBrotherhood();
-		final Brotherhood loggedBrotherhood = this.brotherhoodService.loggedBrotherhood();
+		Brotherhood loggedBrotherhood = this.brotherhoodService.loggedBrotherhood();
 		Assert.isTrue(!(loggedBrotherhood.getArea().equals(null)));
 		Assert.isTrue(parade.getIsDraftMode());
 		Assert.isTrue(loggedBrotherhood.getParades().contains(parade));
@@ -127,10 +126,10 @@ public class ParadeService {
 		// Tampoco hay que preocuparse por el finder porque no se pueden buscar parades
 		// en Draft mode
 
-		final List<Float> floats = new ArrayList<>();
+		List<Float> floats = new ArrayList<>();
 		parade.setFloats(floats);
 
-		final List<Parade> parades = loggedBrotherhood.getParades();
+		List<Parade> parades = loggedBrotherhood.getParades();
 		parades.remove(parade);
 		loggedBrotherhood.setParades(parades);
 		this.brotherhoodService.save(loggedBrotherhood);
@@ -155,9 +154,11 @@ public class ParadeService {
 		}
 		date1 = df_in.format(date);
 		res = res + date1 + "-" + gen;
-		for (Parade c : lc)
-			if (c.getTicker() == res)
+		for (Parade c : lc) {
+			if (c.getTicker() == res) {
 				return this.generateTicker();
+			}
+		}
 		return res;
 	}
 
@@ -196,14 +197,14 @@ public class ParadeService {
 		return result;
 	}
 
-	public Parade reconstructCheckbox(FormObjectParadeFloatCheckbox formObjectParadeFloatCheckbox,
-			BindingResult binding) {
+	public Parade reconstructCheckbox(FormObjectParadeFloatCheckbox formObjectParadeFloatCheckbox, BindingResult binding) {
 		Parade result = new Parade();
 
-		if (formObjectParadeFloatCheckbox.getId() == 0)
+		if (formObjectParadeFloatCheckbox.getId() == 0) {
 			result.setTicker(this.generateTicker());
-		else
+		} else {
 			result = this.paradeRepository.findOne(formObjectParadeFloatCheckbox.getId());
+		}
 
 		result.setTitle(formObjectParadeFloatCheckbox.getTitleParade());
 		result.setDescription(formObjectParadeFloatCheckbox.getDescriptionParade());
@@ -231,6 +232,70 @@ public class ParadeService {
 		this.brotherhoodService.save(brotherhood);
 
 		return saved;
+	}
+
+	public Parade copy(Parade paradeToCopy, Parade paradeCopy) {
+		Brotherhood brotherhood = this.brotherhoodService.loggedBrotherhood();
+		Assert.notNull(paradeToCopy);
+		Assert.isTrue(brotherhood.getParades().contains(paradeToCopy) && paradeCopy.getId() == 0);
+		Assert.isTrue(paradeToCopy.getFloats().size() >= 0);
+		Assert.isTrue(paradeToCopy.getRequests().size() >= 0);
+		//Assert.isTrue(paradeToCopy.getPaths().size() >= 0);
+
+		paradeCopy.setColumnNumber(paradeToCopy.getColumnNumber());
+		paradeCopy.setRowNumber(paradeToCopy.getRowNumber());
+		paradeCopy.setDescription(paradeToCopy.getDescription());
+		paradeCopy.setMoment(paradeToCopy.getMoment());
+		paradeCopy.setTitle(paradeToCopy.getTitle());
+
+		paradeCopy.setFloats(paradeToCopy.getFloats());
+		paradeCopy.setPaths(paradeToCopy.getPaths());
+		paradeCopy.setRequests(paradeToCopy.getRequests());
+
+		Parade saved = new Parade();
+		saved = this.paradeRepository.save(paradeCopy);
+
+		brotherhood.getParades().add(saved);
+		this.brotherhoodService.save(brotherhood);
+
+		return saved;
+	}
+
+	public List<Parade> filterParadesBrotherhood(Brotherhood bro, String option) {
+
+		switch (option) {
+		case "REJECTED":
+			return this.paradeRepository.getRejectedParadesByBrotherhood(bro.getId());
+
+		case "ACCEPTED":
+			return this.paradeRepository.getAcceptedParadesByBrotherhood(bro.getId());
+
+		case "SUBMITTED":
+			return this.paradeRepository.getSubmittedParadesByBrotherhood(bro.getId());
+
+		case "DRAFT":
+			return this.paradeRepository.getDraftParadesByBrotherhood(bro.getId());
+
+		default:
+			return bro.getParades();
+		}
+	}
+
+	public List<Parade> filterParadesChapter(Chapter chapter, String option) {
+
+		switch (option) {
+		case "REJECTED":
+			return this.paradeRepository.getRejectedParadesByChapter(chapter.getArea());
+
+		case "ACCEPTED":
+			return this.paradeRepository.getAcceptedParadesByChapter(chapter.getArea());
+
+		case "SUBMITTED":
+			return this.paradeRepository.getSubmittedParadesByChapter(chapter.getArea());
+
+		default:
+			return this.getParadesByArea(chapter.getArea());
+		}
 	}
 
 	public Parade saveAssignList(Parade parade, List<domain.Float> floats) { // TERMINADO
@@ -263,8 +328,9 @@ public class ParadeService {
 		FormObjectParadeFloatCheckbox result = new FormObjectParadeFloatCheckbox();
 
 		List<Integer> floats = new ArrayList<>();
-		for (domain.Float f : parade.getFloats())
+		for (domain.Float f : parade.getFloats()) {
 			floats.add(f.getId());
+		}
 
 		result.setColumnNumber(parade.getColumnNumber());
 		result.setDescriptionParade(parade.getDescription());

@@ -83,8 +83,7 @@
 		<!-- Authenticated -->
 		 <security:intercept-url pattern="/authenticated/**" access="isAuthenticated()" /> 
 		 <security:intercept-url pattern="/box/actor/**" access="isAuthenticated()" /> 
-		 <security:intercept-url pattern="/message/actor/**" access="isAuthenticated()" /> 
-		 
+		 <security:intercept-url pattern="/message/actor/**" access="isAuthenticated()" />  
 		 
 		<!-- Anonymous -->
 		<security:intercept-url pattern="/anonymous/**" access="isAnonymous()" />

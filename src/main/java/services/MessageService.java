@@ -607,13 +607,4 @@ public class MessageService {
 		this.messageRepository.flush();
 	}
 
-	public void updateSendedMessageByLogguedActor() {
-		Actor actor = this.actorService.loggedActor();
-		Actor deleted = this.actorService.getActorByUsername("DELETED");
-		List<Message> messages = this.messageRepository.getSendedMessagesByActor(actor.getId());
-		for (Message m : messages) {
-			m.setSender(deleted);
-			this.messageRepository.save(m);
-		}
-	}
 }

@@ -10,9 +10,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<!-- Artifact identification and properties -->
+	
+	
 
 	<groupId>Acme.com</groupId>
-	<artifactId>Acme-Madruga</artifactId>
+	<artifactId>Acme-Parade</artifactId>
 	<version>0.0.0-SNAPSHOT</version>
 	<packaging>war</packaging>
 
@@ -22,8 +24,8 @@
 
 	<!-- Indexing information -->
 
-	<name>Acme Madruga</name>
-	<url>http://www.Acme-Madruga.com</url>
+	<name>Acme Parade</name>
+	<url>http://www.Acme-Parade.com</url>
 
 	<!-- Build commands -->
 
@@ -31,6 +33,14 @@
 		<plugins>
 
 			<!-- Java compiler -->
+
+      <plugin>
+        <groupId>org.sonarsource.scanner.maven</groupId>
+        <artifactId>sonar-maven-plugin</artifactId>
+        <version>3.6.0.1398</version>
+      </plugin>
+
+
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -320,6 +330,10 @@
 		</dependency>
 
 	</dependencies>
+	
+	
+	
+	
 
 	<description>This system allows people share their favourite Shouts.</description>
 </project> 

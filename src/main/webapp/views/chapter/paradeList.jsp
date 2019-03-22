@@ -12,6 +12,22 @@
 <jstl:choose>
 	<jstl:when test="${hasArea}">
 	
+	<form name="filter" id="filter" action="parade/chapter/filter.do" method="post">
+		<label for="filter"><spring:message code="request.filter"/></label>
+	
+		<br/>
+	
+		<select name="fselect">
+  			<option value="ALL">-</option>
+  			<option value="SUBMITTED"><spring:message code="parade.status.submitted"/></option>
+ 			<option value="ACCEPTED"><spring:message code="parade.status.accepted"/></option>
+  			<option value="REJECTED"><spring:message code="request.status.rejected"/></option>
+		</select>
+		
+		<input type="submit" name="refresh" id="refresh" value="<spring:message code ="request.filter.button"/>"/>
+	
+	</form>
+	
 		<display:table pagesize="5" name="parades" id="row" >
 	
 			<jstl:choose>
@@ -73,8 +89,20 @@
 
 			<display:column titleKey ="parade.paradeStatus">
 	
-				<font color="${color}"><jstl:out value="${row.paradeStatus}"/></font>
+				<font color="${color}"><jstl:out value="${statusName.get(paradeStatus.lastIndexOf(row.paradeStatus))}"/></font>
 	
+			</display:column>
+			
+			<display:column titleKey= "parade.path">
+			
+			<spring:url value="showAll/annonymous/path/list.do" var="pathUrl">
+			<spring:param name="paradeId" value="${row.id}"/>
+			<spring:param name="chapter" value="chapter"/>
+			</spring:url>
+			<a href="${pathUrl}">
+				<spring:message code="parade.path" />
+			</a>
+			
 			</display:column>
 	
 			<display:column>

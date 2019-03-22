@@ -5,6 +5,6 @@
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/java"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/resources"/>
         <property name="java-output-path" value="/Sample-Project/target/classes"/>
-        <property name="context-root" value="Acme-Madruga"/>
+        <property name="context-root" value="Acme-Parade"/>
     </wb-module>
 </project-modules>

@@ -23,7 +23,7 @@ public class DeleteBoxServiceTest extends AbstractTest {
 
 
 	@Test
-	public void driverUpdateMessage() {
+	public void driverDeleteBox() {
 
 		Object testingData[][] = {
 			{
@@ -43,10 +43,10 @@ public class DeleteBoxServiceTest extends AbstractTest {
 		};
 
 		for (int i = 0; i < testingData.length; i++)
-			this.templateUpdateMessage((String) testingData[i][0], (String) testingData[i][1], (Class<?>) testingData[i][2]);
+			this.templateDeleteBox((String) testingData[i][0], (String) testingData[i][1], (Class<?>) testingData[i][2]);
 	}
 
-	protected void templateUpdateMessage(String username, String boxName, Class<?> expected) {
+	protected void templateDeleteBox(String username, String boxName, Class<?> expected) {
 
 		Class<?> caught = null;
 

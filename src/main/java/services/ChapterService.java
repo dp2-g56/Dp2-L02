@@ -37,22 +37,29 @@ public class ChapterService {
 	// Managed repository ------------------------------------------
 
 	@Autowired
-	private ChapterRepository chapterRepository;
+	private ChapterRepository	chapterRepository;
 
 	@Autowired
-	private FinderRepository finderRepository;
+	private FinderRepository	finderRepository;
 
 	@Autowired
-	private BoxService boxService;
+	private BoxService			boxService;
 
 	@Autowired
-	private AreaService areaService;
+	private AreaService			areaService;
 
 	@Autowired
-	private ParadeService paradeService;
+	private ParadeService		paradeService;
+
+	@Autowired
+	private ProclaimService		proclaimService;
+
+	@Autowired
+	private MessageService		messageService;
 
 	@Autowired(required = false)
-	private Validator validator;
+	private Validator			validator;
+
 
 	// Simple CRUD methods ------------------------------------------
 
@@ -263,9 +270,14 @@ public class ChapterService {
 	}
 
 	public void delete(Chapter chapter) {
+		this.messageService.updateSendedMessageByLogguedActor();
+		this.messageService.deleteAllMessageFromActor();
+
+		for (Proclaim p : chapter.getProclaims()) {
+			this.proclaimService.delete(p);
+		}
 		this.chapterRepository.delete(chapter);
 	}
-
 	// Auxiliar Methods
 
 	public void loggedAsChapter() {

@@ -31,7 +31,7 @@ public class DeleteMessageServiceTest extends AbstractTest {
 
 
 	@Test
-	public void driverUpdateMessage() {
+	public void driverDeleteMessage() {
 
 		Object testingData[][] = {
 			{
@@ -50,10 +50,10 @@ public class DeleteMessageServiceTest extends AbstractTest {
 		};
 
 		for (int i = 0; i < testingData.length; i++)
-			this.templateUpdateMessage((String) testingData[i][0], (String) testingData[i][1], (Class<?>) testingData[i][2]);
+			this.templateDeleteMessage((String) testingData[i][0], (String) testingData[i][1], (Class<?>) testingData[i][2]);
 	}
 
-	protected void templateUpdateMessage(String username, String messageRe, Class<?> expected) {
+	protected void templateDeleteMessage(String username, String messageRe, Class<?> expected) {
 
 		Class<?> caught = null;
 

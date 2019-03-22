@@ -16,7 +16,7 @@ public class Sponsorship extends DomainEntity {
 
 	private String banner;
 	private String targetURL;
-	private java.lang.Float gain;
+	private java.lang.Float spentMoney;
 	private Boolean isActivated;
 
 	private CreditCard creditCard;
@@ -43,12 +43,12 @@ public class Sponsorship extends DomainEntity {
 	}
 
 	@NotNull
-	public java.lang.Float getGain() {
-		return this.gain;
+	public java.lang.Float getSpentMoney() {
+		return this.spentMoney;
 	}
 
-	public void setGain(java.lang.Float gain) {
-		this.gain = gain;
+	public void setSpentMoney(java.lang.Float spentMoney) {
+		this.spentMoney = spentMoney;
 	}
 
 	@NotNull

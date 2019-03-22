@@ -17,9 +17,11 @@ import org.springframework.web.servlet.ModelAndView;
 import domain.Brotherhood;
 import domain.Member;
 import domain.Parade;
+import domain.Segment;
 import domain.Sponsorship;
 import services.BrotherhoodService;
 import services.FloatService;
+import services.SegmentService;
 import services.SponsorshipService;
 
 @Controller
@@ -34,6 +36,9 @@ public class AnnonymousShowController extends AbstractController {
 
 	@Autowired
 	private SponsorshipService sponsorshipService;
+
+	@Autowired
+	private SegmentService segmentService;
 
 	@RequestMapping(value = "/brotherhood/list", method = RequestMethod.GET)
 	public ModelAndView listBrotherhood() {
@@ -64,7 +69,7 @@ public class AnnonymousShowController extends AbstractController {
 			Sponsorship spo = this.sponsorshipService.getRandomSponsorship(p.getId());
 			randomSpo.put(p.getId(), spo);
 			if (spo.getId() > 0)
-				this.sponsorshipService.updateGainOfSponsorship(p.getId(), spo.getId());
+				this.sponsorshipService.updateSpentMoneyOfSponsorship(p.getId(), spo.getId());
 		}
 		result.addObject("randomSpo", randomSpo);
 
@@ -147,6 +152,19 @@ public class AnnonymousShowController extends AbstractController {
 		result.addObject("picturesBrotherhood", pictures);
 		result.addObject("requestURI", "showAll/annonymous/pictureBrother/list.do");
 		result.addObject("brotherhoodId", brotherhoodId);
+
+		return result;
+	}
+
+	@RequestMapping(value = "path/list", method = RequestMethod.GET)
+	public ModelAndView paradesListAnon(@RequestParam Integer paradeId) {
+		ModelAndView result;
+
+		List<Segment> segments = this.segmentService.getSegmentByParade(paradeId);
+
+		result = new ModelAndView("path/anon/list");
+
+		result.addObject("segments", segments);
 
 		return result;
 	}

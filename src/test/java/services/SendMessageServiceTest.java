@@ -57,16 +57,19 @@ public class SendMessageServiceTest extends AbstractTest {
 				"member1", "member1", "subject", "body", "HIGH", "tags", "", NullPointerException.class
 			}, {
 				//Negative test Logged with 1 actor, trying to send message with blank actor in message
-				"member1", "", "subject", "body", "HIGH", "tags", "admin1", NullPointerException.class
+				"member1", "", "subject", "body", "HIGH", "tags", "admin1", IllegalArgumentException.class
 			}, {
 				//Negative test Logged with 1 actor, trying to send message with null actor in message
-				"member1", null, "subject", "body", "HIGH", "tags", "admin1", NullPointerException.class
+				"member1", null, "subject", "body", "HIGH", "tags", "admin1", IllegalArgumentException.class
 			}, {
 				//Negative test trying to send message to null actor
 				"member1", "member1", "subject", "body", "HIGH", "tags", null, NullPointerException.class
 			}, {
 				//Negative test null subject
 				"member1", "member1", null, "body", "HIGH", "tags", "admin1", NullPointerException.class
+			}, {
+				//Negative test null subject
+				"member1", "member2", "subject", "body", "HIGH", "tags", "admin1", IllegalArgumentException.class
 			}
 		};
 

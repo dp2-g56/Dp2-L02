@@ -1,32 +1,35 @@
 
 package services;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
 
-import domain.Actor;
-import domain.SocialProfile;
 import repositories.SocialProfileRepository;
 import security.LoginService;
+import domain.Actor;
+import domain.SocialProfile;
 
 @Service
 @Transactional
 public class SocialProfileService {
 
 	@Autowired
-	private SocialProfileRepository socialProfileRepository;
+	private SocialProfileRepository	socialProfileRepository;
 
 	@Autowired
-	private ActorService actorService;
+	private ActorService			actorService;
 
 	@Autowired
-	private Validator validator;
+	private Validator				validator;
+
 
 	public SocialProfile save(SocialProfile socialProfile) {
 		return this.socialProfileRepository.save(socialProfile);
@@ -65,7 +68,10 @@ public class SocialProfileService {
 	}
 
 	public void deleteSocialProfile(SocialProfile socialProfile) {
+
 		Actor logguedActor = this.actorService.getActorByUsername(LoginService.getPrincipal().getUsername());
+
+		Assert.isTrue(logguedActor.getSocialProfiles().contains(socialProfile));
 		List<SocialProfile> socialProfiles = logguedActor.getSocialProfiles();
 
 		socialProfiles.remove(socialProfile);
@@ -88,5 +94,24 @@ public class SocialProfileService {
 		this.validator.validate(result, binding);
 		return result;
 
+	}
+
+	public void flush() {
+		this.socialProfileRepository.flush();
+	}
+
+	public void deleteAllSocialProfiles() {
+		Actor actor = this.actorService.loggedActor();
+
+		Integer cont = actor.getSocialProfiles().size();
+		List<SocialProfile> socialprofiles = new ArrayList<SocialProfile>();
+		socialprofiles = actor.getSocialProfiles();
+
+		for (int i = 0; i < cont; i++)
+			this.deleteSocialProfile(socialprofiles.get(0));
+
+		List<SocialProfile> deletedSocialprofiles = new ArrayList<SocialProfile>();
+		deletedSocialprofiles = actor.getSocialProfiles();
+		System.out.println();
 	}
 }

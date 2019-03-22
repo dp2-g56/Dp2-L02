@@ -19,23 +19,22 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import domain.Brotherhood;
 import services.BrotherhoodService;
 import services.FloatService;
-import domain.Brotherhood;
 
 @Controller
 @RequestMapping("/float/brotherhood")
 public class BrotherhoodController extends AbstractController {
 
 	@Autowired
-	private BrotherhoodService	brotherhoodService;
+	private BrotherhoodService brotherhoodService;
 
 	@Autowired
-	private FloatService		floatService;
+	private FloatService floatService;
 
-
-	//LIST
-	//Lista de todos los floatt de esa brotherhood
+	// LIST
+	// Lista de todos los floatt de esa brotherhood
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public ModelAndView list() {
 		ModelAndView result;
@@ -61,21 +60,12 @@ public class BrotherhoodController extends AbstractController {
 		return result;
 	}
 
-	//LIST PICTURES
+	// LIST PICTURES
 	@RequestMapping(value = "/picture/list", method = RequestMethod.GET)
 	public ModelAndView listBro(@RequestParam int floatId, @RequestParam boolean parade) {
-
 		ModelAndView result;
 
-		List<String> pictures;
-
-		domain.Float floatt;
-
-		floatt = this.floatService.findOne(floatId);
-
-		Assert.notNull(floatt);
-
-		pictures = floatt.getPictures();
+		List<String> pictures = this.floatService.getPicturesOfFloat(floatId, parade);
 
 		result = new ModelAndView("picture/brotherhood/picturesFloat");
 
@@ -120,7 +110,8 @@ public class BrotherhoodController extends AbstractController {
 
 		return result;
 	}
-	//CREATE
+
+	// CREATE
 	@RequestMapping(value = "/create", method = RequestMethod.GET)
 	public ModelAndView create() {
 		Brotherhood bro = new Brotherhood();
@@ -137,7 +128,7 @@ public class BrotherhoodController extends AbstractController {
 		return result;
 	}
 
-	//EDIT
+	// EDIT
 	@RequestMapping(value = "/edit", method = RequestMethod.GET)
 	public ModelAndView edit(@RequestParam int floatId) {
 		ModelAndView result;
@@ -209,7 +200,7 @@ public class BrotherhoodController extends AbstractController {
 		return result;
 	}
 
-	//DELETE
+	// DELETE
 	@RequestMapping(value = "/edit", method = RequestMethod.POST, params = "delete")
 	public ModelAndView delete(domain.Float floatt, BindingResult binding) {
 		this.brotherhoodService.loggedAsBrotherhood();

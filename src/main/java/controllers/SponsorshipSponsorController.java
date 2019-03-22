@@ -26,8 +26,10 @@ import domain.Parade;
 import domain.Sponsor;
 import domain.Sponsorship;
 import forms.FormObjectSponsorshipCreditCard;
+import services.ActorService;
 import services.ConfigurationService;
 import services.CreditCardService;
+import services.MemberService;
 import services.ParadeService;
 import services.SponsorService;
 import services.SponsorshipService;
@@ -46,6 +48,11 @@ public class SponsorshipSponsorController extends AbstractController {
 	private SponsorService sponsorService;
 	@Autowired
 	private ConfigurationService configurationService;
+
+	@Autowired
+	private MemberService memberService;
+	@Autowired
+	private ActorService actorService;
 
 	// Constructors -----------------------------------------------------------
 

@@ -13,15 +13,15 @@ import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
 
+import repositories.SponsorRepository;
+import security.Authority;
+import security.LoginService;
+import security.UserAccount;
 import domain.Box;
 import domain.SocialProfile;
 import domain.Sponsor;
 import domain.Sponsorship;
 import forms.FormObjectSponsor;
-import repositories.SponsorRepository;
-import security.Authority;
-import security.LoginService;
-import security.UserAccount;
 
 @Service
 @Transactional
@@ -30,11 +30,22 @@ public class SponsorService {
 	@Autowired
 	private SponsorRepository sponsorRepository;
 
-	@Autowired
-	private BoxService boxService;
 
 	@Autowired
-	private Validator validator;
+	private BoxService				boxService;
+
+	@Autowired
+	private Validator				validator;
+
+	@Autowired
+	private SocialProfileService	socialProfileService;
+
+	@Autowired
+	private SponsorshipService		sponsorshipService;
+
+	@Autowired
+	private MessageService			messageService;
+
 
 	public List<Sponsor> findAll() {
 		return this.sponsorRepository.findAll();
@@ -257,6 +268,20 @@ public class SponsorService {
 			cont++;
 		}
 		return sb.toString();
+	}
+
+	public void deleteSponsor() {
+
+		this.loggedAsSponsor();
+		Sponsor sponsor = this.loggedSponsor();
+
+		this.boxService.deleteAllBoxes();
+		this.messageService.updateSendedMessageByLogguedActor();
+		this.socialProfileService.deleteAllSocialProfiles();
+		this.sponsorshipService.deleteAllSponsorships();
+		this.delete(sponsor);
+		this.flush();
+
 	}
 
 }

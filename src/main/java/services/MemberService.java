@@ -262,4 +262,21 @@ public class MemberService {
 		return result;
 	}
 
+	public String SocialProfilesToString() {
+		String res = "";
+		Member member = this.loggedMember();
+		List<SocialProfile> socialProfiles = new ArrayList<SocialProfile>();
+		StringBuilder sb = new StringBuilder();
+		socialProfiles = member.getSocialProfiles();
+
+		Integer cont = 1;
+
+		for (SocialProfile f : socialProfiles) {
+			sb.append("Profile" + cont + " Name: " + f.getName() + " Nick: " + f.getNick() + " Profile link: "
+					+ f.getProfileLink()).append(System.getProperty("line.separator"));
+			cont++;
+		}
+		return sb.toString();
+	}
+
 }

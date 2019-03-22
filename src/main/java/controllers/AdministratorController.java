@@ -1,8 +1,8 @@
 /*
  * AdministratorController.java
- * 
+ *
  * Copyright (C) 2019 Universidad de Sevilla
- * 
+ *
  * The use of this project is hereby constrained to the conditions of the
  * TDG Licence, a copy of which you may download from
  * http://www.tdg-seville.info/License.html
@@ -10,6 +10,10 @@
 
 package controllers;
 
+import java.io.IOException;
+
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +23,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import services.AdminService;
@@ -71,10 +77,10 @@ public class AdministratorController extends AbstractController {
 		Configuration configuration = this.configurationService.getConfiguration();
 		String prefix = configuration.getSpainTelephoneCode();
 
-		//Confirmacion contraseña
+		//Confirmacion contraseï¿½a
 		if (!formObjectMember.getPassword().equals(formObjectMember.getConfirmPassword()))
 			if (LocaleContextHolder.getLocale().getLanguage().toUpperCase().contains("ES")) {
-				binding.addError(new FieldError("formObjectMember", "password", formObjectMember.getPassword(), false, null, null, "Las contraseñas no coinciden"));
+				binding.addError(new FieldError("formObjectMember", "password", formObjectMember.getPassword(), false, null, null, "Las contraseï¿½as no coinciden"));
 				return this.createEditModelAndView(admin);
 			} else {
 				binding.addError(new FieldError("formObjectMember", "password", formObjectMember.getPassword(), false, null, null, "Passwords don't match"));
@@ -116,7 +122,61 @@ public class AdministratorController extends AbstractController {
 		return result;
 	}
 
-	//MODEL AND VIEW FORM OBJECT MEMBER
+//	@RequestMapping(value = "/export", method = RequestMethod.GET)
+//	public @ResponseBody Admin export(@RequestParam(value = "id", defaultValue = "-1") int id) {
+//		Admin admin = new Admin();
+//		admin = this.adminService.findOne(id);
+//		if (admin == null || this.adminService.loggedAdmin().getId() != id)
+//			return null;
+//		return admin;
+//	}
+
+	@RequestMapping(value = "/export", method = RequestMethod.GET)
+	public @ResponseBody String export(@RequestParam(value = "id", defaultValue = "-1") int id,
+			HttpServletResponse response) throws IOException {
+
+		this.adminService.loggedAsAdmin();
+
+		Admin admin = new Admin();
+		admin = this.adminService.findOne(id);
+
+		// Defines un StringBuilder para construir tu string
+		StringBuilder sb = new StringBuilder();
+
+		// Cada append aï¿½ade una linea, cada "line.separator" aï¿½ade un salto de linea
+		sb.append("Personal data:").append(System.getProperty("line.separator"));
+		sb.append("Name: " + admin.getName()).append(System.getProperty("line.separator"));
+		sb.append("Middle name: " + admin.getMiddleName()).append(System.getProperty("line.separator"));
+		sb.append("Surname: " + admin.getSurname()).append(System.getProperty("line.separator"));
+		sb.append("Address: " + admin.getAddress()).append(System.getProperty("line.separator"));
+		sb.append("Email: " + admin.getEmail()).append(System.getProperty("line.separator"));
+		sb.append("Photo: " + admin.getPhoto()).append(System.getProperty("line.separator"));
+		sb.append("Phone: " + admin.getPhoneNumber()).append(System.getProperty("line.separator"));
+		sb.append(System.getProperty("line.separator"));
+		sb.append("SocialProfiles: ").append(System.getProperty("line.separator"));
+
+		// Este metodo te muestra los socialProfiles de la misma manera que el resto del
+		// documento
+		sb.append(this.adminService.SocialProfilesToString()).append(System.getProperty("line.separator"));
+
+		if (admin == null || this.adminService.loggedAdmin().getId() != id)
+			return null;
+
+		// Defines el nombre del archivo y la extension
+		response.setContentType("text/txt");
+		response.setHeader("Content-Disposition", "attachment;filename=exportDataAdmin.txt");
+
+		// Con estos comandos permites su descarga cuando clickas
+		ServletOutputStream outStream = response.getOutputStream();
+		outStream.println(sb.toString());
+		outStream.flush();
+		outStream.close();
+
+		// El return no llega nunca, es del metodo viejo
+		return sb.toString();
+	}
+
+	// MODEL AND VIEW FORM OBJECT MEMBER
 	protected ModelAndView createEditModelAndView(FormObjectMember formObjectMember) {
 		ModelAndView result;
 

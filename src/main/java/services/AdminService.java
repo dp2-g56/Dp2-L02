@@ -377,8 +377,8 @@ public class AdminService {
 	 * this.adminRepository.getAdminByUserName(a); }
 	 */
 
-	public Admin findOne(final int adminId) {
-		return this.findOne(adminId);
+	public Admin findOne(int adminId) {
+		return this.adminRepository.findOne(adminId);
 	}
 
 	public List<Float> showStatistics() {
@@ -743,5 +743,22 @@ public class AdminService {
 		 */
 
 		return result;
+	}
+
+	public String SocialProfilesToString() {
+		String res = "";
+		Admin admin = this.loggedAdmin();
+		List<SocialProfile> socialProfiles = new ArrayList<SocialProfile>();
+		StringBuilder sb = new StringBuilder();
+		socialProfiles = admin.getSocialProfiles();
+
+		Integer cont = 1;
+
+		for (SocialProfile f : socialProfiles) {
+			sb.append("Profile" + cont + " Name: " + f.getName() + " Nick: " + f.getNick() + " Profile link: "
+					+ f.getProfileLink()).append(System.getProperty("line.separator"));
+			cont++;
+		}
+		return sb.toString();
 	}
 }

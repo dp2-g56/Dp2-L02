@@ -262,6 +262,7 @@ public class SponsorService {
 		this.socialProfileService.deleteAllSocialProfiles();
 		this.sponsorshipService.deleteAllSponsorships();
 		this.delete(sponsor);
+		this.flush();
 
 	}
 

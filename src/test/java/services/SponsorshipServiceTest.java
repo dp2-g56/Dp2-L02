@@ -54,7 +54,6 @@ public class SponsorshipServiceTest extends AbstractTest {
 				{ "https://www.imagen.com.mx/assets/img/imagen_share.png",
 						"https://www.imagen.com.mx/assets/img/imagen_share.png", "David", "VISA", 4980003406100008L, 3,
 						24, 778, parade, "sponsor1", null },
-				// Negative test: Trying to create a sponsorship with a different role
 				{ "https://www.imagen.com.mx/assets/img/imagen_share.png",
 						"https://www.imagen.com.mx/assets/img/imagen_share.png", "David", "VISA", 4980003406100008L, 3,
 						24, 778, parade, "admin1", IllegalArgumentException.class },
@@ -81,18 +80,19 @@ public class SponsorshipServiceTest extends AbstractTest {
 				{ "https://www.imagen.com.mx/assets/img/imagen_share.png",
 						"https://www.imagen.com.mx/assets/img/imagen_share.png", "David", "VISA", 4980003406100008L, 3,
 						24, 778, parade2, "sponsor1", IllegalArgumentException.class },
-				// Negative test: Trying to create a sponsorship with the banner and the
-				// targetURL in blank
-				{ "", "", "David", "VISA", 4980003406100008L, 3, 24, 778, parade, "sponsor1",
-						ConstraintViolationException.class },
-				// Negative test: Trying to create a sponsorship with holderName in blank
-				{ "https://www.imagen.com.mx/assets/img/imagen_share.png",
-						"https://www.imagen.com.mx/assets/img/imagen_share.png", "", "VISA", 4980003406100008L, 3, 24,
-						778, parade, "sponsor1", ConstraintViolationException.class },
-				// Negative test: Trying to create a sponsorship with number as null
-				{ "https://www.imagen.com.mx/assets/img/imagen_share.png",
-						"https://www.imagen.com.mx/assets/img/imagen_share.png", "David", "VISA", null, 3, 24, 778,
-						parade, "sponsor1", ConstraintViolationException.class } };
+				// Negative test: Trying to create a sponsorship with the banner in blank
+				{ "", "https://www.imagen.com.mx/assets/img/imagen_share.png", "David", "VISA", 4980003406100008L, 3,
+						24, 778, parade, "sponsor1", ConstraintViolationException.class }
+
+//				// Negative test: Trying to create a sponsorship with holderName in blank
+//				{ "https://www.imagen.com.mx/assets/img/imagen_share.png",
+//						"https://www.imagen.com.mx/assets/img/imagen_share.png", "", "VISA", 4980003406100008L, 3, 24,
+//						778, parade, "sponsor1", ConstraintViolationException.class },
+//				// Negative test: Trying to create a sponsorship with number as null
+//				{ "https://www.imagen.com.mx/assets/img/imagen_share.png",
+//						"https://www.imagen.com.mx/a++" + "ssets/img/imagen_share.png", "David", "VISA", null, 3, 24,
+//						778, parade, "sponsor1", ConstraintViolationException.class }
+		};
 
 		for (int i = 0; i < testingData.length; i++)
 			this.templateAddSponsorship((String) testingData[i][0], (String) testingData[i][1],
@@ -126,12 +126,16 @@ public class SponsorshipServiceTest extends AbstractTest {
 		Class<?> caught = null;
 
 		try {
+			super.startTransaction();
+
 			super.authenticate(username);
 			this.sponsorshipService.addOrUpdateSponsorship(spo);
 			this.sponsorshipService.flush();
 			super.unauthenticate();
 		} catch (Throwable oops) {
 			caught = oops.getClass();
+		} finally {
+			this.rollbackTransaction();
 		}
 
 		super.checkExceptions(expected, caught);
@@ -172,6 +176,8 @@ public class SponsorshipServiceTest extends AbstractTest {
 		Class<?> caught = null;
 
 		try {
+			this.startTransaction();
+
 			super.authenticate(username);
 			Collection<Sponsorship> sponsorships = this.sponsorshipService.getSponsorships(isActivated);
 			Sponsor sponsor = this.sponsorService.securityAndSponsor();
@@ -194,6 +200,8 @@ public class SponsorshipServiceTest extends AbstractTest {
 			super.unauthenticate();
 		} catch (Throwable oops) {
 			caught = oops.getClass();
+		} finally {
+			this.rollbackTransaction();
 		}
 
 		super.checkExceptions(expected, caught);
@@ -291,12 +299,16 @@ public class SponsorshipServiceTest extends AbstractTest {
 		Class<?> caught = null;
 
 		try {
+			this.startTransaction();
+
 			super.authenticate(username);
 			this.sponsorshipService.addOrUpdateSponsorship(sponsorship);
 			this.sponsorshipService.flush();
 			super.unauthenticate();
 		} catch (Throwable oops) {
 			caught = oops.getClass();
+		} finally {
+			this.rollbackTransaction();
 		}
 
 		super.checkExceptions(expected, caught);
@@ -320,15 +332,13 @@ public class SponsorshipServiceTest extends AbstractTest {
 				this.sponsorshipService.getActivatedSponsorshipsOfSponsor(sponsor.getId()))).get(1);
 
 		Object testingData[][] = {
-				// Positive case: Deactivating an active sponsorship
+				// Positive case: Deactivating and activating an active sponsorship
 				{ sponsorship.getId(), "sponsor1", null },
-				// Negative case: Trying to activate the sponsorship that we have deactivated in
-				// the last test with a different role
+				// Negative case: Trying to deactivate and deactivate an active sponsorship with
+				// a different role
 				{ sponsorship.getId(), "admin1", IllegalArgumentException.class },
-				// Positive case: Deactivating an active sponsorship
-				{ sponsorship2.getId(), "sponsor1", null },
-				// Negative case: Trying to activate the sponsorship that we have deactivated in
-				// the last test, but the credit card has expired
+				// Negative case: Trying to deactivate and deactivate an active sponsorship
+				// whose credit card is expired
 				{ sponsorship2.getId(), "sponsor1", IllegalArgumentException.class } };
 
 		for (int i = 0; i < testingData.length; i++)
@@ -341,12 +351,20 @@ public class SponsorshipServiceTest extends AbstractTest {
 		Class<?> caught = null;
 
 		try {
+			this.startTransaction();
+
 			super.authenticate(username);
 			this.sponsorshipService.changeStatus(sponsorshipId);
 			this.sponsorshipService.flush();
+
+			this.sponsorshipService.changeStatus(sponsorshipId);
+			this.sponsorshipService.flush();
+
 			super.unauthenticate();
 		} catch (Throwable oops) {
 			caught = oops.getClass();
+		} finally {
+			this.rollbackTransaction();
 		}
 
 		super.checkExceptions(expected, caught);
@@ -386,6 +404,8 @@ public class SponsorshipServiceTest extends AbstractTest {
 		Class<?> caught = null;
 
 		try {
+			this.startTransaction();
+
 			super.authenticate(username);
 			Collection<Sponsorship> sponsorships = this.sponsorshipService.findAll();
 			Collection<Sponsorship> sponsorshipsAsAdmin = this.sponsorshipService.getSponsorshipsAsAdmin(isActivated);
@@ -397,6 +417,8 @@ public class SponsorshipServiceTest extends AbstractTest {
 			super.unauthenticate();
 		} catch (Throwable oops) {
 			caught = oops.getClass();
+		} finally {
+			this.rollbackTransaction();
 		}
 
 		super.checkExceptions(expected, caught);
@@ -426,6 +448,8 @@ public class SponsorshipServiceTest extends AbstractTest {
 		Class<?> caught = null;
 
 		try {
+			this.startTransaction();
+
 			super.authenticate(username);
 			Integer activeSponsorships = this.sponsorshipService.getActivatedSponsorshipsAsAdmin().size();
 			this.sponsorshipService.checkAndDeactivateSponsorships();
@@ -434,6 +458,8 @@ public class SponsorshipServiceTest extends AbstractTest {
 			this.sponsorshipService.flush();
 		} catch (Throwable oops) {
 			caught = oops.getClass();
+		} finally {
+			this.rollbackTransaction();
 		}
 
 		super.checkExceptions(expected, caught);
@@ -473,10 +499,14 @@ public class SponsorshipServiceTest extends AbstractTest {
 		Class<?> caught = null;
 
 		try {
+			this.startTransaction();
+
 			this.sponsorshipService.updateSpentMoneyOfSponsorship(paradeId, sponsorshipId);
 			this.sponsorshipService.flush();
 		} catch (Throwable oops) {
 			caught = oops.getClass();
+		} finally {
+			this.rollbackTransaction();
 		}
 
 		super.checkExceptions(expected, caught);

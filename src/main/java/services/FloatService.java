@@ -122,7 +122,15 @@ public class FloatService {
 		domain.Float floattSaved = new domain.Float();
 		loggedBrotherhood = this.brotherhoodService.loggedBrotherhood();
 
+		if (floatt.getId() > 0)
+			Assert.isTrue(loggedBrotherhood.getFloats().contains(floatt));
+
 		Assert.notNull(loggedBrotherhood.getArea());
+
+		List<domain.Float> floatFinalMode = new ArrayList<domain.Float>();
+		floatFinalMode = this.floatsInParadeInFinalMode();
+
+		Assert.isTrue(!floatFinalMode.contains(floatt));
 
 		floattSaved = this.floatRepository.save(floatt);
 

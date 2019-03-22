@@ -161,8 +161,8 @@ public class BrotherhoodController extends AbstractController {
 		List<domain.Float> floatFinalMode = new ArrayList<domain.Float>();
 		floatFinalMode = this.floatService.floatsInParadeInFinalMode();
 
-		Assert.notNull(loggedBrotherhood.getArea());
 		Assert.isTrue(!floatFinalMode.contains(floatt));
+		Assert.notNull(loggedBrotherhood.getArea());
 		domain.Float f;
 
 		f = this.floatService.reconstruct(floatt, binding);

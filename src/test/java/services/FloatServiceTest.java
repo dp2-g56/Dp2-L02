@@ -132,4 +132,58 @@ public class FloatServiceTest extends AbstractTest {
 
 	}
 
+	/**
+	 * Test the use case detailed in requirement 10.1 (Acme-Madruga project): Manage
+	 * their floats, which includes updating them
+	 */
+	@Test
+	public void driverUpdateFloatIfBrotherhood() {
+		// Float of brotherhood2 that is not assigned to any parade
+		domain.Float floatt = this.floatService.findOne(super.getEntityId("float3"));
+		// Float of brotherhood1 that is assigned to one parade
+		domain.Float floatt2 = this.floatService.findOne(super.getEntityId("float1"));
+
+		Object testingData[][] = {
+				// Positive test
+				{ "brotherhood2", "Float title", floatt.getDescription(), floatt, null },
+				// Negative test: Trying to update a float with a different brotherhood
+				{ "brotherhood1", "Float title", floatt.getDescription(), floatt, IllegalArgumentException.class },
+				// Negative test: Trying to update a float with a different role
+				{ "member1", "Float title", floatt.getDescription(), floatt, IllegalArgumentException.class },
+				// Negative test: Trying to update a float that is assigned to one parade
+				{ "brotherhood1", "Float title", floatt.getDescription(), floatt2, IllegalArgumentException.class },
+				// Negative test: Trying to update a float with a blank title
+				{ "brotherhood2", "", floatt.getDescription(), floatt, ConstraintViolationException.class } };
+		for (int i = 0; i < testingData.length; i++)
+			this.templateUpdateFloatIfBrotherhood((String) testingData[i][0], (String) testingData[i][1],
+					(String) testingData[i][2], (domain.Float) testingData[i][3], (Class<?>) testingData[i][4]);
+	}
+
+	private void templateUpdateFloatIfBrotherhood(String username, String title, String description,
+			domain.Float floatt, Class<?> expected) {
+		floatt.setTitle(title);
+		floatt.setDescription(description);
+
+		Class<?> caught = null;
+
+		try {
+			super.startTransaction();
+
+			super.authenticate(username);
+
+			this.floatService.save(floatt);
+
+			this.floatService.flush();
+
+			super.unauthenticate();
+		} catch (Throwable oops) {
+			caught = oops.getClass();
+		} finally {
+			super.rollbackTransaction();
+		}
+
+		super.checkExceptions(expected, caught);
+
+	}
+
 }

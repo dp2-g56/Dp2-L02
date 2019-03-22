@@ -191,10 +191,7 @@ public class ParadeService {
 		result.setRowNumber(formObjectParadeCoach.getRowNumber());
 		result.setColumnNumber(formObjectParadeCoach.getColumnNumber());
 		result.setId(0);
-
-		if (!formObjectParadeCoach.getIsDraftMode()) {
-			result.setParadeStatus(ParadeStatus.SUBMITTED);
-		}
+		result.setParadeStatus(ParadeStatus.SUBMITTED);
 
 		result.setTicker(this.generateTicker());
 
@@ -218,10 +215,7 @@ public class ParadeService {
 		result.setIsDraftMode(formObjectParadeFloatCheckbox.getIsDraftMode());
 		result.setRowNumber(formObjectParadeFloatCheckbox.getRowNumber());
 		result.setColumnNumber(formObjectParadeFloatCheckbox.getColumnNumber());
-
-		if (!formObjectParadeFloatCheckbox.getIsDraftMode()) {
-			result.setParadeStatus(ParadeStatus.SUBMITTED);
-		}
+		result.setParadeStatus(ParadeStatus.SUBMITTED);
 
 		// this.validator.validate(result, binding); //YA VIENE VALIDADO
 

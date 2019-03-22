@@ -78,6 +78,7 @@ public class ParadeController extends AbstractController {
 			statusName.add("ACCEPTED");
 			statusName.add("REJECTED");
 		}
+
 		result = new ModelAndView("parade/brotherhood/list");
 		result.addObject("parades", parades);
 		result.addObject("requestURI", "parade/brotherhood/list.do");
@@ -148,6 +149,7 @@ public class ParadeController extends AbstractController {
 		result.addObject("paradeStatus", paradeStatus);
 		result.addObject("statusName", statusName);
 		result.addObject("locale", locale);
+
 
 		return result;
 	}

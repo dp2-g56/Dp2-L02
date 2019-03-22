@@ -287,11 +287,11 @@ public class MemberService {
 		Integer cont = 1;
 
 		for (SocialProfile f : socialProfiles) {
-			sb.append("Profile" + cont + " Name: " + f.getName() + " Nick: " + f.getNick() + " Profile link: "
-					+ f.getProfileLink()).append(System.getProperty("line.separator"));
+			sb.append("Profile" + cont + " Name: " + f.getName() + " Nick: " + f.getNick() + " Profile link: " + f.getProfileLink()).append(System.getProperty("line.separator"));
 			cont++;
 		}
 		return sb.toString();
+	}
 
 	public void flush() {
 		this.memberRepository.flush();

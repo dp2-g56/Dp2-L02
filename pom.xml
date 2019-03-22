@@ -12,7 +12,7 @@
 	<!-- Artifact identification and properties -->
 
 	<groupId>Acme.com</groupId>
-	<artifactId>Acme-Madruga</artifactId>
+	<artifactId>Acme-Parade</artifactId>
 	<version>0.0.0-SNAPSHOT</version>
 	<packaging>war</packaging>
 
@@ -22,8 +22,8 @@
 
 	<!-- Indexing information -->
 
-	<name>Acme Madruga</name>
-	<url>http://www.Acme-Madruga.com</url>
+	<name>Acme Parade</name>
+	<url>http://www.Acme-Parade.com</url>
 
 	<!-- Build commands -->
 

@@ -25,6 +25,8 @@ p{
 
 <b><p>INFORMACION GENERAL</p></b>
 
+<p>Acme Parade es uno de los servicios ofrecidos por la empresa Acme Madruga, .Inc. En estos terminos y condiciones se referenciara a Acme Madruga</p>
+
 <p>Este sitio web es operado por Acme Madruga. En todo el sitio, los terminos &ldquo;nosotros&rdquo;, &ldquo;nos&rdquo; y &ldquo;nuestro&rdquo; se refieren a Acme Madruga. Acme Madruga ofrece este sitio web, incluyendo toda la informacion, herramientas y servicios disponibles para ti en este sitio, el usuario, esta condicionado a la aceptacion de todos los terminos, condiciones, politicas y notificaciones aqui establecidos.</p>
 
 <p>Al visitar nuestro sitio y/o comprar algo de nosotros, paticipas en nuestro &ldquo;Servicio&rdquo; y aceptas los siguientes terminos y condiciones (&ldquo;Terminos de Servicio&rdquo;, &ldquo;Terminos&rdquo;), incluidos todos los terminos y condiciones adicionales y las politias a las que se hace referencia en el presente documento y/o disponible a traves de hipervinculos. Estas Condiciones de Servicio se aplican a todos los usuarios del sitio, incluyendo si limitacion a usuarios que sean navegadores, proveedores, clientes, comerciantes, y/o colaboradores de contenido.</p>

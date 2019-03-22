@@ -276,7 +276,6 @@ public class MemberService {
 		return result;
 	}
 
-
 	public String SocialProfilesToString() {
 		String res = "";
 		Member member = this.loggedMember();
@@ -292,6 +291,7 @@ public class MemberService {
 			cont++;
 		}
 		return sb.toString();
+	}
 
 	public void flush() {
 		this.memberRepository.flush();

@@ -112,13 +112,15 @@ public class SponsorshipService {
 		if (sponsorship.getId() > 0)
 			Assert.isTrue(sponsor.equals(this.getSponsorOfSponsorship(sponsorship.getId())));
 
+		CreditCard creditCard = sponsorship.getCreditCard();
+
 		Assert.isTrue(cardType.contains(sponsorship.getCreditCard().getBrandName()));
 		Assert.isTrue(!sponsorship.getParade().getIsDraftMode()
 				&& sponsorship.getParade().getParadeStatus().equals(ParadeStatus.ACCEPTED));
 
-		Assert.isTrue(this.creditCardService.validateNumberCreditCard(sponsorship.getCreditCard()));
-		Assert.isTrue(this.creditCardService.validateDateCreditCard(sponsorship.getCreditCard()));
-		Assert.isTrue(this.creditCardService.validateCvvCreditCard(sponsorship.getCreditCard()));
+		Assert.isTrue(this.creditCardService.validateNumberCreditCard(creditCard));
+		Assert.isTrue(this.creditCardService.validateDateCreditCard(creditCard));
+		Assert.isTrue(this.creditCardService.validateCvvCreditCard(creditCard));
 
 		result = this.save(sponsorship);
 

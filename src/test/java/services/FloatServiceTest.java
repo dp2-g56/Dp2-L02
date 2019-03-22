@@ -4,6 +4,8 @@ package services;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.validation.ConstraintViolationException;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,6 +67,55 @@ public class FloatServiceTest extends AbstractTest {
 			List<String> pictures = this.floatService.getPicturesOfFloat(floatId, paradeInFinal);
 
 			Assert.isTrue(pictures.size() > 0);
+
+			super.unauthenticate();
+		} catch (Throwable oops) {
+			caught = oops.getClass();
+		} finally {
+			super.rollbackTransaction();
+		}
+
+		super.checkExceptions(expected, caught);
+
+	}
+
+	/**
+	 * Test the use case detailed in requirement 10.1 (Acme-Madruga project): Manage
+	 * their floats, which includes creating them
+	 */
+	@Test
+	public void driverCreateFloatIfBrotherhood() {
+
+		Object testingData[][] = {
+				// Positive test
+				{ "brotherhood1", "Float title", "Float description", null },
+				// Negative test: Trying to save a float with a different role
+				{ "admin1", "Float title", "Float description", IllegalArgumentException.class },
+				// Negative test: Trying to save a float with a brotherhood without area
+				{ "brotherhood4", "Float title", "Float description", IllegalArgumentException.class },
+				// Negative test: Trying to save a float with a brotherhood with a blank title
+				{ "brotherhood1", "", "Float description", ConstraintViolationException.class } };
+		for (int i = 0; i < testingData.length; i++)
+			this.templateCreateFloatIfBrotherhood((String) testingData[i][0], (String) testingData[i][1],
+					(String) testingData[i][2], (Class<?>) testingData[i][3]);
+	}
+
+	private void templateCreateFloatIfBrotherhood(String username, String title, String description,
+			Class<?> expected) {
+		domain.Float floatt = this.floatService.create();
+
+		floatt.setTitle(title);
+		floatt.setDescription(description);
+
+		Class<?> caught = null;
+
+		try {
+			super.startTransaction();
+
+			super.authenticate(username);
+
+			this.floatService.save(floatt);
+			this.floatService.flush();
 
 			super.unauthenticate();
 		} catch (Throwable oops) {

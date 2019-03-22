@@ -122,7 +122,7 @@ public class FloatService {
 		domain.Float floattSaved = new domain.Float();
 		loggedBrotherhood = this.brotherhoodService.loggedBrotherhood();
 
-		Assert.isTrue(!(loggedBrotherhood.getArea().equals(null)));
+		Assert.notNull(loggedBrotherhood.getArea());
 
 		floattSaved = this.floatRepository.save(floatt);
 
@@ -257,6 +257,10 @@ public class FloatService {
 		pictures = floatt.getPictures();
 
 		return pictures;
+	}
+
+	public void flush() {
+		this.floatRepository.flush();
 	}
 
 }

@@ -27,21 +27,6 @@ public class FloatServiceTest extends AbstractTest {
 	@Autowired
 	private BrotherhoodService brotherhoodService;
 
-//	@Test
-//	public void testCreate() {
-//		Float floatt = new Float();
-//
-//		floatt = this.floatService.create();
-//
-//		floatt.setTitle("sasa");
-//		floatt.setDescription("sasa");
-//
-//		Float saved = new Float();
-//		saved = this.floatService.save(floatt);
-//		Assert.isTrue(this.floatService.findAll().contains(saved));
-//
-//	}
-
 	/**
 	 * Test the use case detailed in requirement 10.1 (Acme-Madruga project): Manage
 	 * their floats, which includes listing them
@@ -66,6 +51,8 @@ public class FloatServiceTest extends AbstractTest {
 		Class<?> caught = null;
 
 		try {
+			super.startTransaction();
+
 			super.authenticate(username);
 
 			List<domain.Float> floats = new ArrayList<>();
@@ -82,6 +69,8 @@ public class FloatServiceTest extends AbstractTest {
 			super.unauthenticate();
 		} catch (Throwable oops) {
 			caught = oops.getClass();
+		} finally {
+			super.rollbackTransaction();
 		}
 
 		super.checkExceptions(expected, caught);

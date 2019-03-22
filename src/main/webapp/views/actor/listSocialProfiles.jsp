@@ -139,10 +139,6 @@
 
 </table>
 
-<button type="button" onclick="javascript: relativeRedir('authenticated/deleteAccount.do')" >
-					<spring:message code="parade.copy" />
-				</button>	
-
 <h2> <spring:message code="socialProfile.mySocialProfiles"  /></h2>
 
 <display:table

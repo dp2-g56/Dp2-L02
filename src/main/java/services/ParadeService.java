@@ -26,6 +26,7 @@ import domain.Parade;
 import domain.ParadeStatus;
 import domain.Path;
 import domain.Request;
+import domain.Segment;
 import forms.FormObjectParadeFloat;
 import forms.FormObjectParadeFloatCheckbox;
 
@@ -43,6 +44,8 @@ public class ParadeService {
 	private SponsorService		sponsorService;
 	@Autowired
 	private PathService pathService;
+	@Autowired
+	private SegmentService		segmentService;
 
 	// Simple CRUD methods ------------------------------------------
 
@@ -57,9 +60,8 @@ public class ParadeService {
 		Parade parade = new Parade();
 
 		List<Float> floats = new ArrayList<>();
-		List<Path> paths = new ArrayList<>();
 
-		parade.setPaths(paths);
+		parade.setPath(null);
 		parade.setFloats(floats);
 
 		parade.setColumnNumber(0);
@@ -252,8 +254,32 @@ public class ParadeService {
 		paradeCopy.setTitle(paradeToCopy.getTitle());
 
 		paradeCopy.setFloats(paradeToCopy.getFloats());
-		paradeCopy.setPaths(paradeToCopy.getPaths());
-		paradeCopy.setRequests(paradeToCopy.getRequests());
+
+		List<Request> r = new ArrayList<Request>();
+		paradeCopy.setRequests(r);
+
+		Path savedPath = null;
+		if (paradeToCopy.getPath() != null) {
+			Path path = this.pathService.create();
+			for (Segment segment : paradeToCopy.getPath().getSegments()) {
+				List<Segment> segmentsPath = path.getSegments();
+				Segment newSegment = this.segmentService.createSegment();
+
+				newSegment.setDestinationLatitude(segment.getDestinationLatitude());
+				newSegment.setDestinationLongitude(segment.getDestinationLongitude());
+				newSegment.setOriginLatitude(segment.getOriginLatitude());
+				newSegment.setOriginLongitude(segment.getOriginLongitude());
+				newSegment.setTime(segment.getTime());
+
+				segmentsPath.add(newSegment);
+				path.setSegments(segmentsPath);
+			}
+			savedPath = this.pathService.save(path);
+
+		}
+		this.flush();
+
+		paradeCopy.setPath(savedPath);
 
 		Parade saved = new Parade();
 		saved = this.paradeRepository.save(paradeCopy);

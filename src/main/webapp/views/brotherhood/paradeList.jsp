@@ -42,7 +42,7 @@
 	requestURI="${requestURI}" >
 	
 		<jstl:choose>
-			<jstl:when test="${row.paradeStatus.toString() == 'SUBMITTED'}">		
+			<jstl:when test="${row.paradeStatus.toString() == 'SUBMITTED' && !row.isDraftMode}">		
 				<jstl:set var="color" value="grey" />
 			</jstl:when>
 			<jstl:when test="${row.paradeStatus.toString() == 'REJECTED'}">
@@ -50,9 +50,6 @@
 			</jstl:when>
 			<jstl:when test="${row.paradeStatus.toString() == 'ACCEPTED'}">
 				<jstl:set var="color" value="green" />
-			</jstl:when>
-			<jstl:when test="${row.paradeStatus.toString() == null}">
-				<jstl:set var="color" value="" />
 			</jstl:when>
 		
 		</jstl:choose>
@@ -116,7 +113,7 @@
     	
     </display:column>
     
-      <display:column titleKey="parade.paradeStatus" sortable= "true">
+      <display:column titleKey="parade.paradeStatus" >
 		<jstl:if test="${row.isDraftMode}" >
 				<spring:message code="parade.draftMode" />
 		</jstl:if>
@@ -128,26 +125,10 @@
 	<display:column titleKey="parade.rejectedReason">
 		<jstl:if test="${row.paradeStatus == 'REJECTED'}" >
 				<font color="${color}"><jstl:out value="${row.rejectedReason}"/></font>
-
-</jstl:if>
-</display:column>
-	<display:column>
-		<jstl:if test="${row.isDraftMode}">
-			<a href="parade/brotherhood/editCheckbox.do?paradeId=${row.id}">
-				<spring:message code="parade.edit" />
-			</a>
 		</jstl:if>
 	</display:column>
-	
 
-	
-		<display:column titleKey="parade.copy">
-				<button type="button" onclick="javascript: relativeRedir('parade/brotherhood/copy.do?paradeId='+${row.id})" >
-					<spring:message code="parade.copy" />
-				</button>	
-		</display:column>
-
-		<display:column>
+	<display:column>
 		
 		<jstl:choose>
 		<jstl:when test="${row.path==null}">
@@ -162,7 +143,12 @@
 		</jstl:otherwise>
 		</jstl:choose>
 	</display:column>
-	
+		
+	<display:column titleKey="parade.copy">
+				<button type="button" onclick="javascript: relativeRedir('parade/brotherhood/copy.do?paradeId='+${row.id})" >
+					<spring:message code="parade.copy" />
+				</button>	
+	</display:column>
 												
 </display:table>
 

@@ -18,19 +18,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
-import domain.Actor;
 import security.Authority;
 import services.ActorService;
 import services.MemberService;
+import services.SponsorService;
+import domain.Actor;
 
 @Controller
 @RequestMapping(value = "/authenticated")
 public class DeleteUserController extends AbstractController {
 
 	@Autowired
-	private ActorService actorService;
+	private ActorService	actorService;
 	@Autowired
-	private MemberService memberService;
+	private MemberService	memberService;
+	@Autowired
+	private SponsorService	sponsorService;
+
 
 	// Constructors -----------------------------------------------------------
 
@@ -49,6 +53,8 @@ public class DeleteUserController extends AbstractController {
 		try {
 			if (authorities.get(0).toString().equals("MEMBER"))
 				this.memberService.deleteLoggedMember();
+			else if (authorities.get(0).toString().equals("SPONSOR"))
+				this.sponsorService.deleteSponsor();
 			result = new ModelAndView("redirect:/j_spring_security_logout");
 		} catch (Throwable oops) {
 			result = new ModelAndView("redirect:/");

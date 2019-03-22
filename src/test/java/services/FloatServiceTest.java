@@ -84,24 +84,27 @@ public class FloatServiceTest extends AbstractTest {
 	 * their floats, which includes creating them
 	 */
 	@Test
-	public void driverCreateFloatIfBrotherhood() {
+	public void driverCreateFloatAndPictureIfBrotherhood() {
 
 		Object testingData[][] = {
 				// Positive test
-				{ "brotherhood1", "Float title", "Float description", null },
+				{ "brotherhood1", "Float title", "Float description", "https://www.url.com", null },
 				// Negative test: Trying to save a float with a different role
-				{ "admin1", "Float title", "Float description", IllegalArgumentException.class },
+				{ "admin1", "Float title", "Float description", "https://www.url.com", IllegalArgumentException.class },
 				// Negative test: Trying to save a float with a brotherhood without area
-				{ "brotherhood4", "Float title", "Float description", IllegalArgumentException.class },
+				{ "brotherhood4", "Float title", "Float description", "https://www.url.com",
+						IllegalArgumentException.class },
 				// Negative test: Trying to save a float with a brotherhood with a blank title
-				{ "brotherhood1", "", "Float description", ConstraintViolationException.class } };
+				{ "brotherhood1", "", "Float description", "https://www.url.com", ConstraintViolationException.class },
+				// Negative test: Trying to save a float with a invalid picture
+				{ "brotherhood1", "Float title", "Float description", "", IllegalArgumentException.class } };
 		for (int i = 0; i < testingData.length; i++)
-			this.templateCreateFloatIfBrotherhood((String) testingData[i][0], (String) testingData[i][1],
-					(String) testingData[i][2], (Class<?>) testingData[i][3]);
+			this.templateCreateFloatAndPictureIfBrotherhood((String) testingData[i][0], (String) testingData[i][1],
+					(String) testingData[i][2], (String) testingData[i][3], (Class<?>) testingData[i][4]);
 	}
 
-	private void templateCreateFloatIfBrotherhood(String username, String title, String description,
-			Class<?> expected) {
+	private void templateCreateFloatAndPictureIfBrotherhood(String username, String title, String description,
+			String picture, Class<?> expected) {
 		domain.Float floatt = this.floatService.create();
 
 		floatt.setTitle(title);
@@ -114,7 +117,8 @@ public class FloatServiceTest extends AbstractTest {
 
 			super.authenticate(username);
 
-			this.floatService.save(floatt);
+			this.floatService.addPicture(picture, floatt);
+
 			this.floatService.flush();
 
 			super.unauthenticate();

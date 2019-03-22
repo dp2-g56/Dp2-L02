@@ -228,6 +228,9 @@ public class FloatService {
 
 	public domain.Float addPicture(String picture, domain.Float floatt) {
 		this.brotherhoodService.loggedAsBrotherhood();
+
+		Assert.isTrue(!picture.trim().isEmpty() && this.isUrl(picture));
+
 		floatt.getPictures().add(picture);
 		return this.save(floatt);
 	}

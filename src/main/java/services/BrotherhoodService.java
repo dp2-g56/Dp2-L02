@@ -19,8 +19,14 @@ import domain.Box;
 import domain.Brotherhood;
 import domain.Enrolment;
 import domain.Float;
+import domain.History;
+import domain.InceptionRecord;
+import domain.LegalRecord;
+import domain.LinkRecord;
 import domain.Member;
+import domain.MiscellaneousRecord;
 import domain.Parade;
+import domain.PeriodRecord;
 import domain.SocialProfile;
 import domain.StatusEnrolment;
 import forms.FormObjectBrotherhood;
@@ -374,6 +380,73 @@ public class BrotherhoodService {
 		return this.save(brotherhood);
 	}
 
+
+	public String SocialProfilesToString() {
+		String res = "";
+		Brotherhood brotherhood = this.loggedBrotherhood();
+		List<SocialProfile> socialProfiles = new ArrayList<SocialProfile>();
+		StringBuilder sb = new StringBuilder();
+		socialProfiles = brotherhood.getSocialProfiles();
+
+		Integer cont = 1;
+
+		for (SocialProfile f : socialProfiles) {
+			sb.append("Profile" + cont + " Name: " + f.getName() + " Nick: " + f.getNick() + " Profile link: "
+					+ f.getProfileLink()).append(System.getProperty("line.separator"));
+			cont++;
+		}
+		return sb.toString();
+	}
+
+	public String HistoryToString() {
+		Brotherhood brotherhood = this.loggedBrotherhood();
+		StringBuilder sb = new StringBuilder();
+		History h = brotherhood.getHistory();
+		InceptionRecord ir = h.getInceptionRecord();
+		List<LegalRecord> lr = h.getLegalRecords();
+		List<LinkRecord> lkr = h.getLinkRecords();
+		List<MiscellaneousRecord> mr = h.getMiscellaneousRecords();
+		List<PeriodRecord> pr = h.getPeriodRecords();
+		Integer cont = 1;
+		sb.append("History: ").append(System.getProperty("line.separator"));
+		sb.append("Inception record: " + "Title: " + ir.getTitle() + " Description: " + ir.getDescription()
+				+ " Photos: ");
+		for (String s : ir.getPhotos())
+			sb.append(s + " ");
+		sb.append(System.getProperty("line.separator"));
+		for (LegalRecord l : lr) {
+			sb.append("Legal record " + cont + " Title: " + l.getTitle() + " Legal name: " + l.getLegalName()
+					+ " Description: " + l.getDescription() + " VAT number: " + l.getVatNumber() + " Laws: ");
+			for (String s : l.getLaws())
+				sb.append(s + " ");
+			sb.append(System.getProperty("line.separator"));
+			cont++;
+		}
+		cont = 1;
+		for (LinkRecord lk : lkr) {
+			sb.append("Link record " + cont + " Title: " + lk.getTitle() + " Description: " + lk.getDescription()
+					+ " Link: " + lk.getLink()).append(System.getProperty("line.separator"));
+			cont++;
+		}
+		cont = 1;
+		for (MiscellaneousRecord m : mr) {
+			sb.append(
+					"Miscellaneous record " + cont + " Title: " + m.getTitle() + " Description: " + m.getDescription())
+					.append(System.getProperty("line.separator"));
+			cont++;
+		}
+		cont = 1;
+		for (PeriodRecord p : pr) {
+			sb.append("Period record " + cont + " Title: " + p.getTitle() + " Description: " + p.getDescription()
+					+ " Start year: " + p.getStartYear() + " End year: " + p.getEndYear() + " Photos: ");
+			for (String s : p.getPhotos())
+				sb.append(s + " ");
+			sb.append(System.getProperty("line.separator"));
+			cont++;
+		}
+		return sb.toString();
+	}
+
 	public void flush() {
 		this.brotherhoodRepository.flush();
 
@@ -381,5 +454,6 @@ public class BrotherhoodService {
 	public Brotherhood getBrotherhoodByUsername(String username) {
 		return this.brotherhoodRepository.getBrotherhoodByUsername(username);
 	}
+
 
 }

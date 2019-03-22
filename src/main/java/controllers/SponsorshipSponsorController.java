@@ -1,9 +1,12 @@
 
 package controllers;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +18,12 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import domain.CreditCard;
 import domain.Parade;
+import domain.Sponsor;
 import domain.Sponsorship;
 import forms.FormObjectSponsorshipCreditCard;
 import services.ActorService;
@@ -219,6 +224,51 @@ public class SponsorshipSponsorController extends AbstractController {
 		}
 
 		return result;
+	}
+
+	@RequestMapping(value = "/export", method = RequestMethod.GET)
+	public @ResponseBody String export(@RequestParam(value = "id", defaultValue = "-1") int id,
+			HttpServletResponse response) throws IOException {
+
+		this.sponsorService.loggedAsSponsor();
+
+		Sponsor sponsor = new Sponsor();
+		sponsor = this.sponsorService.findOne(id);
+
+		// Defines un StringBuilder para construir tu string
+		StringBuilder sb = new StringBuilder();
+
+		// Cada append a�ade una linea, cada "line.separator" a�ade un salto de linea
+		sb.append("Personal data:").append(System.getProperty("line.separator"));
+		sb.append("Name: " + sponsor.getName()).append(System.getProperty("line.separator"));
+		sb.append("Middle name: " + sponsor.getMiddleName()).append(System.getProperty("line.separator"));
+		sb.append("Surname: " + sponsor.getSurname()).append(System.getProperty("line.separator"));
+		sb.append("Address: " + sponsor.getAddress()).append(System.getProperty("line.separator"));
+		sb.append("Email: " + sponsor.getEmail()).append(System.getProperty("line.separator"));
+		sb.append("Photo: " + sponsor.getPhoto()).append(System.getProperty("line.separator"));
+		sb.append("Phone: " + sponsor.getPhoneNumber()).append(System.getProperty("line.separator"));
+		sb.append(System.getProperty("line.separator"));
+		sb.append("SocialProfiles: ").append(System.getProperty("line.separator"));
+
+		// Este metodo te muestra los socialProfiles de la misma manera que el resto del
+		// documento
+		sb.append(this.sponsorService.SocialProfilesToString()).append(System.getProperty("line.separator"));
+
+		if (sponsor == null || this.sponsorService.loggedSponsor().getId() != id)
+			return null;
+
+		// Defines el nombre del archivo y la extension
+		response.setContentType("text/txt");
+		response.setHeader("Content-Disposition", "attachment;filename=exportDataSponsor.txt");
+
+		// Con estos comandos permites su descarga cuando clickas
+		ServletOutputStream outStream = response.getOutputStream();
+		outStream.println(sb.toString());
+		outStream.flush();
+		outStream.close();
+
+		// El return no llega nunca, es del metodo viejo
+		return sb.toString();
 	}
 
 }

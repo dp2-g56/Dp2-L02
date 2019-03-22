@@ -10,6 +10,8 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<!-- Artifact identification and properties -->
+	
+	
 
 	<groupId>Acme.com</groupId>
 	<artifactId>Acme-Madruga</artifactId>
@@ -31,6 +33,14 @@
 		<plugins>
 
 			<!-- Java compiler -->
+
+      <plugin>
+        <groupId>org.sonarsource.scanner.maven</groupId>
+        <artifactId>sonar-maven-plugin</artifactId>
+        <version>3.6.0.1398</version>
+      </plugin>
+
+
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -314,6 +324,10 @@
 		</dependency>
 
 	</dependencies>
+	
+	
+	
+	
 
 	<description>This system allows people share their favourite Shouts.</description>
 </project> 

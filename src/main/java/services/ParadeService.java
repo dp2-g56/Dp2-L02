@@ -16,8 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
 
-import repositories.ParadeRepository;
-import utilities.RandomString;
 import domain.Area;
 import domain.Brotherhood;
 import domain.Chapter;
@@ -28,6 +26,8 @@ import domain.Path;
 import domain.Request;
 import forms.FormObjectParadeFloat;
 import forms.FormObjectParadeFloatCheckbox;
+import repositories.ParadeRepository;
+import utilities.RandomString;
 
 @Service
 @Transactional
@@ -36,12 +36,13 @@ public class ParadeService {
 	// Managed repository ------------------------------------------
 
 	@Autowired
-	private ParadeRepository	paradeRepository;
+	private ParadeRepository paradeRepository;
 	@Autowired
-	private BrotherhoodService	brotherhoodService;
+	private BrotherhoodService brotherhoodService;
 	@Autowired
-	private SponsorService		sponsorService;
-
+	private SponsorService sponsorService;
+	@Autowired
+	private PathService pathService;
 
 	// Simple CRUD methods ------------------------------------------
 
@@ -56,9 +57,6 @@ public class ParadeService {
 		Parade parade = new Parade();
 
 		List<Float> floats = new ArrayList<>();
-		List<Path> paths = new ArrayList<>();
-
-		parade.setPaths(paths);
 		parade.setFloats(floats);
 
 		parade.setColumnNumber(0);
@@ -76,10 +74,13 @@ public class ParadeService {
 
 		parade.setTitle("");
 
+		parade.setParadeStatus(ParadeStatus.SUBMITTED);
+
 		return parade;
 	}
 
-	public Parade edit(Parade parade, int columnNumber, int rowNumber, String description, boolean isDraftMode, String title, Date moment) {
+	public Parade edit(Parade parade, int columnNumber, int rowNumber, String description, boolean isDraftMode,
+			String title, Date moment) {
 
 		// Security
 		this.brotherhoodService.loggedAsBrotherhood();
@@ -105,6 +106,8 @@ public class ParadeService {
 		Parade saved = this.save(parade);
 		parades.add(saved);
 		loggedBrotherhood.setParades(parades);
+
+		parade.setParadeStatus(ParadeStatus.SUBMITTED);
 
 		this.brotherhoodService.save(loggedBrotherhood);
 
@@ -152,11 +155,9 @@ public class ParadeService {
 		}
 		date1 = df_in.format(date);
 		res = res + date1 + "-" + gen;
-		for (Parade c : lc) {
-			if (c.getTicker() == res) {
+		for (Parade c : lc)
+			if (c.getTicker() == res)
 				return this.generateTicker();
-			}
-		}
 		return res;
 	}
 
@@ -186,9 +187,7 @@ public class ParadeService {
 		result.setRowNumber(formObjectParadeCoach.getRowNumber());
 		result.setColumnNumber(formObjectParadeCoach.getColumnNumber());
 		result.setId(0);
-		if (!formObjectParadeCoach.getIsDraftMode()) {
-			result.setParadeStatus(ParadeStatus.SUBMITTED);
-		}
+		result.setParadeStatus(ParadeStatus.SUBMITTED);
 
 		result.setTicker(this.generateTicker());
 
@@ -197,14 +196,14 @@ public class ParadeService {
 		return result;
 	}
 
-	public Parade reconstructCheckbox(FormObjectParadeFloatCheckbox formObjectParadeFloatCheckbox, BindingResult binding) {
+	public Parade reconstructCheckbox(FormObjectParadeFloatCheckbox formObjectParadeFloatCheckbox,
+			BindingResult binding) {
 		Parade result = new Parade();
 
-		if (formObjectParadeFloatCheckbox.getId() == 0) {
+		if (formObjectParadeFloatCheckbox.getId() == 0)
 			result.setTicker(this.generateTicker());
-		} else {
+		else
 			result = this.paradeRepository.findOne(formObjectParadeFloatCheckbox.getId());
-		}
 
 		result.setTitle(formObjectParadeFloatCheckbox.getTitleParade());
 		result.setDescription(formObjectParadeFloatCheckbox.getDescriptionParade());
@@ -212,9 +211,7 @@ public class ParadeService {
 		result.setIsDraftMode(formObjectParadeFloatCheckbox.getIsDraftMode());
 		result.setRowNumber(formObjectParadeFloatCheckbox.getRowNumber());
 		result.setColumnNumber(formObjectParadeFloatCheckbox.getColumnNumber());
-		if (!formObjectParadeFloatCheckbox.getIsDraftMode()) {
-			result.setParadeStatus(ParadeStatus.SUBMITTED);
-		}
+		result.setParadeStatus(ParadeStatus.SUBMITTED);
 
 		// this.validator.validate(result, binding); //YA VIENE VALIDADO
 
@@ -242,7 +239,7 @@ public class ParadeService {
 		Assert.isTrue(brotherhood.getParades().contains(paradeToCopy) && paradeCopy.getId() == 0);
 		Assert.isTrue(paradeToCopy.getFloats().size() >= 0);
 		Assert.isTrue(paradeToCopy.getRequests().size() >= 0);
-		//Assert.isTrue(paradeToCopy.getPaths().size() >= 0);
+		// Assert.isTrue(paradeToCopy.getPaths().size() >= 0);
 
 		paradeCopy.setColumnNumber(paradeToCopy.getColumnNumber());
 		paradeCopy.setRowNumber(paradeToCopy.getRowNumber());
@@ -251,7 +248,7 @@ public class ParadeService {
 		paradeCopy.setTitle(paradeToCopy.getTitle());
 
 		paradeCopy.setFloats(paradeToCopy.getFloats());
-		paradeCopy.setPaths(paradeToCopy.getPaths());
+		paradeCopy.setPath(paradeToCopy.getPath());
 		paradeCopy.setRequests(paradeToCopy.getRequests());
 
 		Parade saved = new Parade();
@@ -330,9 +327,8 @@ public class ParadeService {
 		FormObjectParadeFloatCheckbox result = new FormObjectParadeFloatCheckbox();
 
 		List<Integer> floats = new ArrayList<>();
-		for (domain.Float f : parade.getFloats()) {
+		for (domain.Float f : parade.getFloats())
 			floats.add(f.getId());
-		}
 
 		result.setColumnNumber(parade.getColumnNumber());
 		result.setDescriptionParade(parade.getDescription());
@@ -408,6 +404,27 @@ public class ParadeService {
 
 		return parades;
 
+	}
+
+	public void paradeSecurity(Parade parade) {
+		this.brotherhoodService.securityAndBrotherhood();
+		Brotherhood brotherhood = this.brotherhoodService.loggedBrotherhood();
+		Assert.isTrue(brotherhood.getParades().contains(parade));
+	}
+
+	public void putOrDeletePath(Integer paradeId) {
+		Parade parade = this.findOne(paradeId);
+		Path path = parade.getPath();
+		this.paradeSecurity(parade);
+		if (path == null) {
+			path = new Path();
+			path = this.pathService.save(path);
+			parade.setPath(path);
+		} else {
+			parade.setPath(null);
+			this.pathService.delete(path);
+		}
+		this.save(parade);
 	}
 
 }

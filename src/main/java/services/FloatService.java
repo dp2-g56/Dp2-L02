@@ -72,6 +72,7 @@ public class FloatService {
 
 	public List<domain.Float> showBrotherhoodFloats() {
 		Brotherhood bro = new Brotherhood();
+		this.brotherhoodService.loggedAsBrotherhood();
 		bro = this.brotherhoodService.loggedBrotherhood();
 		List<domain.Float> floatts = new ArrayList<domain.Float>();
 		floatts = bro.getFloats();
@@ -239,4 +240,23 @@ public class FloatService {
 			return false;
 		}
 	}
+
+	public List<String> getPicturesOfFloat(int floatId, boolean parade) {
+		this.brotherhoodService.loggedAsBrotherhood();
+
+		Assert.isTrue(parade);
+
+		domain.Float floatt;
+
+		List<String> pictures;
+
+		floatt = this.findOne(floatId);
+
+		Assert.notNull(floatt);
+
+		pictures = floatt.getPictures();
+
+		return pictures;
+	}
+
 }

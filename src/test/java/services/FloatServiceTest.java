@@ -188,7 +188,7 @@ public class FloatServiceTest extends AbstractTest {
 
 	/**
 	 * Test the use case detailed in requirement 10.1 (Acme-Madruga project): Manage
-	 * their floats, which includes updating them
+	 * their floats, which includes removing them
 	 */
 	@Test
 	public void driverRemoveFloatIfBrotherhood() {

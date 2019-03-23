@@ -186,4 +186,53 @@ public class FloatServiceTest extends AbstractTest {
 
 	}
 
+	/**
+	 * Test the use case detailed in requirement 10.1 (Acme-Madruga project): Manage
+	 * their floats, which includes updating them
+	 */
+	@Test
+	public void driverRemoveFloatIfBrotherhood() {
+		// Float of brotherhood2 that is not assigned to any parade
+		domain.Float floatt = this.floatService.findOne(super.getEntityId("float3"));
+		// Float of brotherhood1 that is assigned to one parade
+		domain.Float floatt2 = this.floatService.findOne(super.getEntityId("float1"));
+
+		Object testingData[][] = {
+				// Positive test
+				{ "brotherhood2", floatt, null },
+				// Negative test: Trying to remove a float with a different brotherhood
+				{ "brotherhood1", floatt, IllegalArgumentException.class },
+				// Negative test: Trying to remove a float with a different role
+				{ "member1", floatt, IllegalArgumentException.class },
+				// Negative test: Trying to remove a float that is assigned to one parade
+				{ "brotherhood1", floatt2, IllegalArgumentException.class } };
+		for (int i = 0; i < testingData.length; i++)
+			this.templateRemoveFloatIfBrotherhood((String) testingData[i][0], (domain.Float) testingData[i][1],
+					(Class<?>) testingData[i][2]);
+	}
+
+	private void templateRemoveFloatIfBrotherhood(String username, domain.Float floatt, Class<?> expected) {
+
+		Class<?> caught = null;
+
+		try {
+			super.startTransaction();
+
+			super.authenticate(username);
+
+			this.floatService.remove(floatt);
+
+			this.floatService.flush();
+
+			super.unauthenticate();
+		} catch (Throwable oops) {
+			caught = oops.getClass();
+		} finally {
+			super.rollbackTransaction();
+		}
+
+		super.checkExceptions(expected, caught);
+
+	}
+
 }

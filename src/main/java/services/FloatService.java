@@ -95,12 +95,24 @@ public class FloatService {
 		bro = this.brotherhoodService.loggedBrotherhood();
 		List<Parade> pro = new ArrayList<Parade>();
 
+		Assert.isTrue(bro.getFloats().contains(floatt));
+
 		pro = this.brotherhoodService.getParadesByBrotherhood(bro);
 		Assert.isTrue(this.allParadesDraftMode(pro));
 		for (final Parade p : pro)
-			if (p.getFloats().contains(floatt))
-				p.getFloats().remove(floatt);
-		bro.getFloats().remove(floatt);
+			if (p.getFloats().contains(floatt)) {
+				Assert.isTrue(!p.getIsDraftMode());
+
+				List<domain.Float> floatss = p.getFloats();
+				floatss.remove(floatt);
+				p.setFloats(floatss);
+				this.paradeService.save(p);
+			}
+		List<domain.Float> floatsBro = bro.getFloats();
+		floatsBro.remove(floatt);
+		bro.setFloats(floatsBro);
+
+		this.brotherhoodService.save(bro);
 		this.floatRepository.delete(floatt);
 	}
 

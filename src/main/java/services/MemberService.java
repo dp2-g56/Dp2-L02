@@ -276,7 +276,6 @@ public class MemberService {
 		return result;
 	}
 
-
 	public String SocialProfilesToString() {
 		String res = "";
 		Member member = this.loggedMember();

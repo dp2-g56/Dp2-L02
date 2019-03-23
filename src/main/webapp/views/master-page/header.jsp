@@ -100,6 +100,10 @@
 			</li>
 		</security:authorize>
 		
+		
+		
+		
+		
 		<security:authorize access="isAuthenticated()">
 			<li>
 				<a class="fNiv"> 
@@ -114,13 +118,17 @@
 									
 					<li><a href="box/actor/list.do"><spring:message code="master.page.mailSystem" /> </a></li>
 					
-					<li><a href="authenticated/deleteUser.do" onClick="return confirm('<spring:message code="delete.user.confirmation" />')"><spring:message code="master.page.deleteUser" /> </a></li>
 					
 					<li><a href="j_spring_security_logout"><spring:message code="master.page.logout" /> </a></li>
 				</ul>
 			</li>
 			<li><a class="fNiv" href="showAll/annonymous/brotherhood/list.do"><spring:message code="master.page.annonymous" /></a></li>
 		</security:authorize>
+		
+		<security:authorize access="hasAnyRole('CHAPTER', 'MEMBER', 'SPONSOR', 'BROTHERHOOD' )">
+		<li><a href="authenticated/deleteUser.do" onClick="return confirm('<spring:message code="delete.user.confirmation" />')"><spring:message code="master.page.deleteUser" /> </a></li>
+		</security:authorize>
+		
 	</ul>
 </div>
 

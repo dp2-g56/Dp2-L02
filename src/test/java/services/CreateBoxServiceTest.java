@@ -1,6 +1,8 @@
 
 package services;
 
+import javax.validation.ConstraintViolationException;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +35,9 @@ public class CreateBoxServiceTest extends AbstractTest {
 				//Positive test, create a box with no father box
 				"admin1", "box", "", null
 			}, {
+				//Positive test, create a box with no father box
+				"admin1", "", "inBoxAdmin1", ConstraintViolationException.class
+			}, {
 				//Negative test, null fatherBox
 				"admin1", "box", null, NullPointerException.class
 			}, {
@@ -42,7 +47,7 @@ public class CreateBoxServiceTest extends AbstractTest {
 				//Negative test, not logged
 				"", "box", "", IllegalArgumentException.class
 			}, {
-				//Negative test, not logged
+				//Negative test, add a fatherBox that is not yours
 				"admin1", "box", "inBoxAdmin2", IllegalArgumentException.class
 			}
 		};

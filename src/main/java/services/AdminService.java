@@ -127,7 +127,8 @@ public class AdminService {
 		return admin;
 	}
 
-	public Admin createAdmin(String name, String middleName, String surname, String photo, String email, String phoneNumber, String address, String userName, String password) {
+	public Admin createAdmin(String name, String middleName, String surname, String photo, String email,
+			String phoneNumber, String address, String userName, String password) {
 
 		Admin admin = new Admin();
 
@@ -744,7 +745,6 @@ public class AdminService {
 		return result;
 	}
 
-
 	public String SocialProfilesToString() {
 		String res = "";
 		Admin admin = this.loggedAdmin();
@@ -769,6 +769,7 @@ public class AdminService {
 	public Admin getAdminByUsername(String username) {
 		return this.adminRepository.getAdminByUsername(username);
 	}
+
 	public Admin updateAdmin(Admin admin) {
 		this.loggedAsAdmin();
 		Assert.isTrue(admin.getId() != 0 && this.loggedAdmin().getId() == admin.getId());

@@ -1,4 +1,4 @@
-<%@page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
+ <%@page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
 
 <%@taglib prefix="jstl"	uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="spring" uri="http://www.springframework.org/tags"%>
@@ -45,6 +45,11 @@
 	
 	
 	<jstl:choose>
+	
+		
+				<jstl:when test="${row.isDraftMode}">
+					<jstl:set var="color" value="black" />
+				</jstl:when>
 				<jstl:when test="${row.paradeStatus.toString() == 'SUBMITTED'}">
 		
 					<jstl:set var="color" value="grey" />
@@ -72,6 +77,7 @@
 		
 				</jstl:when>
 		
+		
 			</jstl:choose>
 	
 	<display:column titleKey="parade.ticker" >
@@ -98,29 +104,7 @@
 			<font color="${color}"><jstl:out value="${row.columnNumber} "/> </font>
 	</display:column>
 	
-    
-    <display:column titleKey="parade.isDraftMode">
-		<jstl:if test="${row.isDraftMode}" >
-			<font color="${color}">	<spring:message code="parade.draftMode" /> </font>
-		</jstl:if>
-		<jstl:if test="${!row.isDraftMode}" >
-			<font color="${color}">	<spring:message code="parade.finalMode" /> </font>
-		</jstl:if>
-
-	</display:column>
-	
-	<display:column titleKey="parade.paradeStatus" >
-		<jstl:choose>
-			<jstl:when test="${locale=='es'}">
-						<font color="${color}"><jstl:out value="${statusName} "/> </font>
-			</jstl:when>
-			<jstl:otherwise>
-						<font color="${color}"><jstl:out value="${row.paradeStatus} "/> </font>
-			</jstl:otherwise>
-		
-		</jstl:choose>
-
-	</display:column>
+ 
 	
 		
 	<display:column titleKey="parade.floats">
@@ -163,6 +147,14 @@
 	<display:column titleKey="parade.rejectedReason">
 		<jstl:if test="${row.paradeStatus == 'REJECTED'}" >
 				<font color="${color}"><jstl:out value="${row.rejectedReason}"/></font>
+
+</jstl:if>
+</display:column>
+	<display:column>
+		<jstl:if test="${row.isDraftMode}">
+			<a href="parade/brotherhood/editCheckbox.do?paradeId=${row.id}">
+				<spring:message code="parade.edit" />
+			</a>
 		</jstl:if>
 	</display:column>
 	

@@ -82,17 +82,11 @@ public class SponsorshipServiceTest extends AbstractTest {
 						24, 778, parade2, "sponsor1", IllegalArgumentException.class },
 				// Negative test: Trying to create a sponsorship with the banner in blank
 				{ "", "https://www.imagen.com.mx/assets/img/imagen_share.png", "David", "VISA", 4980003406100008L, 3,
-						24, 778, parade, "sponsor1", ConstraintViolationException.class }
-
-//				// Negative test: Trying to create a sponsorship with holderName in blank
-//				{ "https://www.imagen.com.mx/assets/img/imagen_share.png",
-//						"https://www.imagen.com.mx/assets/img/imagen_share.png", "", "VISA", 4980003406100008L, 3, 24,
-//						778, parade, "sponsor1", ConstraintViolationException.class },
-//				// Negative test: Trying to create a sponsorship with number as null
-//				{ "https://www.imagen.com.mx/assets/img/imagen_share.png",
-//						"https://www.imagen.com.mx/a++" + "ssets/img/imagen_share.png", "David", "VISA", null, 3, 24,
-//						778, parade, "sponsor1", ConstraintViolationException.class }
-		};
+						24, 778, parade, "sponsor1", ConstraintViolationException.class },
+				// Negative test: Trying to create a sponsorship with holderName in blank
+				{ "https://www.imagen.com.mx/assets/img/imagen_share.png",
+						"https://www.imagen.com.mx/assets/img/imagen_share.png", "", "VISA", 4980003406100008L, 3, 24,
+						778, parade, "sponsor1", ConstraintViolationException.class } };
 
 		for (int i = 0; i < testingData.length; i++)
 			this.templateAddSponsorship((String) testingData[i][0], (String) testingData[i][1],

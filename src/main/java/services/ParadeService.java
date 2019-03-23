@@ -43,10 +43,11 @@ public class ParadeService {
 	@Autowired
 	private SponsorService		sponsorService;
 	@Autowired
+	private FloatService floatService;
+	@Autowired
 	private PathService			pathService;
 	@Autowired
 	private SegmentService		segmentService;
-
 
 	// Simple CRUD methods ------------------------------------------
 
@@ -56,7 +57,7 @@ public class ParadeService {
 		// Asegurar que la Brotherhood logueada tiene un área
 		this.brotherhoodService.loggedAsBrotherhood();
 		Brotherhood loggedBrotherhood = this.brotherhoodService.loggedBrotherhood();
-		Assert.isTrue(!(loggedBrotherhood.getArea().equals(null)));
+		Assert.notNull(loggedBrotherhood.getArea());
 
 		Parade parade = new Parade();
 
@@ -224,6 +225,8 @@ public class ParadeService {
 	}
 
 	public Parade saveAssign(Parade parade, domain.Float newFloat) {
+		this.brotherhoodService.loggedAsBrotherhood();
+
 		List<domain.Float> floats = new ArrayList<>();
 		floats.add(newFloat);
 		parade.setFloats(floats);
@@ -291,6 +294,7 @@ public class ParadeService {
 	}
 
 	public List<Parade> filterParadesBrotherhood(Brotherhood bro, String option) {
+		this.brotherhoodService.loggedAsBrotherhood();
 
 		switch (option) {
 		case "REJECTED":
@@ -328,14 +332,20 @@ public class ParadeService {
 	}
 
 	public Parade saveAssignList(Parade parade, List<domain.Float> floats) { // TERMINADO
+		this.brotherhoodService.loggedAsBrotherhood();
 
-		// parade.getFloats().add(newFloat);
+		Brotherhood brotherhood = this.brotherhoodService.loggedBrotherhood();
+		Assert.notNull(brotherhood.getArea());
+
+		for (Float f : floats)
+			Assert.isTrue(brotherhood.getFloats().contains(f) && f.getId() > 0);
+
+		if (parade.getId() > 0)
+			Assert.isTrue(this.findOne(parade.getId()).getIsDraftMode());
 
 		parade.setFloats(floats);
 		Parade saved = new Parade();
 		saved = this.paradeRepository.save(parade);
-
-		Brotherhood brotherhood = this.brotherhoodService.loggedBrotherhood();
 
 		brotherhood.getParades().remove(parade); // NUEVO
 		brotherhood.getParades().add(saved);
@@ -372,9 +382,9 @@ public class ParadeService {
 		return result;
 	}
 
-	public void delete(FormObjectParadeFloatCheckbox formObjectParadeFloatCheckbox) {
+	public void deleteParadeWithId(int paradeId) {
 
-		Parade parade = this.paradeRepository.findOne(formObjectParadeFloatCheckbox.getId());
+		Parade parade = this.paradeRepository.findOne(paradeId);
 
 		this.brotherhoodService.loggedAsBrotherhood();
 
@@ -455,6 +465,12 @@ public class ParadeService {
 			this.pathService.delete(path);
 		}
 		this.save(parade);
+	}
+
+	public void saveFloatAndAssignToParade(Float coach, Parade parade) {
+		this.brotherhoodService.loggedAsBrotherhood();
+		domain.Float savedFloat = this.floatService.save(coach);
+		this.saveAssign(parade, savedFloat);
 	}
 
 }

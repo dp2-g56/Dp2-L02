@@ -775,4 +775,8 @@ public class AdminService {
 		Assert.isTrue(admin.getId() != 0 && this.loggedAdmin().getId() == admin.getId());
 		return this.adminRepository.save(admin);
 	}
+
+	public Float maxParadesCoordinated() {
+		return this.adminRepository.maxParadesCoordinated();
+	}
 }

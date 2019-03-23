@@ -15,31 +15,47 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
+import domain.Admin;
+import domain.Brotherhood;
+import domain.Chapter;
+import domain.History;
+import domain.LegalRecord;
+import domain.Sponsor;
 import repositories.AdminRepository;
 import security.Authority;
 import security.UserAccount;
 import utilities.AbstractTest;
-import domain.Admin;
-import domain.History;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {
-	"classpath:spring/junit.xml"
-})
+@ContextConfiguration(locations = { "classpath:spring/junit.xml" })
 @Transactional
 public class AdminServiceTest extends AbstractTest {
 
 	@Autowired
-	private AdminService	adminService;
+	private AdminService adminService;
 
 	@Autowired
-	private AdminRepository	adminRepository;
+	private AdminRepository adminRepository;
 
 	@Autowired
-	private HistoryService	historyService;
+	private HistoryService historyService;
 
+	@Autowired
+	private BrotherhoodService brotherhoodService;
 
-	//@Test
+	@Autowired
+	private ChapterService chapterService;
+
+	@Autowired
+	private AreaService areaService;
+
+	@Autowired
+	private ParadeService paradeService;
+
+	@Autowired
+	private FloatService floatService;
+
+	// @Test
 	public void testCreate() {
 
 		System.out.println("Estadisticas varias");
@@ -74,71 +90,56 @@ public class AdminServiceTest extends AbstractTest {
 
 	}
 
-	//@Test
-	public void testMinRecordsPerHistory() {
-		Float res = this.adminRepository.minNumberRecordsPerHistory();
-		Float com = Float.MAX_VALUE;
-		List<History> h = this.historyService.findAll();
-		for (History a : h) {
-			if ((1 + a.getLegalRecords().size() + a.getLinkRecords().size() + a.getMiscellaneousRecords().size() + a.getPeriodRecords().size()) < com) {
-				com = (float) (1 + a.getLegalRecords().size() + a.getLinkRecords().size() + a.getMiscellaneousRecords().size() + a.getPeriodRecords().size());
-			}
-		}
-		Assert.isTrue(com.equals(res));
-	}
-
-	//********************************************************************************
+	// ********************************************************************************
 
 	@Test
 	public void driverRegister() {
 		Object testingData[][] = {
-			{
-				"admin1", "AdminTest1", "name1", "surname1", "emailTest@gmail.com", "https://www.example.com/", null
-			}, {
-				"admin1", "", "name1", "surname1", "emailTest@gmail.com", "https://www.example.com/", ConstraintViolationException.class
-			}, {
-				"admin1", "AdminTest2", "", "surname2", "emailTest2@gmail.com", "https://www.example2.com/", ConstraintViolationException.class
-			}, {
-				"admin1", "AdminTest3", "name3", "", "emailTest3@gmail.com", "https://www.example3.com/", ConstraintViolationException.class
-			}, {
-				"admin1", "AdminTest4", "name1", "surname1", "emailTest@gmail.com", "invalid url", ConstraintViolationException.class
-			}, {
-				"admin1", "AdminTest8", "name1", "surname1", "invalid email", "https://www.example.com/", ConstraintViolationException.class
-			}
-		};
+				{ "admin1", "AdminTest1", "name1", "surname1", "emailTest@gmail.com", "https://www.example.com/",
+						null },
+				{ "admin1", "", "name1", "surname1", "emailTest@gmail.com", "https://www.example.com/",
+						ConstraintViolationException.class },
+				{ "admin1", "AdminTest2", "", "surname2", "emailTest2@gmail.com", "https://www.example2.com/",
+						ConstraintViolationException.class },
+				{ "admin1", "AdminTest3", "name3", "", "emailTest3@gmail.com", "https://www.example3.com/",
+						ConstraintViolationException.class },
+				{ "admin1", "AdminTest4", "name1", "surname1", "emailTest@gmail.com", "invalid url",
+						ConstraintViolationException.class },
+				{ "admin1", "AdminTest8", "name1", "surname1", "invalid email", "https://www.example.com/",
+						ConstraintViolationException.class } };
 
-		for (int i = 0; i < testingData.length; i++) {
-			this.templateRegister((String) testingData[i][0], (String) testingData[i][1], (String) testingData[i][2], (String) testingData[i][3], (String) testingData[i][4], (String) testingData[i][5], (Class<?>) testingData[i][6]);
-		}
+		for (int i = 0; i < testingData.length; i++)
+			this.templateRegister((String) testingData[i][0], (String) testingData[i][1], (String) testingData[i][2],
+					(String) testingData[i][3], (String) testingData[i][4], (String) testingData[i][5],
+					(Class<?>) testingData[i][6]);
 	}
 
 	@Test
 	public void driverEditPersonalData() {
 		Object testingData[][] = {
 
-			{
-				"Admin1", "Admin1", "name1", "surname1", "emailTest@gmail.com", "https://www.example.com/", null
-			}, {
-				"Admin1", "Admin1", "", "surname1", "emailTest@gmail.com", "https://www.example.com/", ConstraintViolationException.class
-			}, {
-				"Admin1", "Admin1", "name1", "", "emailTest@gmail.com", "https://www.example.com/", ConstraintViolationException.class
-			}, {
-				"Admin1", "Admin1", "name1", "surname1", "", "https://www.example.com/", ConstraintViolationException.class
-			}, {
-				"Admin1", "Admin1", "name1", "surname1", "invalid email", "https://www.example.com/", ConstraintViolationException.class
-			}, {
-				"Admin1", "Admin1", "name1", "surname1", "emailTest@gmail.com", "invalid url", ConstraintViolationException.class
-			}, {
-				"Admin2", "Admin1", "name1", "surname1", "emailTest@gmail.com", "https://www.example.com/", IllegalArgumentException.class
-			}
-		};
+				{ "Admin1", "Admin1", "name1", "surname1", "emailTest@gmail.com", "https://www.example.com/", null },
+				{ "Admin1", "Admin1", "", "surname1", "emailTest@gmail.com", "https://www.example.com/",
+						ConstraintViolationException.class },
+				{ "Admin1", "Admin1", "name1", "", "emailTest@gmail.com", "https://www.example.com/",
+						ConstraintViolationException.class },
+				{ "Admin1", "Admin1", "name1", "surname1", "", "https://www.example.com/",
+						ConstraintViolationException.class },
+				{ "Admin1", "Admin1", "name1", "surname1", "invalid email", "https://www.example.com/",
+						ConstraintViolationException.class },
+				{ "Admin1", "Admin1", "name1", "surname1", "emailTest@gmail.com", "invalid url",
+						ConstraintViolationException.class },
+				{ "Admin2", "Admin1", "name1", "surname1", "emailTest@gmail.com", "https://www.example.com/",
+						IllegalArgumentException.class } };
 
-		for (int i = 0; i < testingData.length; i++) {
-			this.templateEditPersonalData((String) testingData[i][0], (String) testingData[i][1], (String) testingData[i][2], (String) testingData[i][3], (String) testingData[i][4], (String) testingData[i][5], (Class<?>) testingData[i][6]);
-		}
+		for (int i = 0; i < testingData.length; i++)
+			this.templateEditPersonalData((String) testingData[i][0], (String) testingData[i][1],
+					(String) testingData[i][2], (String) testingData[i][3], (String) testingData[i][4],
+					(String) testingData[i][5], (Class<?>) testingData[i][6]);
 	}
 
-	protected void templateRegister(String username, String newUsername, String name, String surname, String email, String photo, Class<?> expected) {
+	protected void templateRegister(String username, String newUsername, String name, String surname, String email,
+			String photo, Class<?> expected) {
 		this.startTransaction();
 		super.authenticate(username);
 		Admin admin = this.adminService.createAdmin();
@@ -202,7 +203,8 @@ public class AdminServiceTest extends AbstractTest {
 
 	}
 
-	protected void templateEditPersonalData(String username, String usernameEdit, String name, String surname, String email, String photo, Class<?> expected) {
+	protected void templateEditPersonalData(String username, String usernameEdit, String name, String surname,
+			String email, String photo, Class<?> expected) {
 		this.startTransaction();
 		super.authenticate(username);
 		Admin editAdmin = this.adminService.getAdminByUsername(usernameEdit);
@@ -228,8 +230,9 @@ public class AdminServiceTest extends AbstractTest {
 		b.setId(editAdmin.getId());
 
 		/**
-		 * This is the first command used to force to rollback the database, it initialise a Transaction in this point, before we add the entity
-		 * in order to set the rollback to this point.
+		 * This is the first command used to force to rollback the database, it
+		 * initialise a Transaction in this point, before we add the entity in order to
+		 * set the rollback to this point.
 		 **/
 
 		/** End of first command. **/
@@ -242,12 +245,224 @@ public class AdminServiceTest extends AbstractTest {
 		}
 		super.checkExceptions(expected, caught);
 
-		/** This is the second command, it forces the database to rollback to the last transaction point that was set, in this case before we add the new entity. **/
+		/**
+		 * This is the second command, it forces the database to rollback to the last
+		 * transaction point that was set, in this case before we add the new entity.
+		 **/
 		this.unauthenticate();
 		this.rollbackTransaction();
 
 		/** End of second command. **/
 
+	}
+
+	@Test
+	public void testMaxNumberRecordsPerHistory() {
+		List<History> lh = this.historyService.findAll();
+		// Delete a record
+		History h = lh.get(0);
+		h.getLegalRecords().remove(0);
+		// Create a new record
+		LegalRecord l = new LegalRecord();
+		l.setTitle("title");
+		l.setDescription("description");
+		l.setLegalName("legalName");
+		l.setVatNumber("ES85274196A");
+		// Add the new record to the respective list of records
+		h.getLegalRecords().add(l);
+		// Obtain the query result
+		Float query = this.adminRepository.maxNumberRecordsPerHistory();
+		// Compare the query result with the expected result
+		Assert.isTrue(query == 5);
+	}
+
+	@Test
+	public void testMinNumberRecordsPerHistory() {
+		List<History> lh = this.historyService.findAll();
+		History h = lh.get(2);
+		// Create a new record
+		LegalRecord l = new LegalRecord();
+		l.setTitle("title");
+		l.setDescription("description");
+		l.setLegalName("legalName");
+		l.setVatNumber("ES85274196A");
+		// Add the new record to the respective list of records
+		h.getLegalRecords().add(l);
+		// Delete the record
+		h.getLegalRecords().remove(0);
+		// Obtain the query result
+		Float query = this.adminRepository.minNumberRecordsPerHistory();
+		// Compare the query result with the expected result
+		Assert.isTrue(query == 1);
+	}
+
+	@Test
+	public void testAvgNumberRecordsPerHistory() {
+		List<History> lh = this.historyService.findAll();
+		// Delete a record
+		History h = lh.get(0);
+		h.getLegalRecords().remove(0);
+		// Create a new record
+		LegalRecord l = new LegalRecord();
+		l.setTitle("title");
+		l.setDescription("description");
+		l.setLegalName("legalName");
+		l.setVatNumber("ES85274196A");
+		// Add the new record to the respective list of records
+		h.getLegalRecords().add(l);
+		// Obtain the query result
+		Float query = this.adminRepository.avgRecordsPerHistory();
+		// Compare the query result with the expected result
+		Assert.isTrue(query > 3);
+	}
+
+	@Test
+	public void testStddevNumberRecordsPerHistory() {
+		List<History> lh = this.historyService.findAll();
+		// Delete a record
+		History h = lh.get(0);
+		h.getLegalRecords().remove(0);
+		// Create a new record
+		LegalRecord l = new LegalRecord();
+		l.setTitle("title");
+		l.setDescription("description");
+		l.setLegalName("legalName");
+		l.setVatNumber("ES85274196A");
+		// Add the new record to the respective list of records
+		h.getLegalRecords().add(l);
+		// Obtain the query result
+		Float query = this.adminRepository.stddevRecordsPerHistory();
+		// Compare the query result with the expected result
+		Assert.isTrue(query > 1);
+	}
+
+	@Test
+	public void testBroLargestHistory() {
+		// Obtain all the brotherhoods
+		List<Brotherhood> lb = this.brotherhoodService.findAll();
+		// Obtain the brotherhood we expect as a result
+		Brotherhood b = lb.get(0);
+		List<Brotherhood> query = this.adminRepository.broLargestHistory();
+		// Compare
+		Assert.isTrue(query.contains(b));
+		Assert.isTrue(query.size() == 1);
+	}
+
+	@Test
+	public void testBroHistoryLargerThanAvg() {
+		List<Brotherhood> query = this.adminRepository.broHistoryLargerThanAvg();
+		// Compare
+		Assert.isTrue(query.size() == 2);
+	}
+
+	@Test
+	public void testRatioAreasNotCoordinated() {
+		Float query = this.adminRepository.ratioAreasNotCoordinated();
+		Assert.isTrue(query == 66);
+	}
+
+	@Test
+	public void testMaxParadesCoordinated() {
+		Float query = this.adminService.maxParadesCoordinated();
+		// Compare the query result with the expected result
+		Assert.isTrue(query == 3);
+	}
+
+	@Test
+	public void testMinParadesCoordinated() {
+		Float query = this.adminRepository.minParadesCoordinated();
+		// Compare the query result with the expected result
+		Assert.isTrue(query == 2);
+	}
+
+	@Test
+	public void testAvgParadesCoordinated() {
+		Float query = this.adminRepository.avgParadesCoordinated();
+		// Compare the query result with the expected result
+		Assert.isTrue(query == 2.5);
+	}
+
+	@Test
+	public void testStddevParadesCoordinated() {
+		Float query = this.adminRepository.stddevParadesCoordinated();
+		// Compare the query result with the expected result
+		Assert.isTrue(query == 0.5);
+	}
+
+	@Test
+	public void testChaptersThatCoordinateAtLeast() {
+		List<Chapter> query = this.adminRepository.chaptersThatCoordinateAtLeast();
+		Assert.isTrue(query.size() == 1);
+	}
+
+	@Test
+	public void testParadesDraftVSFinal() {
+		Float query = this.adminRepository.paradesDraftVSFinal();
+		// Compare the query result with the expected result
+		Assert.isTrue(query == 0.5);
+	}
+
+	@Test
+	public void testRatioParadesAcceptedRequests() {
+		Float query = this.adminRepository.ratioParadesAcceptedRequests();
+		// Compare the query result with the expected result
+		Assert.isTrue(query == 20.0);
+	}
+
+	@Test
+	public void testRatioParadesSubmittedRequests() {
+		Float query = this.adminRepository.ratioParadesSubmittedRequests();
+		// Compare the query result with the expected result
+		Assert.isTrue(query == 60.0);
+	}
+
+	@Test
+	public void testRatioParadesRejectedRequests() {
+		Float query = this.adminRepository.ratioParadesRejectedRequests();
+		// Compare the query result with the expected result
+		Assert.isTrue(query == 20.0);
+	}
+
+	@Test
+	public void testRatioActiveSponsorships() {
+		Float query = this.adminRepository.ratioActiveSponsorships();
+		// Compare the query result with the expected result
+		Assert.isTrue(query == 100.0);
+	}
+
+	@Test
+	public void testMaxSponsorshipsPerSponsor() {
+		Float query = this.adminRepository.maxSponsorshipsPerSponsor();
+		// Compare the query result with the expected result
+		Assert.isTrue(query == 2.0);
+	}
+
+	@Test
+	public void testMinSponsorshipsPerSponsor() {
+		Float query = this.adminRepository.minSponsorshipsPerSponsor();
+		// Compare the query result with the expected result
+		Assert.isTrue(query == 2.0);
+	}
+
+	@Test
+	public void testAvgSponsorshipsPerSponsor() {
+		Float query = this.adminRepository.avgSponsorshipsPerSponsor();
+		// Compare the query result with the expected result
+		Assert.isTrue(query == 2.0);
+	}
+
+	@Test
+	public void testStddevSponsorshipsPerSponsor() {
+		Float query = this.adminRepository.stddevSponsorshipsPerSponsor();
+		// Compare the query result with the expected result
+		Assert.isTrue(query == 0.0);
+	}
+
+	@Test
+	public void testTop5SponsorNumberActiveSponsorships() {
+		List<Sponsor> query = this.adminRepository.top5SponsorNumberActiveSponsorships();
+		// Compare the query result with the expected result
+		Assert.isTrue(query.size() == 1);
 	}
 
 }

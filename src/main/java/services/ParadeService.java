@@ -43,9 +43,10 @@ public class ParadeService {
 	@Autowired
 	private SponsorService		sponsorService;
 	@Autowired
-	private PathService pathService;
+	private PathService			pathService;
 	@Autowired
 	private SegmentService		segmentService;
+
 
 	// Simple CRUD methods ------------------------------------------
 
@@ -239,9 +240,9 @@ public class ParadeService {
 		return saved;
 	}
 
-	public Parade copy(Parade paradeToCopy, Parade paradeCopy) {
+	public Parade copy(Parade paradeToCopy) {
+		Parade paradeCopy = this.create();
 		Brotherhood brotherhood = this.brotherhoodService.loggedBrotherhood();
-		Assert.notNull(paradeToCopy);
 		Assert.isTrue(brotherhood.getParades().contains(paradeToCopy) && paradeCopy.getId() == 0);
 		Assert.isTrue(paradeToCopy.getFloats().size() >= 0);
 		Assert.isTrue(paradeToCopy.getRequests().size() >= 0);

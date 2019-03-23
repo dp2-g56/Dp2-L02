@@ -14,14 +14,18 @@ import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
+import repositories.MessageRepository;
 import security.Authority;
 import security.UserAccount;
 import utilities.AbstractTest;
 import domain.Area;
 import domain.Chapter;
+import domain.Message;
 import domain.Parade;
 import domain.ParadeStatus;
+import domain.Proclaim;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
@@ -31,14 +35,20 @@ import domain.ParadeStatus;
 public class ChapterServiceTest extends AbstractTest {
 
 	@Autowired
-	private ChapterService	chapterService;
+	private ChapterService		chapterService;
 	@Autowired
-	private ParadeService	paradeService;
+	private ParadeService		paradeService;
+	@Autowired
+	private MessageRepository	messageRepository;
+	@Autowired
+	private MessageService		messageService;
+	@Autowired
+	private ProclaimService		proclaimService;
 
 
 	/**
-	 * Driver for the method saveCreate from ChapterService. In this driver eight
-	 * eight cases are tested and are, in order:
+	 * Driver for the method saveCreate from ChapterService. In this driver
+	 * eight cases are tested, being in order:
 	 * 
 	 * 1. A positive case where none of the parameters are wrong and no error is
 	 * expected, which is indicated by "null" at the last parameter.
@@ -164,7 +174,7 @@ public class ChapterServiceTest extends AbstractTest {
 
 	/**
 	 * This driver shows the effect described in the commented section above the
-	 * first driver. This effect takes place if no rollback is force and no
+	 * first driver. This effect take place if no rollback is forced and no
 	 * additional Asserts are uncommented from the tested method. As you can see it
 	 * is expected DataIntegrityViolationException after the second test for every
 	 * consequent test because of the Duplicate Key from id = 0.
@@ -204,12 +214,12 @@ public class ChapterServiceTest extends AbstractTest {
 	}
 
 	/**
-	 * On this driver we are testing that the Chapter must select an Area that is
-	 * free and even more cases.
+	 * In this driver we are testing that the Chapter must select an Area that is
+	 * free.
 	 * 
 	 * 1. This is a positive test, is simple.
 	 * 
-	 * 2. The Chapter 2 is trying to take an Area that is take up by another
+	 * 2. The Chapter 2 is trying to take an Area that is taken by another
 	 * chapter.
 	 * 
 	 * 3. The Chapter 1 is trying to null his Area when he almost select one.
@@ -260,6 +270,34 @@ public class ChapterServiceTest extends AbstractTest {
 		}
 	}
 
+	/**
+	 * Driver for the method update from ChapterService. In this driver
+	 * eight cases are tested, being in order:
+	 * 
+	 * 1. A positive case where none of the parameters are wrong and no error is
+	 * expected, which is indicated by "null" at the last parameter.
+	 * 
+	 * 2. A case where the name is blank and an ConstraintViolationException is
+	 * expected.
+	 * 
+	 * 3. A case where the surname is blank and an ConstraintViolationException is
+	 * expected.
+	 * 
+	 * 4. A case where the email is blank and a
+	 * ConstraintViolationException is expected.
+	 * 
+	 * 5. A case where the email is invalid (it didn't follow the pattern) and a
+	 * ConstraintViolationException is expected.
+	 * 
+	 * 6. A case where the title is blank and an ConstraintViolationException is
+	 * expected.
+	 * 
+	 * 7. A case where the URL is invalid and not blank, an
+	 * ConstraintViolationException is expected.
+	 * 
+	 * 8. A case where the logged actor tries to edit personal data from another actor, an IllegalArgumentException is expected.
+	 * 
+	 **/
 	@Test
 	public void driverEditPersonalData() {
 		Object testingData[][] = {
@@ -416,7 +454,7 @@ public class ChapterServiceTest extends AbstractTest {
 	 * published by the brotherhoods in the area that they co-ordinate. This
 	 * includes listing them grouped by status and making decisions on the parades
 	 * that have status submitted. When a parade is rejected by a chapter, the
-	 * chapter must jot down the reason why
+	 * chapter must jot down the reason why.
 	 **/
 
 	/**
@@ -430,13 +468,13 @@ public class ChapterServiceTest extends AbstractTest {
 	 * is not in final mode.
 	 * 
 	 * 4. The chapter is trying to reject a valid parade but not writing a reject
-	 * reason
+	 * reason.
 	 * 
 	 * 5. On this case the chapter is trying to change the status of an parade that
-	 * is accepted
+	 * is accepted.
 	 * 
 	 * 6. Finally, the chapter is trying to change the status of a parade that is
-	 * not in his area
+	 * not in his area.
 	 * 
 	 **/
 	@Test
@@ -478,7 +516,6 @@ public class ChapterServiceTest extends AbstractTest {
 		};
 
 		for (int i = 0; i < testingData.length; i++) {
-			System.out.println(i);
 			this.templateChangeStatus((Chapter) testingData[i][0], (Parade) testingData[i][1], (ParadeStatus) testingData[i][2], (String) testingData[i][3], (Class<?>) testingData[i][4]);
 		}
 	}
@@ -561,10 +598,49 @@ public class ChapterServiceTest extends AbstractTest {
 
 	}
 
+	/**
+	 * This is a single test from a valid case of use of the method deleteAccount from ChapterService.
+	 * 
+	 * It is tested that after the call to the said method the logged chapter, it's messages and it's
+	 * proclaims are no longer on database.
+	 * 
+	 * The rest of entities associated to that chapter are compositions which are always deleted once
+	 * the actor is deleted.
+	 * 
+	 * **/
 	@Test
-	public void testDelete() {
+	public void testDeleteAccount() {
 		super.authenticate("chapter1");
+		Chapter chapter = this.chapterService.getChapterByUsername("chapter1");
+		List<Message> messages = this.messageRepository.getAllMessagesFromActor(chapter.getId());
+		List<Proclaim> proclaims = chapter.getProclaims();
+
+		Assert.isTrue(this.messageService.findAll().containsAll(messages));
+		Assert.isTrue(this.proclaimService.findAll().containsAll(proclaims));
+		Assert.notNull(chapter);
+
 		this.chapterService.deleteAccount();
+		this.chapterService.flush();
+
+		Assert.isTrue(!this.messageService.findAll().contains(messages));
+		Assert.isTrue(!this.proclaimService.findAll().contains(proclaims));
+		Assert.isTrue(!this.chapterService.findAll().contains(chapter));
+		super.unauthenticate();
+	}
+
+	/**
+	 * This is a single test from a invalid case of use of the method deleteAccount from ChapterService.
+	 * 
+	 * It is tested that one actor with the wrong Authority calls the method, an IllegalArgumentException is expected.
+	 * 
+	 * **/
+	@Test(expected = IllegalArgumentException.class)
+	public void testDeleteAccountWrongAuthority() {
+		super.authenticate("brotherhood1");
+
+		this.chapterService.deleteAccount();
+		this.chapterService.flush();
+
 		super.unauthenticate();
 	}
 }

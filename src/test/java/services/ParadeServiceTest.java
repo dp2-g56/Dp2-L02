@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+
 import javax.validation.ConstraintViolationException;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,9 @@ import org.springframework.util.Assert;
 
 import domain.Brotherhood;
 import domain.Parade;
+import domain.ParadeStatus;
+import domain.Path;
+import domain.Segment;
 import utilities.AbstractTest;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -67,8 +72,8 @@ public class ParadeServiceTest extends AbstractTest {
 	}
 
 	/**
-	 * Test the use case detailed in requirement 10.2 (Acme-Madruga) and 3.1 (Acme-Parade): Manage their
-	 * parades, which includes listing them
+	 * Test the use case detailed in requirement 10.2 (Acme-Madruga) and 3.1
+	 * (Acme-Parade): Manage their parades, which includes listing them
 	 */
 	@Test
 	public void driverListParadesIfBrotherhood() {
@@ -437,10 +442,10 @@ public class ParadeServiceTest extends AbstractTest {
 	}
 
 	/**
-	 * This test is a valid case of the use of the copy method in ParadeService, all Asserts in this test
-	 * check of the copy has been made correctly.
+	 * This test is a valid case of the use of the copy method in ParadeService, all
+	 * Asserts in this test check of the copy has been made correctly.
 	 * 
-	 * **/
+	 **/
 
 	@Test
 	public void testCopy() {
@@ -453,36 +458,46 @@ public class ParadeServiceTest extends AbstractTest {
 		this.paradeService.copy(parade);
 		this.paradeService.flush();
 
-		Parade paradeCopy = this.brotherhoodService.getBrotherhoodByUsername("brotherhood1").getParades().get(numParades);
+		Parade paradeCopy = this.brotherhoodService.getBrotherhoodByUsername("brotherhood1").getParades()
+				.get(numParades);
 
-		Assert.isTrue(this.brotherhoodService.getBrotherhoodByUsername("brotherhood1").getParades().size() == numParades + 1);
+		Assert.isTrue(
+				this.brotherhoodService.getBrotherhoodByUsername("brotherhood1").getParades().size() == numParades + 1);
 
 		Assert.isTrue(paradeCopy.getFloats().containsAll(floats) && paradeCopy.getFloats().size() == floats.size());
 
-		Assert.isTrue(paradeCopy.getRequests().isEmpty() && paradeCopy.getIsDraftMode() && paradeCopy.getParadeStatus().equals(ParadeStatus.SUBMITTED) && paradeCopy.getRejectedReason() == null);
+		Assert.isTrue(paradeCopy.getRequests().isEmpty() && paradeCopy.getIsDraftMode()
+				&& paradeCopy.getParadeStatus().equals(ParadeStatus.SUBMITTED)
+				&& paradeCopy.getRejectedReason() == null);
 
-		Assert.isTrue(paradeCopy.getColumnNumber() == parade.getColumnNumber() && paradeCopy.getRowNumber() == parade.getRowNumber() && paradeCopy.getTitle() == parade.getTitle() && paradeCopy.getDescription() == parade.getDescription()
-			&& paradeCopy.getMoment().compareTo(parade.getMoment()) == 0);
+		Assert.isTrue(paradeCopy.getColumnNumber() == parade.getColumnNumber()
+				&& paradeCopy.getRowNumber() == parade.getRowNumber() && paradeCopy.getTitle() == parade.getTitle()
+				&& paradeCopy.getDescription() == parade.getDescription()
+				&& paradeCopy.getMoment().compareTo(parade.getMoment()) == 0);
 
 		Assert.isTrue(paradeCopy.getTicker() != parade.getTicker() && paradeCopy.getId() != parade.getId());
 
-		Assert.isTrue(paradeCopy.getPath().getId() != parade.getPath().getId() && paradeCopy.getPath().getSegments().size() == parade.getPath().getSegments().size());
+		Assert.isTrue(paradeCopy.getPath().getId() != parade.getPath().getId()
+				&& paradeCopy.getPath().getSegments().size() == parade.getPath().getSegments().size());
 
 		for (Segment s : path.getSegments()) {
 			Segment sCopy = paradeCopy.getPath().getSegments().get(path.getSegments().indexOf(s));
 			Assert.isTrue(sCopy.getId() != s.getId());
-			Assert.isTrue(sCopy.getDestinationLatitude() == s.getDestinationLatitude() && sCopy.getDestinationLongitude() == s.getDestinationLongitude() && sCopy.getOriginLatitude() == s.getOriginLatitude()
-				&& sCopy.getOriginLongitude() == s.getOriginLongitude() && sCopy.getTime() == s.getTime());
+			Assert.isTrue(sCopy.getDestinationLatitude() == s.getDestinationLatitude()
+					&& sCopy.getDestinationLongitude() == s.getDestinationLongitude()
+					&& sCopy.getOriginLatitude() == s.getOriginLatitude()
+					&& sCopy.getOriginLongitude() == s.getOriginLongitude() && sCopy.getTime() == s.getTime());
 		}
 
 		super.unauthenticate();
 	}
 
 	/**
-	 * This test is a invalid case of the use of the copy method in ParadeService, one actor tries to copy a parade
-	 * that don't own. An IllegalArgumentException is expected.
+	 * This test is a invalid case of the use of the copy method in ParadeService,
+	 * one actor tries to copy a parade that don't own. An IllegalArgumentException
+	 * is expected.
 	 * 
-	 * **/
+	 **/
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testCopyWrong() {

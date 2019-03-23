@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
 import utilities.AbstractTest;
 import domain.Box;
@@ -64,6 +65,8 @@ public class CopyMessageServiceTest extends AbstractTest {
 			this.messageService.copyMessage(message, box);
 
 			this.messageService.flush();
+
+			Assert.isTrue(box.getMessages().contains(message));
 
 			super.authenticate(null);
 

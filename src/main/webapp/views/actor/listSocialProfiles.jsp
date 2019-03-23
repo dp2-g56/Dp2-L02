@@ -8,23 +8,8 @@
 	uri="http://www.springframework.org/security/tags"%>
 <%@taglib prefix="display" uri="http://displaytag.sf.net"%>
 <%@ taglib prefix="acme" tagdir="/WEB-INF/tags"%>
-<br/>
 
 
-<script type="text/javascript">
-
-  function confirmAndRedirect() {
-
-  var x = confirm("<spring:message code="actor.confirmDeleteAccount" />");
-  
-  if(x == true){
-	  window.alert("<spring:message code="actor.accountDeleted" />");
-	  window.location.href = "authenticated/deleteAccount.do";
-  }
-
- 
-}
-   </script>
 
 <security:authorize access="hasAnyRole('ADMIN', 'MEMBER', 'SPONSOR')">
 
@@ -263,9 +248,4 @@
 			code="socialProfile.create" /></a>
 
 </security:authorize>
-<br/>
-<br/>
-<br/>
-<button type="button" onclick="confirmAndRedirect()" >
-					<spring:message code="actor.deleteAccount" />
-				</button>
+

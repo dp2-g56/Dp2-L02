@@ -261,6 +261,7 @@ public class ParadeService {
 	}
 
 	public List<Parade> filterParadesBrotherhood(Brotherhood bro, String option) {
+		this.brotherhoodService.loggedAsBrotherhood();
 
 		switch (option) {
 		case "REJECTED":

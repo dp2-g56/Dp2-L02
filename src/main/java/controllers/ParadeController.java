@@ -55,13 +55,11 @@ public class ParadeController extends AbstractController {
 		ModelAndView result;
 		List<Parade> parades;
 
-		this.brotherhoodService.loggedAsBrotherhood();
-
 		Brotherhood loggedBrotherhood = this.brotherhoodService.loggedBrotherhood();
 
-		Boolean hasArea = !(loggedBrotherhood.getArea() == null);
+		parades = this.paradeService.filterParadesBrotherhood(loggedBrotherhood, "");
 
-		parades = loggedBrotherhood.getParades();
+		Boolean hasArea = !(loggedBrotherhood.getArea() == null);
 
 		List<ParadeStatus> paradeStatus = Arrays.asList(ParadeStatus.values());
 
@@ -113,13 +111,12 @@ public class ParadeController extends AbstractController {
 		return result;
 	}
 
-	@RequestMapping(value = "/filter", method = {
-		RequestMethod.POST, RequestMethod.GET
-	}, params = "refresh")
+	@RequestMapping(value = "/filter", method = { RequestMethod.POST, RequestMethod.GET }, params = "refresh")
 	public ModelAndView paradeFilter(@RequestParam String fselect) {
 		ModelAndView result;
-
 		Brotherhood loggedBro = this.brotherhoodService.loggedBrotherhood();
+
+		List<Parade> parades = this.paradeService.filterParadesBrotherhood(loggedBro, fselect);
 
 		Boolean hasArea = !(loggedBro.getArea() == null);
 
@@ -139,8 +136,6 @@ public class ParadeController extends AbstractController {
 			statusName.add("REJECTED");
 		}
 
-		List<Parade> parades = this.paradeService.filterParadesBrotherhood(loggedBro, fselect);
-
 		result = new ModelAndView("parade/brotherhood/list");
 
 		result.addObject("parades", parades);
@@ -149,7 +144,6 @@ public class ParadeController extends AbstractController {
 		result.addObject("paradeStatus", paradeStatus);
 		result.addObject("statusName", statusName);
 		result.addObject("locale", locale);
-
 
 		return result;
 	}
@@ -228,13 +222,11 @@ public class ParadeController extends AbstractController {
 		Brotherhood brother = new Brotherhood();
 		brother = this.brotherhoodService.loggedBrotherhood();
 
-		if (!parade.getIsDraftMode()) {
+		if (!parade.getIsDraftMode())
 			return this.list();
-		}
 
-		if (!(brother.getParades().contains(parade))) {
+		if (!(brother.getParades().contains(parade)))
 			return this.list();
-		}
 
 		FormObjectParadeFloatCheckbox formObjectParadeFloatCheckbox = this.paradeService
 				.prepareFormObjectParadeFloatCheckbox(paradeId);
@@ -254,9 +246,9 @@ public class ParadeController extends AbstractController {
 		Parade parade = new Parade();
 		parade = this.paradeService.create();
 
-		if (binding.hasErrors()) {
+		if (binding.hasErrors())
 			result = this.createEditModelAndView(parade);
-		} else {
+		else
 			try {
 
 				List<domain.Float> floats = this.floatService.reconstructList(formObjectParadeFloatCheckbox);
@@ -272,7 +264,6 @@ public class ParadeController extends AbstractController {
 				result = this.createEditModelAndView(parade, "brotherhood.commit.error");
 
 			}
-		}
 		return result;
 	}
 
@@ -360,9 +351,9 @@ public class ParadeController extends AbstractController {
 		parade = this.paradeService.reconstruct(formObjectParadeFloat, binding);
 		coach = this.floatService.reconstructForm(formObjectParadeFloat, binding);
 
-		if (binding.hasErrors()) {
+		if (binding.hasErrors())
 			result = this.createEditModelAndView1(parade);
-		} else {
+		else
 			try {
 				domain.Float savedFloat = this.floatService.save(coach);
 				this.paradeService.saveAssign(parade, savedFloat);
@@ -372,7 +363,6 @@ public class ParadeController extends AbstractController {
 				result = this.createEditModelAndView1(parade, "brotherhood.commit.error");
 
 			}
-		}
 		return result;
 	}
 

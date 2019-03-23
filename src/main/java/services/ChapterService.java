@@ -49,11 +49,10 @@ public class ChapterService {
 	private AreaService areaService;
 
 	@Autowired
-	private ProclaimService		proclaimService;
+	private ProclaimService proclaimService;
 
 	@Autowired
-	private MessageService		messageService;
-
+	private MessageService messageService;
 
 	@Autowired
 	private ParadeService paradeService;
@@ -274,9 +273,19 @@ public class ChapterService {
 		this.messageService.updateSendedMessageByLogguedActor();
 		this.messageService.deleteAllMessageFromActor();
 
-		for (Proclaim p : chapter.getProclaims()) {
+		for (Proclaim p : chapter.getProclaims())
 			this.proclaimService.delete(p);
-		}
+		this.chapterRepository.delete(chapter);
+	}
+
+	public void deleteAccount() {
+		this.loggedAsChapter();
+		Chapter chapter = this.loggedChapter();
+		this.messageService.updateSendedMessageByLogguedActor();
+		this.messageService.deleteAllMessageFromActor();
+
+		for (Proclaim p : chapter.getProclaims())
+			this.proclaimService.delete(p);
 		this.chapterRepository.delete(chapter);
 	}
 	// Auxiliar Methods
@@ -350,7 +359,8 @@ public class ChapterService {
 
 	public Chapter updateChapterArea(Chapter chapter) {
 		Chapter c = this.loggedChapter();
-		Assert.isTrue(chapter.getId() != 0 && c.getId() == chapter.getId() && c.getArea() == null && !this.listOccupiedAreas().contains(chapter.getArea()));
+		Assert.isTrue(chapter.getId() != 0 && c.getId() == chapter.getId() && c.getArea() == null
+				&& !this.listOccupiedAreas().contains(chapter.getArea()));
 		return this.chapterRepository.save(chapter);
 	}
 
@@ -372,13 +382,13 @@ public class ChapterService {
 
 		this.validator.validate(result, binding);
 
-		if (chapter.getEmail().matches("[\\w.%-]+\\<[\\w.%-]+\\@+\\>|[\\w.%-]+")) {
-			if (LocaleContextHolder.getLocale().getLanguage().toUpperCase().contains("ES")) {
-				binding.addError(new FieldError("chapter", "email", chapter.getEmail(), false, null, null, "No sigue el patron ejemplo@dominio.asd o alias <ejemplo@dominio.asd>"));
-			} else {
-				binding.addError(new FieldError("chapter", "email", chapter.getEmail(), false, null, null, "Dont follow the pattern example@domain.asd or alias <example@domain.asd>"));
-			}
-		}
+		if (chapter.getEmail().matches("[\\w.%-]+\\<[\\w.%-]+\\@+\\>|[\\w.%-]+"))
+			if (LocaleContextHolder.getLocale().getLanguage().toUpperCase().contains("ES"))
+				binding.addError(new FieldError("chapter", "email", chapter.getEmail(), false, null, null,
+						"No sigue el patron ejemplo@dominio.asd o alias <ejemplo@dominio.asd>"));
+			else
+				binding.addError(new FieldError("chapter", "email", chapter.getEmail(), false, null, null,
+						"Dont follow the pattern example@domain.asd or alias <example@domain.asd>"));
 
 		return result;
 	}
@@ -387,7 +397,6 @@ public class ChapterService {
 		Assert.isTrue(chapter.getId() == this.loggedChapter().getId());
 		return this.chapterRepository.save(chapter);
 	}
-
 
 	public Parade changeParadeStatus(Parade parade) {
 

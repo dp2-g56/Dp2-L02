@@ -2154,7 +2154,7 @@
 		<property name="description" value="The Fourth Parade" />
 		<property value="07/08/2023 12:16" name="moment" />
 		<property value="230807-E1fgh5" name="ticker" />
-		<property value="true" name="isDraftMode" />
+		<property value="false" name="isDraftMode" />
 		<property value="5" name="rowNumber" />
 		<property value="1" name="columnNumber" />
 		<property name="paradeStatus" value="SUBMITTED" />

@@ -683,6 +683,7 @@
 				<property name="parades">
 			<list>
 				<ref bean="parade6" />
+				<ref bean="parade7" />
 			</list>
 		</property>
 		<property name="enrolments">
@@ -2093,6 +2094,7 @@
 		<property value="true" name="isDraftMode" />
 		<property value="12" name="rowNumber" />
 		<property value="15" name="columnNumber" />
+		<property name="paradeStatus" value="SUBMITTED" />
 		<property name="floats">
 			<list>
 				<ref bean="float1" />
@@ -2116,13 +2118,6 @@
 				<ref bean="float1" />
 			</list>
 		</property>	
-		<property name="requests">
-			<list>
-				<ref bean="request1"/>
-				<ref bean="request3"/>
-				<ref bean="request5"/> 
-			</list>
-		</property>		
 		<property name="path" ref="path2"/>
 
 	</bean>
@@ -2202,6 +2197,28 @@
 		<property name="requests">
 			<list>
 			</list>
+		</property>	
+	</bean>
+	
+	<bean id ="parade7" class="domain.Parade">
+		<property name="title" value="parade7" />
+		<property name="description" value="The Seventh Parade" />
+		<property value="01/09/2023 12:16" name="moment" />
+		<property value="230901-s1sd31" name="ticker" />
+		<property value="false" name="isDraftMode" />
+		<property value="5" name="rowNumber" />
+		<property value="5" name="columnNumber" />
+		<property name="paradeStatus" value="ACCEPTED" />
+		<property name="floats">
+			<list>
+			</list>
+		</property>
+		<property name="requests">	
+		<list>
+				<ref bean="request1"/>
+				<ref bean="request3"/>
+				<ref bean="request5"/> 
+		</list>
 		</property>	
 	</bean>
 	
@@ -2371,7 +2388,7 @@
 		<property name="columnNumber" value="3" />
 		<!-- <property name="reasonDescription" value="hola" />	-->
 		<property name="member" ref="member1" />
-		<property name="parade" ref="parade2" />
+		<property name="parade" ref="parade7" />
 	</bean>
 	
 	<bean id="request2" class="domain.Request">
@@ -2388,7 +2405,7 @@
 		<property name="columnNumber" value="1" />
 		<!-- <property name="reasonDescription" value="hola" />	-->
 		<property name="member" ref="member2" />
-		<property name="parade" ref="parade2" />
+		<property name="parade" ref="parade7" />
 	</bean>
 	
 	<bean id="request4" class="domain.Request">
@@ -2411,7 +2428,7 @@
 		<property name="columnNumber" value="" />  -->
 		<property name="reasonDescription" value="Your tunic is blue and orange" /> 
 		<property name="member" ref="member4" />
-		<property name="parade" ref="parade2" />
+		<property name="parade" ref="parade7" />
 	</bean>
 	
 	<bean id="request6" class="domain.Request">

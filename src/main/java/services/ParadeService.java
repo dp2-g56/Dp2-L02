@@ -303,14 +303,17 @@ public class ParadeService {
 	}
 
 	public Parade saveAssignList(Parade parade, List<domain.Float> floats) { // TERMINADO
+		this.brotherhoodService.loggedAsBrotherhood();
 
-		// parade.getFloats().add(newFloat);
+		Brotherhood brotherhood = this.brotherhoodService.loggedBrotherhood();
+		Assert.notNull(brotherhood.getArea());
+
+		for (Float f : floats)
+			Assert.isTrue(brotherhood.getFloats().contains(f));
 
 		parade.setFloats(floats);
 		Parade saved = new Parade();
 		saved = this.paradeRepository.save(parade);
-
-		Brotherhood brotherhood = this.brotherhoodService.loggedBrotherhood();
 
 		brotherhood.getParades().remove(parade); // NUEVO
 		brotherhood.getParades().add(saved);

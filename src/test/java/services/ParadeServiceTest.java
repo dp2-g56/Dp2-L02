@@ -131,8 +131,6 @@ public class ParadeServiceTest extends AbstractTest {
 
 	}
 
-	// AQUI
-
 	/**
 	 * Test the use case detailed in requirement 10.2 (Acme-Madruga): Manage their
 	 * parades, which includes creating them (New parade and new float at the same
@@ -199,6 +197,91 @@ public class ParadeServiceTest extends AbstractTest {
 			floatt.setDescription(floatDescription);
 
 			this.paradeService.saveFloatAndAssignToParade(floatt, parade);
+
+			this.paradeService.flush();
+
+			super.unauthenticate();
+		} catch (Throwable oops) {
+			caught = oops.getClass();
+		} finally {
+			this.rollbackTransaction();
+		}
+
+		super.checkExceptions(expected, caught);
+
+	}
+
+	// AQUI
+
+	/**
+	 * Test the use case detailed in requirement 10.2 (Acme-Madruga): Manage their
+	 * parades, which includes creating them
+	 */
+	@Test
+	public void driverCreateParadeIfBrotherhood() {
+		Calendar c = Calendar.getInstance();
+		c.set(Calendar.DAY_OF_MONTH, 20);
+		c.set(Calendar.MONTH, 10);
+		Date futureDate = c.getTime();
+
+		c.set(Calendar.MONTH, 2);
+		Date pastDate = c.getTime();
+
+		Brotherhood b1 = this.brotherhoodService.getBrotherhoodByUsername("brotherhood1");
+		List<domain.Float> floats1 = b1.getFloats();
+
+		Brotherhood b2 = this.brotherhoodService.getBrotherhoodByUsername("brotherhood2");
+		List<domain.Float> floats2 = b2.getFloats();
+
+		Brotherhood b4 = this.brotherhoodService.getBrotherhoodByUsername("brotherhood4");
+		List<domain.Float> floats4 = b4.getFloats();
+
+		Object testingData[][] = {
+				// Positive test
+				{ "Parade title", "Parade description", futureDate, true, 5, 10, floats1, "brotherhood1", null },
+				// Negative test: Trying to create a parade with a past moment
+				{ "Parade title", "Parade description", pastDate, true, 5, 10, floats1, "brotherhood1",
+						ConstraintViolationException.class },
+				// Negative test: Trying to create a parade with a blank parade title
+				{ "", "Parade description", futureDate, true, 5, 10, floats1, "brotherhood1",
+						ConstraintViolationException.class },
+				// Negative test: Trying to create a parade with with a different role
+				{ "Parade title", "Parade description", futureDate, true, 5, 10, floats1, "member1",
+						IllegalArgumentException.class },
+				// Negative test: Trying to create a parade with a brotherhood without area
+				{ "Parade title", "Parade description", futureDate, true, 5, 10, floats4, "brotherhood4",
+						IllegalArgumentException.class },
+				// Negative test: Trying to create a parade with floats of other brotherhood
+				{ "Parade title", "Parade description", futureDate, true, 5, 10, floats2, "brotherhood1",
+						IllegalArgumentException.class } };
+
+		for (int i = 0; i < testingData.length; i++)
+			this.templateCreateParadeIfBrotherhood((String) testingData[i][0], (String) testingData[i][1],
+					(Date) testingData[i][2], (Boolean) testingData[i][3], (Integer) testingData[i][4],
+					(Integer) testingData[i][5], (List<domain.Float>) testingData[i][6], (String) testingData[i][7],
+					(Class<?>) testingData[i][8]);
+	}
+
+	private void templateCreateParadeIfBrotherhood(String paradeTitle, String paradeDescription, Date paradeMoment,
+			Boolean draftMode, Integer rowNumber, Integer columnNumber, List<domain.Float> floats, String username,
+			Class<?> expected) {
+		Class<?> caught = null;
+
+		try {
+			this.startTransaction();
+
+			super.authenticate(username);
+
+			Parade parade = this.paradeService.create();
+
+			parade.setTitle(paradeTitle);
+			parade.setDescription(paradeDescription);
+			parade.setMoment(paradeMoment);
+			parade.setIsDraftMode(draftMode);
+			parade.setRowNumber(rowNumber);
+			parade.setColumnNumber(columnNumber);
+
+			this.paradeService.saveAssignList(parade, floats);
 
 			this.paradeService.flush();
 

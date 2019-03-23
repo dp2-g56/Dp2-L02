@@ -355,8 +355,8 @@ public class ParadeController extends AbstractController {
 			result = this.createEditModelAndView1(parade);
 		else
 			try {
-				domain.Float savedFloat = this.floatService.save(coach);
-				this.paradeService.saveAssign(parade, savedFloat);
+				this.paradeService.saveFloatAndAssignToParade(coach, parade);
+
 				// this.paradeService.save(parade);
 				result = new ModelAndView("redirect:/parade/brotherhood/list.do");
 			} catch (Throwable oops) {

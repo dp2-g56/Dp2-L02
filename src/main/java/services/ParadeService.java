@@ -43,6 +43,8 @@ public class ParadeService {
 	private SponsorService sponsorService;
 	@Autowired
 	private PathService pathService;
+	@Autowired
+	private FloatService floatService;
 
 	// Simple CRUD methods ------------------------------------------
 
@@ -52,7 +54,7 @@ public class ParadeService {
 		// Asegurar que la Brotherhood logueada tiene un área
 		this.brotherhoodService.loggedAsBrotherhood();
 		Brotherhood loggedBrotherhood = this.brotherhoodService.loggedBrotherhood();
-		Assert.isTrue(!(loggedBrotherhood.getArea().equals(null)));
+		Assert.notNull(loggedBrotherhood.getArea());
 
 		Parade parade = new Parade();
 
@@ -219,6 +221,8 @@ public class ParadeService {
 	}
 
 	public Parade saveAssign(Parade parade, domain.Float newFloat) {
+		this.brotherhoodService.loggedAsBrotherhood();
+
 		List<domain.Float> floats = new ArrayList<>();
 		floats.add(newFloat);
 		parade.setFloats(floats);
@@ -426,6 +430,12 @@ public class ParadeService {
 			this.pathService.delete(path);
 		}
 		this.save(parade);
+	}
+
+	public void saveFloatAndAssignToParade(Float coach, Parade parade) {
+		this.brotherhoodService.loggedAsBrotherhood();
+		domain.Float savedFloat = this.floatService.save(coach);
+		this.saveAssign(parade, savedFloat);
 	}
 
 }

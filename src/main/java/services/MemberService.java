@@ -14,9 +14,11 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
 
 import domain.Box;
+import domain.Brotherhood;
 import domain.Enrolment;
 import domain.Finder;
 import domain.Member;
+import domain.Parade;
 import domain.Request;
 import domain.SocialProfile;
 import forms.FormObjectMember;
@@ -39,6 +41,18 @@ public class MemberService {
 	private BoxService boxService;
 	@Autowired
 	private Validator validator;
+	@Autowired
+	private MessageService messageService;
+	@Autowired
+	private ParadeService paradeService;
+	@Autowired
+	private RequestService requestService;
+	@Autowired
+	private EnrolmentService enrolmentService;
+	@Autowired
+	private BrotherhoodService brotherhoodService;
+	@Autowired
+	private ActorService actorService;
 
 	// Simple CRUD methods ------------------------------------------
 
@@ -271,6 +285,53 @@ public class MemberService {
 		this.loggedAsMember();
 		Assert.isTrue(member.getId() != 0 && this.loggedMember().getId() == member.getId());
 		return this.memberRepository.save(member);
+	}
+
+	public void deleteLoggedMember() {
+		Member member = this.securityAndMember();
+
+		this.messageService.updateSendedMessageByLogguedActor();
+		this.messageService.updateReceivedMessageToLogguedActor();
+
+		this.messageService.deleteAllMessageFromActor();
+
+		List<Request> requestsToDelete = member.getRequests();
+
+		List<Parade> parades = this.paradeService.findAll();
+		for (Parade p : parades) {
+			List<Request> requestsOfParade = p.getRequests();
+			requestsOfParade.removeAll(requestsToDelete);
+			p.setRequests(requestsOfParade);
+			this.paradeService.save(p);
+		}
+
+		member.setRequests(new ArrayList<Request>());
+
+		this.save(member);
+
+		for (Request r : requestsToDelete)
+			this.requestService.delete(r);
+
+		List<Enrolment> enrolmentsToDelete = member.getEnrolments();
+
+		List<Brotherhood> brotherhoods = this.brotherhoodService.findAll();
+		for (Brotherhood b : brotherhoods) {
+			List<Enrolment> enrolmentsOfBrotherhood = b.getEnrolments();
+			enrolmentsOfBrotherhood.removeAll(enrolmentsToDelete);
+			b.setEnrolments(enrolmentsOfBrotherhood);
+			this.brotherhoodService.save(b);
+		}
+
+		member.setEnrolments(new ArrayList<Enrolment>());
+
+		this.save(member);
+
+		for (Enrolment e : enrolmentsToDelete)
+			this.enrolmentService.delete(e);
+
+		this.delete(member);
+
+		this.flush();
 	}
 
 }

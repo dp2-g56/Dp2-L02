@@ -99,10 +99,11 @@ public class ParadeController extends AbstractController {
 		Brotherhood loggedBrotherhood = this.brotherhoodService.loggedBrotherhood();
 
 		try {
+			Parade paradeCopy = this.paradeService.create();
 			Parade paradeToCopy = this.paradeService.findOne(paradeId);
 			Assert.notNull(paradeToCopy);
 			Assert.isTrue(loggedBrotherhood.getParades().contains(paradeToCopy));
-			this.paradeService.copy(paradeToCopy);
+			this.paradeService.copy(paradeToCopy, paradeCopy);
 
 		} catch (Throwable oops) {
 

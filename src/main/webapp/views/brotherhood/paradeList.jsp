@@ -40,52 +40,89 @@
 	<display:table
 	pagesize="5" name="parades" id="row"
 	requestURI="${requestURI}" >
+
+
 	
-		<jstl:choose>
-			<jstl:when test="${row.paradeStatus.toString() == 'SUBMITTED' && !row.isDraftMode}">		
-				<jstl:set var="color" value="grey" />
-			</jstl:when>
-			<jstl:when test="${row.paradeStatus.toString() == 'REJECTED'}">
-				<jstl:set var="color" value="red" />
-			</jstl:when>
-			<jstl:when test="${row.paradeStatus.toString() == 'ACCEPTED'}">
-				<jstl:set var="color" value="green" />
-			</jstl:when>
+	
+	<jstl:choose>
+				<jstl:when test="${row.paradeStatus.toString() == 'SUBMITTED'}">
 		
-		</jstl:choose>
+					<jstl:set var="color" value="grey" />
+					<jstl:if test="${locale=='es'}">
+					<jstl:set var="statusName" value="PRESENTADO" />
+					</jstl:if>
 		
-	<display:column>
-		<jstl:if test="${row.isDraftMode}">
-			<a href="parade/brotherhood/editCheckbox.do?paradeId=${row.id}">
-				<spring:message code="parade.edit" />
-			</a>
-		</jstl:if>
-	</display:column>
+				</jstl:when>
+	
+				<jstl:when test="${row.paradeStatus.toString() == 'REJECTED'}">
+		
+					<jstl:set var="color" value="red" />
+					<jstl:if test="${locale=='es'}">
+					<jstl:set var="statusName" value="RECHAZADO" />
+					</jstl:if>
+		
+				</jstl:when>
+		
+				<jstl:when test="${row.paradeStatus.toString() == 'ACCEPTED'}">
+		
+					<jstl:set var="color" value="green" />
+					<jstl:if test="${locale=='es'}">
+					<jstl:set var="statusName" value="ACEPTADO" />
+					</jstl:if>
+		
+				</jstl:when>
+		
+			</jstl:choose>
 	
 	<display:column titleKey="parade.ticker" >
-	<font color="${color}"><jstl:out value="${row.ticker}"/></font>
+		<font color="${color}"><jstl:out value="${row.ticker} "/> </font>
 	</display:column>
 	
-	<display:column  titleKey="parade.title" >
-	<font color="${color}"><jstl:out value="${row.title}"/></font>
+	<display:column titleKey="parade.title">
+			<font color="${color}"><jstl:out value="${row.title} "/> </font>
 	</display:column>
 	
-	<display:column  titleKey="parade.description" >
-	<font color="${color}"><jstl:out value="${row.description}"/></font>
+	<display:column titleKey="parade.description" >
+			<font color="${color}"><jstl:out value="${row.description} "/> </font>
 	</display:column>
 	
-	<display:column  titleKey="parade.moment" >
-	<font color="${color}"><jstl:out value="${row.moment}"/></font>
+	<display:column titleKey="parade.moment" >
+		<font color="${color}"><jstl:out value="${row.moment} "/> </font>
 	</display:column>
 	
-	<display:column  titleKey="parade.rowNumber" >
-	<font color="${color}"><jstl:out value="${row.rowNumber}"/></font>
+	<display:column titleKey="parade.rowNumber" >
+		<font color="${color}"><jstl:out value="${row.rowNumber} "/> </font>
 	</display:column>
 	
 	<display:column  titleKey="parade.columnNumber" >
-	<font color="${color}"><jstl:out value="${row.columnNumber}"/></font>
+			<font color="${color}"><jstl:out value="${row.columnNumber} "/> </font>
 	</display:column>
 	
+    
+    <display:column titleKey="parade.isDraftMode">
+		<jstl:if test="${row.isDraftMode}" >
+			<font color="${color}">	<spring:message code="parade.draftMode" /> </font>
+		</jstl:if>
+		<jstl:if test="${!row.isDraftMode}" >
+			<font color="${color}">	<spring:message code="parade.finalMode" /> </font>
+		</jstl:if>
+
+	</display:column>
+	
+	<display:column titleKey="parade.paradeStatus" >
+		<jstl:choose>
+			<jstl:when test="${locale=='es'}">
+						<font color="${color}"><jstl:out value="${statusName} "/> </font>
+			</jstl:when>
+			<jstl:otherwise>
+						<font color="${color}"><jstl:out value="${row.paradeStatus} "/> </font>
+			</jstl:otherwise>
+		
+		</jstl:choose>
+
+	</display:column>
+	
+		
 	<display:column titleKey="parade.floats">
         <jstl:set var="floatsSize" value="${row.floats.size()}" />
         <spring:url var="floatsUrl" value="/parade/brotherhood/float/list.do?paradeId={paradeId}">
@@ -96,6 +133,7 @@
              <font color="${color}"> <jstl:out value="${viewFloats1}(${floatsSize})" />    </font>
         </a>
     </display:column>
+    
     
     <display:column titleKey="parade.requests">
     	
@@ -113,7 +151,7 @@
     	
     </display:column>
     
-      <display:column titleKey="parade.paradeStatus" >
+      <display:column titleKey="parade.paradeStatus" sortable= "true">
 		<jstl:if test="${row.isDraftMode}" >
 				<spring:message code="parade.draftMode" />
 		</jstl:if>
@@ -125,10 +163,26 @@
 	<display:column titleKey="parade.rejectedReason">
 		<jstl:if test="${row.paradeStatus == 'REJECTED'}" >
 				<font color="${color}"><jstl:out value="${row.rejectedReason}"/></font>
+
+</jstl:if>
+</display:column>
+	<display:column>
+		<jstl:if test="${row.isDraftMode}">
+			<a href="parade/brotherhood/editCheckbox.do?paradeId=${row.id}">
+				<spring:message code="parade.edit" />
+			</a>
 		</jstl:if>
 	</display:column>
+	
 
-	<display:column>
+	
+		<display:column titleKey="parade.copy">
+				<button type="button" onclick="javascript: relativeRedir('parade/brotherhood/copy.do?paradeId='+${row.id})" >
+					<spring:message code="parade.copy" />
+				</button>	
+		</display:column>
+
+		<display:column>
 		
 		<jstl:choose>
 		<jstl:when test="${row.path==null}">
@@ -143,12 +197,7 @@
 		</jstl:otherwise>
 		</jstl:choose>
 	</display:column>
-		
-	<display:column titleKey="parade.copy">
-				<button type="button" onclick="javascript: relativeRedir('parade/brotherhood/copy.do?paradeId='+${row.id})" >
-					<spring:message code="parade.copy" />
-				</button>	
-	</display:column>
+	
 												
 </display:table>
 

@@ -31,6 +31,7 @@ import domain.Request;
 import domain.Status;
 import services.ConfigurationService;
 import services.MemberService;
+import services.MessageService;
 import services.RequestService;
 
 @Controller
@@ -43,6 +44,8 @@ public class RequestMemberController extends AbstractController {
 	private MemberService memberService;
 	@Autowired
 	private ConfigurationService configurationService;
+	@Autowired
+	private MessageService messageService;
 
 	// Constructors -----------------------------------------------------------
 

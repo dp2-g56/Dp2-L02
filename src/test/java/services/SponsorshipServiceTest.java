@@ -118,7 +118,7 @@ public class SponsorshipServiceTest extends AbstractTest {
 
 		spo.setBanner(banner);
 		spo.setTargetURL(targetURL);
-		spo.setGain(0f);
+		spo.setSpentMoney(0f);
 		spo.setParade(parade);
 		spo.setIsActivated(true);
 		spo.setCreditCard(card);
@@ -138,11 +138,28 @@ public class SponsorshipServiceTest extends AbstractTest {
 
 	}
 
+	/**
+	 * Test the use case detailed in requirement 16.1: Manage his or her
+	 * sponsorships, which includes listing them
+	 */
 	@Test
 	public void driverListSponsorships() {
 
-		Object testingData[][] = { { null, "sponsor1", null }, { true, "sponsor1", null }, { false, "sponsor1", null },
-				{ null, "admin1", IllegalArgumentException.class }, { true, "admin1", IllegalArgumentException.class },
+		Object testingData[][] = {
+				// Positive test: Listing all sponsorships of a sponsor
+				{ null, "sponsor1", null },
+				// Positive test: Listing activated sponsorships of a sponsor
+				{ true, "sponsor1", null },
+				// Positive test: Listing deactivated sponsorships of a sponsor
+				{ false, "sponsor1", null },
+				// Negative test: Trying to list all sponsorships of an actor with a different
+				// role
+				{ null, "admin1", IllegalArgumentException.class },
+				// Negative test: Trying to list activated sponsorships of an actor with a
+				// different role
+				{ true, "admin1", IllegalArgumentException.class },
+				// Negative test: Trying to list deactivated sponsorships of an actor with a
+				// different role
 				{ false, "admin1", IllegalArgumentException.class } };
 
 		for (int i = 0; i < testingData.length; i++)
@@ -183,29 +200,67 @@ public class SponsorshipServiceTest extends AbstractTest {
 
 	}
 
+	/**
+	 * Test the use case detailed in requirement 16.1: Manage his or her
+	 * sponsorships, which includes updating them
+	 */
 	@Test
 	public void driverUpdateSponsorship() {
 		Sponsor sponsor = this.sponsorService.getSponsorByUsername("sponsor1");
+		// Activated sponsorship of sponsor1
 		Sponsorship sponsorship = (new ArrayList<Sponsorship>(
 				this.sponsorshipService.getActivatedSponsorshipsOfSponsor(sponsor.getId()))).get(0);
 
-		Object testingData[][] = { { "https://www.imagen.com", sponsorship.getTargetURL(), "Ramon",
-				sponsorship.getCreditCard().getBrandName(), sponsorship.getCreditCard().getNumber(),
-				sponsorship.getCreditCard().getExpirationMonth(), sponsorship.getCreditCard().getExpirationYear(),
-				sponsorship.getCreditCard().getCvvCode(), sponsorship.getId(), "sponsor1", null },
-				{ "nourl", sponsorship.getTargetURL(), sponsorship.getCreditCard().getHolderName(),
-						sponsorship.getCreditCard().getBrandName(), sponsorship.getCreditCard().getNumber(), 13,
-						sponsorship.getCreditCard().getExpirationYear(), 1111111, sponsorship.getId(), "sponsor1",
-						ConstraintViolationException.class },
-				{ "https://www.imagen.com", sponsorship.getTargetURL(), "Ramon",
+		Object testingData[][] = {
+				// Positive test
+				{ "https://www.imagen.com", sponsorship.getTargetURL(), "Ramon", "VISA",
+						sponsorship.getCreditCard().getNumber(), sponsorship.getCreditCard().getExpirationMonth(),
+						sponsorship.getCreditCard().getExpirationYear(), sponsorship.getCreditCard().getCvvCode(),
+						sponsorship.getId(), "sponsor1", null },
+				// Negative test: Trying to update a sponsorship with a different role
+				{ "https://www.imagen.com", sponsorship.getTargetURL(), sponsorship.getCreditCard().getHolderName(),
 						sponsorship.getCreditCard().getBrandName(), sponsorship.getCreditCard().getNumber(),
 						sponsorship.getCreditCard().getExpirationMonth(),
 						sponsorship.getCreditCard().getExpirationYear(), sponsorship.getCreditCard().getCvvCode(),
 						sponsorship.getId(), "admin1", IllegalArgumentException.class },
-				{ "https://www.imagen.com", sponsorship.getTargetURL(), "Ramon",
-						sponsorship.getCreditCard().getBrandName(), sponsorship.getCreditCard().getNumber(), 12, 11,
+				// Negative test: Trying to update a sponsorship with a type of credit card not
+				// allowed
+				{ sponsorship.getBanner(), sponsorship.getTargetURL(), sponsorship.getCreditCard().getHolderName(),
+						"OTHERCARDTYPE", sponsorship.getCreditCard().getNumber(),
+						sponsorship.getCreditCard().getExpirationMonth(),
+						sponsorship.getCreditCard().getExpirationYear(), sponsorship.getCreditCard().getCvvCode(),
+						sponsorship.getId(), "sponsor1", IllegalArgumentException.class },
+				// Negative test: Trying to update a sponsorship with a credit card whose number
+				// is invalid
+				{ sponsorship.getBanner(), sponsorship.getTargetURL(), sponsorship.getCreditCard().getHolderName(),
+						sponsorship.getCreditCard().getBrandName(), 4980000011112222L,
+						sponsorship.getCreditCard().getExpirationMonth(),
+						sponsorship.getCreditCard().getExpirationYear(), sponsorship.getCreditCard().getCvvCode(),
+						sponsorship.getId(), "sponsor1", IllegalArgumentException.class },
+				// Negative test: Trying to update a sponsorship with an expired credit card
+				{ sponsorship.getBanner(), sponsorship.getTargetURL(), sponsorship.getCreditCard().getHolderName(),
+						sponsorship.getCreditCard().getBrandName(), sponsorship.getCreditCard().getNumber(), 3, 16,
 						sponsorship.getCreditCard().getCvvCode(), sponsorship.getId(), "sponsor1",
-						IllegalArgumentException.class } };
+						IllegalArgumentException.class },
+				// Negative test: Trying to update an sponsorship with a credit card whose CVV
+				// is invalid
+				{ sponsorship.getBanner(), sponsorship.getTargetURL(), sponsorship.getCreditCard().getHolderName(),
+						sponsorship.getCreditCard().getBrandName(), sponsorship.getCreditCard().getNumber(),
+						sponsorship.getCreditCard().getExpirationMonth(),
+						sponsorship.getCreditCard().getExpirationYear(), 1, sponsorship.getId(), "sponsor1",
+						IllegalArgumentException.class },
+				// Negative test: Trying to update a sponsorship with the banner and the
+				// targetURL in blank
+				{ "", "", sponsorship.getCreditCard().getHolderName(), sponsorship.getCreditCard().getBrandName(),
+						sponsorship.getCreditCard().getNumber(), sponsorship.getCreditCard().getExpirationMonth(),
+						sponsorship.getCreditCard().getExpirationYear(), sponsorship.getCreditCard().getCvvCode(),
+						sponsorship.getId(), "sponsor1", ConstraintViolationException.class },
+				// Negative test: Trying to update a sponsorship with number as null
+				{ sponsorship.getBanner(), sponsorship.getTargetURL(), sponsorship.getCreditCard().getHolderName(),
+						sponsorship.getCreditCard().getBrandName(), null,
+						sponsorship.getCreditCard().getExpirationMonth(),
+						sponsorship.getCreditCard().getExpirationYear(), sponsorship.getCreditCard().getCvvCode(),
+						sponsorship.getId(), "sponsor1", NullPointerException.class } };
 
 		for (int i = 0; i < testingData.length; i++)
 			this.templateUpdateSponsorship((String) testingData[i][0], (String) testingData[i][1],
@@ -248,17 +303,32 @@ public class SponsorshipServiceTest extends AbstractTest {
 
 	}
 
+	/**
+	 * Test the use case detailed in requirement 16.1: Manage his or her
+	 * sponsorships, which includes removing them. Note that removing a sponsorship
+	 * does not actually delete it from the system, but de-activates it. A
+	 * de-activated sponsorship can be re-activated later.
+	 */
 	@Test
 	public void driverDeleteSponsorship() {
 		Sponsor sponsor = this.sponsorService.getSponsorByUsername("sponsor1");
+		// Activated sponsorship with a valid credit card
 		Sponsorship sponsorship = (new ArrayList<Sponsorship>(
 				this.sponsorshipService.getActivatedSponsorshipsOfSponsor(sponsor.getId()))).get(0);
+		// Activated sponsorship with an expired credit card
 		Sponsorship sponsorship2 = (new ArrayList<Sponsorship>(
 				this.sponsorshipService.getActivatedSponsorshipsOfSponsor(sponsor.getId()))).get(1);
 
-		Object testingData[][] = { { sponsorship.getId(), "sponsor1", null },
+		Object testingData[][] = {
+				// Positive case: Deactivating an active sponsorship
+				{ sponsorship.getId(), "sponsor1", null },
+				// Negative case: Trying to activate the sponsorship that we have deactivated in
+				// the last test with a different role
 				{ sponsorship.getId(), "admin1", IllegalArgumentException.class },
+				// Positive case: Deactivating an active sponsorship
 				{ sponsorship2.getId(), "sponsor1", null },
+				// Negative case: Trying to activate the sponsorship that we have deactivated in
+				// the last test, but the credit card has expired
 				{ sponsorship2.getId(), "sponsor1", IllegalArgumentException.class } };
 
 		for (int i = 0; i < testingData.length; i++)
@@ -283,12 +353,27 @@ public class SponsorshipServiceTest extends AbstractTest {
 
 	}
 
+	/**
+	 * Test the specific list that is shown to the admin of the sponsorships
+	 */
 	@Test
 	public void driverListSponsorshipsAsAdmin() {
 
-		Object testingData[][] = { { null, "admin1", null }, { true, "admin1", null }, { false, "admin1", null },
+		Object testingData[][] = {
+				// Positive test: Listing all sponsorships
+				{ null, "admin1", null },
+				// Positive test: Listing activated sponsorships
+				{ true, "admin1", null },
+				// Positive test: Listing deactivated sponsorships
+				{ false, "admin1", null },
+				// Negative test: Trying to list all sponsorships with a
+				// different role
 				{ null, "sponsor1", IllegalArgumentException.class },
+				// Negative test: Trying to list activated sponsorships with a
+				// different role
 				{ true, "sponsor1", IllegalArgumentException.class },
+				// Negative test: Trying to list deactivated sponsorships with a
+				// different role
 				{ false, "sponsor1", IllegalArgumentException.class } };
 
 		for (int i = 0; i < testingData.length; i++)
@@ -318,10 +403,18 @@ public class SponsorshipServiceTest extends AbstractTest {
 
 	}
 
+	/**
+	 * Test the use case detailed in requirement 18.1: Launch a process that
+	 * automatically de-activates the sponsorships whose credit cards have expired.
+	 */
 	@Test
 	public void driverCheckAndDeactivateSponsorshipsAsAdmin() {
 
-		Object testingData[][] = { { "admin1", null }, { "sponsor1", IllegalArgumentException.class } };
+		Object testingData[][] = {
+				// Positive case
+				{ "admin1", null },
+				// Negative case: Trying to launch the process with a different role
+				{ "sponsor1", IllegalArgumentException.class } };
 
 		for (int i = 0; i < testingData.length; i++)
 			this.templateCheckAndDeactivateSponsorshipsAsAdmin((String) testingData[i][0],
@@ -347,9 +440,13 @@ public class SponsorshipServiceTest extends AbstractTest {
 
 	}
 
-	// AQUI
+	/**
+	 * Test the non-functional requirement detailed in 20: Every time a
+	 * sponsorship's selected, the system must charge a flat fare to the
+	 * corresponding sponsorship. The fare must include the current VAT percentage
+	 */
 	@Test
-	public void driverUpdateGainOfSponsorship() {
+	public void driverUpdateSpentMoneyOfSponsorship() {
 		Sponsor sponsor = this.sponsorService.getSponsorByUsername("sponsor1");
 		List<Sponsorship> sponsorships = (List<Sponsorship>) this.sponsorshipService
 				.getActivatedSponsorshipsOfSponsor(sponsor.getId());
@@ -359,20 +456,24 @@ public class SponsorshipServiceTest extends AbstractTest {
 
 		Integer anotherParadeId = 637;
 
-		Object testingData[][] = { { parade.getId(), sponsorship.getId(), null },
+		Object testingData[][] = {
+				// Positive test
+				{ parade.getId(), sponsorship.getId(), null },
+				// Negative test: The parade of the sponsorship does not agree with the
+				// indicated parade
 				{ anotherParadeId, sponsorship.getId(), IllegalArgumentException.class } };
 
 		for (int i = 0; i < testingData.length; i++)
-			this.templateUpdateGainOfSponsorship((Integer) testingData[i][0], (Integer) testingData[i][1],
+			this.templateUpdateSpentMoneyOfSponsorship((Integer) testingData[i][0], (Integer) testingData[i][1],
 					(Class<?>) testingData[i][2]);
 	}
 
-	private void templateUpdateGainOfSponsorship(int paradeId, int sponsorshipId, Class<?> expected) {
+	private void templateUpdateSpentMoneyOfSponsorship(int paradeId, int sponsorshipId, Class<?> expected) {
 
 		Class<?> caught = null;
 
 		try {
-			this.sponsorshipService.updateGainOfSponsorship(paradeId, sponsorshipId);
+			this.sponsorshipService.updateSpentMoneyOfSponsorship(paradeId, sponsorshipId);
 			this.sponsorshipService.flush();
 		} catch (Throwable oops) {
 			caught = oops.getClass();

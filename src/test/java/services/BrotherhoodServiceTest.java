@@ -30,24 +30,6 @@ public class BrotherhoodServiceTest extends AbstractTest {
 	private BrotherhoodService	brotherhoodService;
 
 
-	/**
-	 * This next driver will test 7 cases about registering as a Brotherhood, the data in this drivers will only be those which have restrictions
-	 * about its persistence on database or business rules. This tested cases are:
-	 * 
-	 * 1. A positive case where no error is expected.
-	 * 
-	 * 2. A case where the new username is blank, a ConstraintViolationException is expected.
-	 * 
-	 * 3. A case where the new name is blank, a ConstraintViolationException is expected.
-	 * 
-	 * 4. A case where the new surname is blank, a ConstraintViolationException is expected.
-	 * 
-	 * 5. A case where the photo posted is not blank but neither a valid URL, a ConstraintViolationException is expected.
-	 * 
-	 * 6. A case where the new title is blank, a ConstraintViolationException is expected.
-	 * 
-	 * 7. A case where the email posted is not valid, a ConstraintViolationException is expected.
-	 **/
 	@Test
 	public void driverRegister() {
 		Object testingData[][] = {
@@ -73,26 +55,6 @@ public class BrotherhoodServiceTest extends AbstractTest {
 		}
 	}
 
-	/**
-	 * This next driver will test 8 cases about editing personal data as a Brotherhood, the data in this drivers will only be those which have restrictions
-	 * about its persistence on database or business rules. This tested cases are:
-	 * 
-	 * 1. A positive case where no error is expected.
-	 * 
-	 * 2. A case where the new name is blank, a ConstraintViolationException is expected.
-	 * 
-	 * 3. A case where the new surname is blank, a ConstraintViolationException is expected.
-	 * 
-	 * 4. A case where the new email is blank, a ConstraintViolationException is expected.
-	 * 
-	 * 5. A case where the email posted is not valid, a ConstraintViolationException is expected.
-	 * 
-	 * 6. A case where the new title is blank, a ConstraintViolationException is expected.
-	 * 
-	 * 7. A case where the photo posted is not blank but neither a valid URL, a ConstraintViolationException is expected.
-	 * 
-	 * 8. A case when an Actor tries to edit another actor personal data, an IllegalArgumentException.
-	 **/
 	@Test
 	public void driverEditPersonalData() {
 		Object testingData[][] = {
@@ -188,14 +150,7 @@ public class BrotherhoodServiceTest extends AbstractTest {
 	}
 
 	protected void templateEditPersonalData(String username, String usernameEdit, String name, String surname, String email, String title, String photo, Class<?> expected) {
-
-		/**
-		 * This is the first command used to force to rollback the database, it initialise a Transaction in this point, before we add the entity
-		 * in order to set the rollback to this point.
-		 **/
 		this.startTransaction();
-
-		/** End of first command. **/
 		super.authenticate(username);
 		Brotherhood editBrotherhood = this.brotherhoodService.getBrotherhoodByUsername(usernameEdit);
 
@@ -226,6 +181,13 @@ public class BrotherhoodServiceTest extends AbstractTest {
 		b.setName(name);
 		b.setEmail(email);
 		b.setId(editBrotherhood.getId());
+
+		/**
+		 * This is the first command used to force to rollback the database, it initialise a Transaction in this point, before we add the entity
+		 * in order to set the rollback to this point.
+		 **/
+
+		/** End of first command. **/
 
 		try {
 			this.brotherhoodService.updateBrotherhood(b);

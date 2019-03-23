@@ -26,7 +26,6 @@ import domain.Parade;
 import domain.ParadeStatus;
 import domain.Path;
 import domain.Request;
-import domain.Segment;
 import forms.FormObjectParadeFloat;
 import forms.FormObjectParadeFloatCheckbox;
 
@@ -41,12 +40,9 @@ public class ParadeService {
 	@Autowired
 	private BrotherhoodService	brotherhoodService;
 	@Autowired
-	private SponsorService		sponsorService;
+	private SponsorService sponsorService;
 	@Autowired
-	private PathService			pathService;
-	@Autowired
-	private SegmentService		segmentService;
-
+	private PathService pathService;
 
 	// Simple CRUD methods ------------------------------------------
 
@@ -60,9 +56,7 @@ public class ParadeService {
 
 		Parade parade = new Parade();
 
-		List<Float> floats = new ArrayList<>();
-
-		parade.setPath(null);
+		fList<Float> floats = new ArrayList<>();
 		parade.setFloats(floats);
 
 		parade.setColumnNumber(0);
@@ -240,9 +234,9 @@ public class ParadeService {
 		return saved;
 	}
 
-	public Parade copy(Parade paradeToCopy) {
-		Parade paradeCopy = this.create();
+	public Parade copy(Parade paradeToCopy, Parade paradeCopy) {
 		Brotherhood brotherhood = this.brotherhoodService.loggedBrotherhood();
+		Assert.notNull(paradeToCopy);
 		Assert.isTrue(brotherhood.getParades().contains(paradeToCopy) && paradeCopy.getId() == 0);
 		Assert.isTrue(paradeToCopy.getFloats().size() >= 0);
 		Assert.isTrue(paradeToCopy.getRequests().size() >= 0);
@@ -255,32 +249,8 @@ public class ParadeService {
 		paradeCopy.setTitle(paradeToCopy.getTitle());
 
 		paradeCopy.setFloats(paradeToCopy.getFloats());
-
-		List<Request> r = new ArrayList<Request>();
-		paradeCopy.setRequests(r);
-
-		Path savedPath = null;
-		if (paradeToCopy.getPath() != null) {
-			Path path = this.pathService.create();
-			for (Segment segment : paradeToCopy.getPath().getSegments()) {
-				List<Segment> segmentsPath = path.getSegments();
-				Segment newSegment = this.segmentService.createSegment();
-
-				newSegment.setDestinationLatitude(segment.getDestinationLatitude());
-				newSegment.setDestinationLongitude(segment.getDestinationLongitude());
-				newSegment.setOriginLatitude(segment.getOriginLatitude());
-				newSegment.setOriginLongitude(segment.getOriginLongitude());
-				newSegment.setTime(segment.getTime());
-
-				segmentsPath.add(newSegment);
-				path.setSegments(segmentsPath);
-			}
-			savedPath = this.pathService.save(path);
-
-		}
-		this.flush();
-
-		paradeCopy.setPath(savedPath);
+		paradeCopy.setPaths(paradeToCopy.getPaths());
+		paradeCopy.setRequests(paradeToCopy.getRequests());
 
 		Parade saved = new Parade();
 		saved = this.paradeRepository.save(paradeCopy);

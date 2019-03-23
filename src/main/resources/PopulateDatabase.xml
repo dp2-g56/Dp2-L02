@@ -126,20 +126,6 @@
 		<property name="isNotLocked" value="True" />
 	</bean> 
 	
-		<!-- DELETED -->
-	<bean id="userAccount16" class="security.UserAccount">
-		<property name="username" value="DELETED" />
-		<property name="password" value="63c2867fdcae0e8e8413d7ac21b69b59" />
-		<property name="authorities">
-			<list>
-				<bean class="security.Authority">
-					<property name="authority" value="ADMIN" />
-				</bean>
-			</list>
-		</property>
-		<property name="isNotLocked" value="False" />
-	</bean> 
-	
 	<!-- brotherhood1 -->
 	<bean id="userAccount4" class="security.UserAccount">
 		<property name="username" value="brotherhood1" />
@@ -307,6 +293,19 @@
 		<property name="isNotLocked" value="True" />
 	</bean> 
 	
+	<bean id="userAccount16" class="security.UserAccount">
+		<property name="username" value="DELETED" />
+		<property name="password" value="63c2867fdcae0e8e8413d7ac21b69b59" />
+		<property name="authorities">
+			<list>
+				<bean class="security.Authority">
+					<property name="authority" value="ADMIN" />
+				</bean>
+			</list>
+		</property>
+		<property name="isNotLocked" value="False" />
+	</bean> 
+	
 	<!-- FIN USER ACCOUNT -->
 	
 
@@ -359,6 +358,7 @@
 				<ref bean="trashBoxAdmin1" />
 				<ref bean="spamBoxAdmin1" />
 				<ref bean="notificationBoxAdmin1" />
+				<ref bean="noSystemBoxAdmin1" />
 			</list>
 		</property>
 		<property name="userAccount" ref="userAccount1" />
@@ -382,6 +382,8 @@
 				<ref bean="trashBoxAdmin2" />
 				<ref bean="spamBoxAdmin2" />
 				<ref bean="notificationBoxAdmin2" />
+				<ref bean="noSystemBoxAdmin2" />
+				
 			</list>
 		</property>
 		<property name="userAccount" ref="userAccount2" />
@@ -413,6 +415,7 @@
 	</bean>
 	
 		<!-- DELETED -->
+
 	<bean id="DELETED" class="domain.Admin">
 		<property name="name" value="DELETED" />
 		<property name="middleName" value="" />
@@ -947,7 +950,7 @@
 	<bean id="sponsorship1" class="domain.Sponsorship">
 		<property name="banner" value="https://boluda.com/files/pasar-wordpress-a-ssl.jpg" />
 		<property name="targetURL" value="https://boluda.com/files/pasar-wordpress-a-ssl.jpg" />
-		<property name="gain" value="20" />
+		<property name="spentMoney" value="20" />
 		<property name="isActivated" value="true" />
 		<property name="creditCard" ref="creditCard1" />
 		<property name="parade" ref="parade3" />
@@ -956,7 +959,7 @@
 	<bean id="sponsorship2" class="domain.Sponsorship">
 		<property name="banner" value="https://www.eff.org/files/banner_library/https-everywhere-logo.png" />
 		<property name="targetURL" value="https://www.eff.org/files/banner_library/https-everywhere-logo.png" />
-		<property name="gain" value="31" />
+		<property name="spentMoney" value="31" />
 		<property name="isActivated" value="true" />
 		<property name="creditCard" ref="creditCard2" />
 		<property name="parade" ref="parade3" />
@@ -1226,7 +1229,7 @@
 					<property value="true" name="isSystem" />
 					<property name="messages">
 						<list>
-							<ref bean="message1" />
+							
 						</list>
 					</property>
 				</bean>
@@ -1236,6 +1239,7 @@
 					<property value="true" name="isSystem" />
 					<property name="messages">
 						<list>
+							<ref bean="message1" />
 						</list>
 					</property>
 				</bean>
@@ -1257,6 +1261,17 @@
 						</list>
 					</property>
 				</bean>
+				
+				<bean class="domain.Box" id="noSystemBoxAdmin1">
+					<property value="noSystemBox" name="name" />
+					<property value="false" name="isSystem" />
+					<property name="messages">
+						<list>
+						</list>
+					</property>
+				</bean>
+				
+				
 			<!-- FIN ADMIN1 -->
 			
 			<!-- ADMIN2 -->
@@ -1265,7 +1280,7 @@
 					<property value="true" name="isSystem" />
 					<property name="messages">
 						<list>
-							<ref bean="message1" />
+							<ref bean="message2" />
 						</list>
 					</property>
 				</bean>
@@ -1275,7 +1290,7 @@
 					<property value="true" name="isSystem" />
 					<property name="messages">
 						<list>
-							<ref bean="message2" />
+							
 						</list>
 					</property>
 				</bean>
@@ -1306,6 +1321,15 @@
 						</list>
 					</property>
 				</bean>
+				
+				<bean class="domain.Box" id="noSystemBoxAdmin2">
+					<property value="noSystemBox" name="name" />
+					<property value="false" name="isSystem" />
+					<property name="messages">
+						<list>
+						</list>
+					</property>
+				</bean>
 			<!-- FIN ADMIN2 -->
 			
 			<!-- ADMIN3 -->
@@ -1314,7 +1338,7 @@
 					<property value="true" name="isSystem" />
 					<property name="messages">
 						<list>
-							<ref bean="message2" />
+							
 						</list>
 					</property>
 				</bean>
@@ -1324,7 +1348,7 @@
 					<property value="true" name="isSystem" />
 					<property name="messages">
 						<list>
-							<ref bean="message3" />
+							
 						</list>
 					</property>
 				</bean>
@@ -1357,6 +1381,7 @@
 				</bean>
 			<!-- FIN ADMIN3 -->
 			
+
 			<!-- DELETED -->
 				<bean class="domain.Box" id="inBoxDELETED">
 					<property value="INBOX" name="name" />

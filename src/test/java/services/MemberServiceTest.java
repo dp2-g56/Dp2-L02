@@ -86,7 +86,7 @@ public class MemberServiceTest extends AbstractTest {
 	 * 
 	 * 6. A case where the photo posted is not blank but neither a valid URL, a ConstraintViolationException is expected.
 	 * 
-	 * 7. A case when an Actor tries to edit another actor personal data, an IllegalArgumentException.
+	 * 7. A case when an Actor tries to edit another member personal data, an IllegalArgumentException.
 	 **/
 
 	@Test

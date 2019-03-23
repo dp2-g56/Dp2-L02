@@ -36,4 +36,7 @@ public interface BoxRepository extends JpaRepository<Box, Integer> {
 	@Query("select b from Actor a inner join a.boxes b where b.name = 'OUTBOX' and a = ?1")
 	public Box getSentBoxByActor(Actor actor);
 
+	@Query("select b from Actor a join a.boxes b where b.fatherBox = NULL and a = ?1")
+	public List<Box> fatherBoxesByActor(Actor actor);
+
 }

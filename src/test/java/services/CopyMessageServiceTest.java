@@ -10,43 +10,40 @@ import org.springframework.transaction.annotation.Transactional;
 
 import utilities.AbstractTest;
 import domain.Box;
+import domain.Message;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
 	"classpath:spring/junit.xml"
 })
 @Transactional
-public class DeleteBoxServiceTest extends AbstractTest {
+public class CopyMessageServiceTest extends AbstractTest {
 
 	@Autowired
-	private BoxService	boxService;
+	private MessageService	messageService;
+
+	@Autowired
+	private BoxService		boxService;
 
 
 	@Test
-	public void driverDeleteBox() {
+	public void driverCopyMessage() {
 
 		Object testingData[][] = {
 			{
-				//Positive test, deleting a no system box that admin1 own
-				"admin1", "noSystemBoxAdmin1", null
+				//Positive test, message in Inbox and you copy to Outbox
+				"admin1", "message3", "outBoxAdmin1", null
 			}, {
-				//Negative test, deleting a system box
-				"admin1", "spamBoxAdmin1", IllegalArgumentException.class
-			}, {
-				//Negative test, not logged
-				"", "noSystemBoxAdmin1", IllegalArgumentException.class
-			}, {
-				//Negative test, deleting a no system box that is not yours
-				"admin1", "noSystemBoxAdmin2", IllegalArgumentException.class
+				//Negative test, copy message to a box is not yours
+				"admin1", "message1", "inBoxAdmin2", IllegalArgumentException.class
 			}
-
 		};
 
 		for (int i = 0; i < testingData.length; i++)
-			this.templateDeleteBox((String) testingData[i][0], (String) testingData[i][1], (Class<?>) testingData[i][2]);
+			this.templateCopyMessage((String) testingData[i][0], (String) testingData[i][1], (String) testingData[i][2], (Class<?>) testingData[i][3]);
 	}
 
-	protected void templateDeleteBox(String username, String boxName, Class<?> expected) {
+	protected void templateCopyMessage(String username, String messageRe, String boxRe, Class<?> expected) {
 
 		Class<?> caught = null;
 
@@ -57,13 +54,16 @@ public class DeleteBoxServiceTest extends AbstractTest {
 
 			super.authenticate(username);
 
+			Message message = new Message();
 			Box box = new Box();
 
-			box = this.boxService.findOne(super.getEntityId(boxName));
+			message = this.messageService.findOne(super.getEntityId(messageRe));
 
-			this.boxService.deleteBox(box);
+			box = this.boxService.findOne(super.getEntityId(boxRe));
 
-			this.boxService.flush();
+			this.messageService.copyMessage(message, box);
+
+			this.messageService.flush();
 
 			super.authenticate(null);
 
@@ -77,4 +77,5 @@ public class DeleteBoxServiceTest extends AbstractTest {
 		super.checkExceptions(expected, caught);
 
 	}
+
 }

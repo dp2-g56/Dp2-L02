@@ -353,9 +353,9 @@ public class ParadeService {
 		return result;
 	}
 
-	public void delete(FormObjectParadeFloatCheckbox formObjectParadeFloatCheckbox) {
+	public void deleteParadeWithId(int paradeId) {
 
-		Parade parade = this.paradeRepository.findOne(formObjectParadeFloatCheckbox.getId());
+		Parade parade = this.paradeRepository.findOne(paradeId);
 
 		this.brotherhoodService.loggedAsBrotherhood();
 

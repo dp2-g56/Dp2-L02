@@ -326,7 +326,7 @@ public class ParadeController extends AbstractController {
 		ModelAndView result;
 
 		try {
-			this.paradeService.delete(formObjectParadeFloatCheckbox);
+			this.paradeService.deleteParadeWithId(formObjectParadeFloatCheckbox.getId());
 			result = new ModelAndView("redirect:/parade/brotherhood/list.do");
 		} catch (Throwable oops) {
 			result = this.createEditModelAndView(formObjectParadeFloatCheckbox, "parade.commit.error");

@@ -295,8 +295,6 @@ public class ParadeServiceTest extends AbstractTest {
 
 	}
 
-	// AQUI
-
 	/**
 	 * Test the use case detailed in requirement 10.2 (Acme-Madruga): Manage their
 	 * parades, which includes updating them
@@ -379,6 +377,53 @@ public class ParadeServiceTest extends AbstractTest {
 			parade.setColumnNumber(columnNumber);
 
 			this.paradeService.saveAssignList(parade, floats);
+
+			this.paradeService.flush();
+
+			super.unauthenticate();
+		} catch (Throwable oops) {
+			caught = oops.getClass();
+		} finally {
+			this.rollbackTransaction();
+		}
+
+		super.checkExceptions(expected, caught);
+
+	}
+
+	/**
+	 * Test the use case detailed in requirement 10.2 (Acme-Madruga): Manage their
+	 * parades, which includes deleting them
+	 */
+	@Test
+	public void driverDeleteParadeIfBrotherhood() {
+		Parade p1Draft = this.paradeService.findOne(super.getEntityId("parade1"));
+		Parade p1Final = this.paradeService.findOne(super.getEntityId("parade2"));
+
+		Object testingData[][] = {
+				// Positive test
+				{ p1Draft, "brotherhood1", null },
+				// Negative test: Trying to delete a parade with a different role
+				{ p1Draft, "member1", IllegalArgumentException.class },
+				// Negative test: Trying to delete a parade with a different brotherhood
+				{ p1Draft, "brotherhood2", IllegalArgumentException.class },
+				// Negative test: Trying to delete a parade in final mode
+				{ p1Final, "brotherhood1", IllegalArgumentException.class } };
+
+		for (int i = 0; i < testingData.length; i++)
+			this.templateDeleteParadeIfBrotherhood((Parade) testingData[i][0], (String) testingData[i][1],
+					(Class<?>) testingData[i][2]);
+	}
+
+	private void templateDeleteParadeIfBrotherhood(Parade parade, String username, Class<?> expected) {
+		Class<?> caught = null;
+
+		try {
+			this.startTransaction();
+
+			super.authenticate(username);
+
+			this.paradeService.deleteParadeWithId(parade.getId());
 
 			this.paradeService.flush();
 

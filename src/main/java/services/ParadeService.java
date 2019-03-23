@@ -309,7 +309,10 @@ public class ParadeService {
 		Assert.notNull(brotherhood.getArea());
 
 		for (Float f : floats)
-			Assert.isTrue(brotherhood.getFloats().contains(f));
+			Assert.isTrue(brotherhood.getFloats().contains(f) && f.getId() > 0);
+
+		if (parade.getId() > 0)
+			Assert.isTrue(this.findOne(parade.getId()).getIsDraftMode());
 
 		parade.setFloats(floats);
 		Parade saved = new Parade();

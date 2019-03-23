@@ -1,6 +1,7 @@
 
 package services;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -211,8 +212,6 @@ public class ParadeServiceTest extends AbstractTest {
 
 	}
 
-	// AQUI
-
 	/**
 	 * Test the use case detailed in requirement 10.2 (Acme-Madruga): Manage their
 	 * parades, which includes creating them
@@ -273,6 +272,104 @@ public class ParadeServiceTest extends AbstractTest {
 			super.authenticate(username);
 
 			Parade parade = this.paradeService.create();
+
+			parade.setTitle(paradeTitle);
+			parade.setDescription(paradeDescription);
+			parade.setMoment(paradeMoment);
+			parade.setIsDraftMode(draftMode);
+			parade.setRowNumber(rowNumber);
+			parade.setColumnNumber(columnNumber);
+
+			this.paradeService.saveAssignList(parade, floats);
+
+			this.paradeService.flush();
+
+			super.unauthenticate();
+		} catch (Throwable oops) {
+			caught = oops.getClass();
+		} finally {
+			this.rollbackTransaction();
+		}
+
+		super.checkExceptions(expected, caught);
+
+	}
+
+	// AQUI
+
+	/**
+	 * Test the use case detailed in requirement 10.2 (Acme-Madruga): Manage their
+	 * parades, which includes updating them
+	 */
+	@Test
+	public void driverUpdateParadeIfBrotherhood() {
+		Calendar c = Calendar.getInstance();
+		c.set(Calendar.DAY_OF_MONTH, 20);
+		c.set(Calendar.MONTH, 10);
+		Date futureDate = c.getTime();
+
+		c.set(Calendar.MONTH, 2);
+		Date pastDate = c.getTime();
+
+		Parade p1Draft = this.paradeService.findOne(super.getEntityId("parade1"));
+		Parade p1Final = this.paradeService.findOne(super.getEntityId("parade2"));
+
+		Brotherhood b2 = this.brotherhoodService.getBrotherhoodByUsername("brotherhood2");
+		List<domain.Float> floats2 = b2.getFloats();
+
+		domain.Float newFloat = new domain.Float();
+		newFloat.setId(0);
+		newFloat.setVersion(0);
+		newFloat.setDescription("Description");
+		newFloat.setTitle("Title");
+		List<domain.Float> newFloats = new ArrayList<>();
+		newFloats.add(newFloat);
+
+		Object testingData[][] = {
+				// Positive test
+				{ p1Draft, "Parade title", p1Draft.getDescription(), futureDate, p1Draft.getIsDraftMode(),
+						p1Draft.getRowNumber(), p1Draft.getColumnNumber(), p1Draft.getFloats(), "brotherhood1", null },
+				// Negative test: Trying to update a parade with a past moment
+				{ p1Draft, p1Draft.getTitle(), p1Draft.getDescription(), pastDate, p1Draft.getIsDraftMode(),
+						p1Draft.getRowNumber(), p1Draft.getColumnNumber(), p1Draft.getFloats(), "brotherhood1",
+						ConstraintViolationException.class },
+				// Negative test: Trying to update a parade with a blank parade title
+				{ p1Draft, "", p1Draft.getDescription(), futureDate, p1Draft.getIsDraftMode(), p1Draft.getRowNumber(),
+						p1Draft.getColumnNumber(), p1Draft.getFloats(), "brotherhood1",
+						ConstraintViolationException.class },
+				// Negative test: Trying to update a parade with with a different role
+				{ p1Draft, "Parade title", p1Draft.getDescription(), futureDate, p1Draft.getIsDraftMode(),
+						p1Draft.getRowNumber(), p1Draft.getColumnNumber(), p1Draft.getFloats(), "member1",
+						IllegalArgumentException.class },
+				// Negative test: Trying to update a parade with floats of other brotherhood
+				{ p1Draft, p1Draft.getTitle(), p1Draft.getDescription(), futureDate, p1Draft.getIsDraftMode(),
+						p1Draft.getRowNumber(), p1Draft.getColumnNumber(), floats2, "brotherhood1",
+						IllegalArgumentException.class },
+				// Negative test: Trying to update a parade with a float that does not exists
+				{ p1Draft, p1Draft.getTitle(), p1Draft.getDescription(), futureDate, p1Draft.getIsDraftMode(),
+						p1Draft.getRowNumber(), p1Draft.getColumnNumber(), newFloats, "brotherhood1",
+						IllegalArgumentException.class },
+				// Negative test: Trying to update a parade that is in final mode
+				{ p1Final, "Parade title", p1Final.getDescription(), p1Final.getMoment(), p1Final.getIsDraftMode(),
+						p1Final.getRowNumber(), p1Final.getColumnNumber(), p1Final.getFloats(), "brotherhood1",
+						IllegalArgumentException.class } };
+
+		for (int i = 0; i < testingData.length; i++)
+			this.templateUpdateParadeIfBrotherhood((Parade) testingData[i][0], (String) testingData[i][1],
+					(String) testingData[i][2], (Date) testingData[i][3], (Boolean) testingData[i][4],
+					(Integer) testingData[i][5], (Integer) testingData[i][6], (List<domain.Float>) testingData[i][7],
+					(String) testingData[i][8], (Class<?>) testingData[i][9]);
+	}
+
+	private void templateUpdateParadeIfBrotherhood(Parade parade, String paradeTitle, String paradeDescription,
+			Date paradeMoment, Boolean draftMode, Integer rowNumber, Integer columnNumber, List<domain.Float> floats,
+			String username, Class<?> expected) {
+		Class<?> caught = null;
+
+		try {
+			this.startTransaction();
+
+			super.authenticate(username);
 
 			parade.setTitle(paradeTitle);
 			parade.setDescription(paradeDescription);

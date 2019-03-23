@@ -120,8 +120,7 @@ public class MessageService {
 
 		// Guardar la box con ese mensaje;
 
-		if (this.configurationService.isStringSpam(messageSaved.getBody(), spam)
-				|| this.configurationService.isStringSpam(messageSaved.getSubject(), spam)) {
+		if (this.configurationService.isStringSpam(messageSaved.getBody(), spam) || this.configurationService.isStringSpam(messageSaved.getSubject(), spam) || this.configurationService.isStringSpam(messageSaved.getTags(), spam)) {
 			boxSent.getMessages().add(messageSaved);
 			boxSpam.getMessages().add(messageCopySaved);
 
@@ -320,8 +319,7 @@ public class MessageService {
 		Admin system = this.adminService.getAdminByUsername("system");
 		boxOut = this.boxService.getSentBoxByActor(system);
 
-		if (this.configurationService.isStringSpam(messageSaved.getBody(), spam)
-				|| this.configurationService.isStringSpam(messageSaved.getSubject(), spam)) {
+		if (this.configurationService.isStringSpam(messageSaved.getBody(), spam) || this.configurationService.isStringSpam(messageSaved.getSubject(), spam) || this.configurationService.isStringSpam(messageSaved.getTags(), spam)) {
 			boxSpam.getMessages().add(messageSaved);
 			this.boxService.saveSystem(boxSpam);
 		} else {

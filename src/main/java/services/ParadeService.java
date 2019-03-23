@@ -16,8 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
 
-import repositories.ParadeRepository;
-import utilities.RandomString;
 import domain.Area;
 import domain.Brotherhood;
 import domain.Chapter;
@@ -29,6 +27,8 @@ import domain.Request;
 import domain.Segment;
 import forms.FormObjectParadeFloat;
 import forms.FormObjectParadeFloatCheckbox;
+import repositories.ParadeRepository;
+import utilities.RandomString;
 
 @Service
 @Transactional
@@ -37,9 +37,9 @@ public class ParadeService {
 	// Managed repository ------------------------------------------
 
 	@Autowired
-	private ParadeRepository	paradeRepository;
+	private ParadeRepository paradeRepository;
 	@Autowired
-	private BrotherhoodService	brotherhoodService;
+	private BrotherhoodService brotherhoodService;
 	@Autowired
 	private SponsorService		sponsorService;
 	@Autowired
@@ -61,7 +61,6 @@ public class ParadeService {
 		Parade parade = new Parade();
 
 		List<Float> floats = new ArrayList<>();
-
 		parade.setPath(null);
 		parade.setFloats(floats);
 
@@ -85,7 +84,8 @@ public class ParadeService {
 		return parade;
 	}
 
-	public Parade edit(Parade parade, int columnNumber, int rowNumber, String description, boolean isDraftMode, String title, Date moment) {
+	public Parade edit(Parade parade, int columnNumber, int rowNumber, String description, boolean isDraftMode,
+			String title, Date moment) {
 
 		// Security
 		this.brotherhoodService.loggedAsBrotherhood();
@@ -160,11 +160,9 @@ public class ParadeService {
 		}
 		date1 = df_in.format(date);
 		res = res + date1 + "-" + gen;
-		for (Parade c : lc) {
-			if (c.getTicker() == res) {
+		for (Parade c : lc)
+			if (c.getTicker() == res)
 				return this.generateTicker();
-			}
-		}
 		return res;
 	}
 
@@ -203,14 +201,14 @@ public class ParadeService {
 		return result;
 	}
 
-	public Parade reconstructCheckbox(FormObjectParadeFloatCheckbox formObjectParadeFloatCheckbox, BindingResult binding) {
+	public Parade reconstructCheckbox(FormObjectParadeFloatCheckbox formObjectParadeFloatCheckbox,
+			BindingResult binding) {
 		Parade result = new Parade();
 
-		if (formObjectParadeFloatCheckbox.getId() == 0) {
+		if (formObjectParadeFloatCheckbox.getId() == 0)
 			result.setTicker(this.generateTicker());
-		} else {
+		else
 			result = this.paradeRepository.findOne(formObjectParadeFloatCheckbox.getId());
-		}
 
 		result.setTitle(formObjectParadeFloatCheckbox.getTitleParade());
 		result.setDescription(formObjectParadeFloatCheckbox.getDescriptionParade());
@@ -246,7 +244,7 @@ public class ParadeService {
 		Assert.isTrue(brotherhood.getParades().contains(paradeToCopy) && paradeCopy.getId() == 0);
 		Assert.isTrue(paradeToCopy.getFloats().size() >= 0);
 		Assert.isTrue(paradeToCopy.getRequests().size() >= 0);
-		//Assert.isTrue(paradeToCopy.getPaths().size() >= 0);
+		// Assert.isTrue(paradeToCopy.getPaths().size() >= 0);
 
 		paradeCopy.setColumnNumber(paradeToCopy.getColumnNumber());
 		paradeCopy.setRowNumber(paradeToCopy.getRowNumber());
@@ -281,6 +279,7 @@ public class ParadeService {
 		this.flush();
 
 		paradeCopy.setPath(savedPath);
+
 
 		Parade saved = new Parade();
 		saved = this.paradeRepository.save(paradeCopy);
@@ -358,9 +357,8 @@ public class ParadeService {
 		FormObjectParadeFloatCheckbox result = new FormObjectParadeFloatCheckbox();
 
 		List<Integer> floats = new ArrayList<>();
-		for (domain.Float f : parade.getFloats()) {
+		for (domain.Float f : parade.getFloats())
 			floats.add(f.getId());
-		}
 
 		result.setColumnNumber(parade.getColumnNumber());
 		result.setDescriptionParade(parade.getDescription());

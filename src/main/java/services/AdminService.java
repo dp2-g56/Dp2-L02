@@ -91,7 +91,7 @@ public class AdminService {
 
 		Admin admin = new Admin();
 
-		// Se crean las listas vacías
+		// Se crean las listas vacÃ­as
 		// ACTOR
 		List<SocialProfile> socialProfiles = new ArrayList<>();
 		List<Box> boxes = new ArrayList<>();
@@ -127,7 +127,8 @@ public class AdminService {
 		return admin;
 	}
 
-	public Admin createAdmin(String name, String middleName, String surname, String photo, String email, String phoneNumber, String address, String userName, String password) {
+	public Admin createAdmin(String name, String middleName, String surname, String photo, String email,
+			String phoneNumber, String address, String userName, String password) {
 
 		Admin admin = new Admin();
 
@@ -195,7 +196,7 @@ public class AdminService {
 
 		List<Box> boxes = new ArrayList<>();
 
-		// Se crean las listas vacías
+		// Se crean las listas vacÃ­as
 		// ACTOR
 		List<SocialProfile> socialProfiles = new ArrayList<>();
 		admin.setSocialProfiles(socialProfiles);
@@ -376,7 +377,8 @@ public class AdminService {
 	 */
 
 	public Admin findOne(int adminId) {
-		return this.findOne(adminId);
+		return this.adminRepository.findOne(adminId);
+
 	}
 
 	public List<Float> showStatistics() {
@@ -743,6 +745,22 @@ public class AdminService {
 		return result;
 	}
 
+	public String SocialProfilesToString() {
+		String res = "";
+		Admin admin = this.loggedAdmin();
+		List<SocialProfile> socialProfiles = new ArrayList<SocialProfile>();
+		StringBuilder sb = new StringBuilder();
+		socialProfiles = admin.getSocialProfiles();
+
+		Integer cont = 1;
+
+		for (SocialProfile f : socialProfiles) {
+			sb.append("Profile" + cont + " Name: " + f.getName() + " Nick: " + f.getNick() + " Profile link: " + f.getProfileLink()).append(System.getProperty("line.separator"));
+			cont++;
+		}
+		return sb.toString();
+	}
+
 	public void flush() {
 		this.adminRepository.flush();
 
@@ -751,6 +769,7 @@ public class AdminService {
 	public Admin getAdminByUsername(String username) {
 		return this.adminRepository.getAdminByUsername(username);
 	}
+
 	public Admin updateAdmin(Admin admin) {
 		this.loggedAsAdmin();
 		Assert.isTrue(admin.getId() != 0 && this.loggedAdmin().getId() == admin.getId());

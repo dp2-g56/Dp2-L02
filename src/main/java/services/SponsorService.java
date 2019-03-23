@@ -28,7 +28,8 @@ import forms.FormObjectSponsor;
 public class SponsorService {
 
 	@Autowired
-	private SponsorRepository		SponsorRepository;
+	private SponsorRepository sponsorRepository;
+
 
 	@Autowired
 	private BoxService				boxService;
@@ -47,19 +48,19 @@ public class SponsorService {
 
 
 	public List<Sponsor> findAll() {
-		return this.SponsorRepository.findAll();
+		return this.sponsorRepository.findAll();
 	}
 
 	public Sponsor save(Sponsor h) {
-		return this.SponsorRepository.save(h);
+		return this.sponsorRepository.save(h);
 	}
 
 	public void delete(Sponsor h) {
-		this.SponsorRepository.delete(h);
+		this.sponsorRepository.delete(h);
 	}
 
 	public Sponsor findOne(int id) {
-		return this.SponsorRepository.findOne(id);
+		return this.sponsorRepository.findOne(id);
 	}
 
 	public Sponsor createSponsor() {
@@ -140,7 +141,7 @@ public class SponsorService {
 
 		bro.setBoxes(boxes);
 
-		return this.SponsorRepository.save(bro);
+		return this.sponsorRepository.save(bro);
 	}
 
 	public Sponsor reconstruct(FormObjectSponsor formObjectSponsor, BindingResult binding) {
@@ -199,7 +200,7 @@ public class SponsorService {
 		Sponsor brother = new Sponsor();
 		UserAccount userAccount;
 		userAccount = LoginService.getPrincipal();
-		brother = this.SponsorRepository.getSponsorByUsername(userAccount.getUsername());
+		brother = this.sponsorRepository.getSponsorByUsername(userAccount.getUsername());
 		return brother;
 	}
 
@@ -207,9 +208,9 @@ public class SponsorService {
 		UserAccount userAccount = LoginService.getPrincipal();
 		String username = userAccount.getUsername();
 
-		Assert.notNull(this.SponsorRepository.getSponsorByUsername(username));
+		Assert.notNull(this.sponsorRepository.getSponsorByUsername(username));
 
-		Sponsor loggedSponsor = this.SponsorRepository.getSponsorByUsername(username);
+		Sponsor loggedSponsor = this.sponsorRepository.getSponsorByUsername(username);
 
 		List<Authority> authorities = (List<Authority>) loggedSponsor.getUserAccount().getAuthorities();
 		Assert.isTrue(authorities.get(0).toString().equals("SPONSOR"));
@@ -220,7 +221,7 @@ public class SponsorService {
 	public Sponsor updateSponsor(Sponsor Sponsor) {
 		this.loggedAsSponsor();
 		Assert.isTrue(Sponsor.getId() != 0);
-		return this.SponsorRepository.save(Sponsor);
+		return this.sponsorRepository.save(Sponsor);
 	}
 
 	public Sponsor reconstructSponsor(Sponsor Sponsor, BindingResult binding) {
@@ -229,7 +230,7 @@ public class SponsorService {
 		Sponsor pururu;
 
 		result = Sponsor;
-		pururu = this.SponsorRepository.findOne(Sponsor.getId());
+		pururu = this.sponsorRepository.findOne(Sponsor.getId());
 
 		result.setUserAccount(pururu.getUserAccount());
 		result.setBoxes(pururu.getBoxes());
@@ -245,11 +246,28 @@ public class SponsorService {
 	}
 
 	public Sponsor getSponsorByUsername(String a) {
-		return this.SponsorRepository.getSponsorByUsername(a);
+		return this.sponsorRepository.getSponsorByUsername(a);
 	}
 
 	public void flush() {
-		this.SponsorRepository.flush();
+		this.sponsorRepository.flush();
+	}
+
+	public String SocialProfilesToString() {
+		String res = "";
+		Sponsor sponsor = this.loggedSponsor();
+		List<SocialProfile> socialProfiles = new ArrayList<SocialProfile>();
+		StringBuilder sb = new StringBuilder();
+		socialProfiles = sponsor.getSocialProfiles();
+
+		Integer cont = 1;
+
+		for (SocialProfile f : socialProfiles) {
+			sb.append("Profile" + cont + " Name: " + f.getName() + " Nick: " + f.getNick() + " Profile link: "
+					+ f.getProfileLink()).append(System.getProperty("line.separator"));
+			cont++;
+		}
+		return sb.toString();
 	}
 
 	public void deleteSponsor() {
@@ -262,6 +280,7 @@ public class SponsorService {
 		this.socialProfileService.deleteAllSocialProfiles();
 		this.sponsorshipService.deleteAllSponsorships();
 		this.delete(sponsor);
+		this.flush();
 
 	}
 

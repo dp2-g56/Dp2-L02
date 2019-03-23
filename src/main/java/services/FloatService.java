@@ -72,6 +72,7 @@ public class FloatService {
 
 	public List<domain.Float> showBrotherhoodFloats() {
 		Brotherhood bro = new Brotherhood();
+		this.brotherhoodService.loggedAsBrotherhood();
 		bro = this.brotherhoodService.loggedBrotherhood();
 		List<domain.Float> floatts = new ArrayList<domain.Float>();
 		floatts = bro.getFloats();
@@ -94,12 +95,24 @@ public class FloatService {
 		bro = this.brotherhoodService.loggedBrotherhood();
 		List<Parade> pro = new ArrayList<Parade>();
 
+		Assert.isTrue(bro.getFloats().contains(floatt));
+
 		pro = this.brotherhoodService.getParadesByBrotherhood(bro);
 		Assert.isTrue(this.allParadesDraftMode(pro));
 		for (final Parade p : pro)
-			if (p.getFloats().contains(floatt))
-				p.getFloats().remove(floatt);
-		bro.getFloats().remove(floatt);
+			if (p.getFloats().contains(floatt)) {
+				Assert.isTrue(!p.getIsDraftMode());
+
+				List<domain.Float> floatss = p.getFloats();
+				floatss.remove(floatt);
+				p.setFloats(floatss);
+				this.paradeService.save(p);
+			}
+		List<domain.Float> floatsBro = bro.getFloats();
+		floatsBro.remove(floatt);
+		bro.setFloats(floatsBro);
+
+		this.brotherhoodService.save(bro);
 		this.floatRepository.delete(floatt);
 	}
 
@@ -121,7 +134,15 @@ public class FloatService {
 		domain.Float floattSaved = new domain.Float();
 		loggedBrotherhood = this.brotherhoodService.loggedBrotherhood();
 
-		Assert.isTrue(!(loggedBrotherhood.getArea().equals(null)));
+		if (floatt.getId() > 0)
+			Assert.isTrue(loggedBrotherhood.getFloats().contains(floatt));
+
+		Assert.notNull(loggedBrotherhood.getArea());
+
+		List<domain.Float> floatFinalMode = new ArrayList<domain.Float>();
+		floatFinalMode = this.floatsInParadeInFinalMode();
+
+		Assert.isTrue(!floatFinalMode.contains(floatt));
 
 		floattSaved = this.floatRepository.save(floatt);
 
@@ -227,6 +248,9 @@ public class FloatService {
 
 	public domain.Float addPicture(String picture, domain.Float floatt) {
 		this.brotherhoodService.loggedAsBrotherhood();
+
+		Assert.isTrue(!picture.trim().isEmpty() && this.isUrl(picture));
+
 		floatt.getPictures().add(picture);
 		return this.save(floatt);
 	}
@@ -239,4 +263,27 @@ public class FloatService {
 			return false;
 		}
 	}
+
+	public List<String> getPicturesOfFloat(int floatId, boolean parade) {
+		this.brotherhoodService.loggedAsBrotherhood();
+
+		Assert.isTrue(parade);
+
+		domain.Float floatt;
+
+		List<String> pictures;
+
+		floatt = this.findOne(floatId);
+
+		Assert.notNull(floatt);
+
+		pictures = floatt.getPictures();
+
+		return pictures;
+	}
+
+	public void flush() {
+		this.floatRepository.flush();
+	}
+
 }

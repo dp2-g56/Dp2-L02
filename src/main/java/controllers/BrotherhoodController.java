@@ -1,8 +1,12 @@
 
 package controllers;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,25 +16,25 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import domain.Brotherhood;
 import services.BrotherhoodService;
 import services.FloatService;
-import domain.Brotherhood;
 
 @Controller
 @RequestMapping("/float/brotherhood")
 public class BrotherhoodController extends AbstractController {
 
 	@Autowired
-	private BrotherhoodService	brotherhoodService;
+	private BrotherhoodService brotherhoodService;
 
 	@Autowired
-	private FloatService		floatService;
+	private FloatService floatService;
 
-
-	//LIST
-	//Lista de todos los floatt de esa brotherhood
+	// LIST
+	// Lista de todos los floatt de esa brotherhood
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public ModelAndView list() {
 		ModelAndView result;
@@ -56,21 +60,12 @@ public class BrotherhoodController extends AbstractController {
 		return result;
 	}
 
-	//LIST PICTURES
+	// LIST PICTURES
 	@RequestMapping(value = "/picture/list", method = RequestMethod.GET)
 	public ModelAndView listBro(@RequestParam int floatId, @RequestParam boolean parade) {
-
 		ModelAndView result;
 
-		List<String> pictures;
-
-		domain.Float floatt;
-
-		floatt = this.floatService.findOne(floatId);
-
-		Assert.notNull(floatt);
-
-		pictures = floatt.getPictures();
+		List<String> pictures = this.floatService.getPicturesOfFloat(floatId, parade);
 
 		result = new ModelAndView("picture/brotherhood/picturesFloat");
 
@@ -100,7 +95,7 @@ public class BrotherhoodController extends AbstractController {
 		floatt = this.floatService.findOne(floatId);
 
 		try {
-			if (picture.trim().isEmpty() || picture.trim().isEmpty() || !this.floatService.isUrl(picture)) {
+			if (picture.trim().isEmpty() || !this.floatService.isUrl(picture)) {
 				result = new ModelAndView("picture/brotherhood/createPicture");
 				result.addObject("floatId", floatId);
 				result.addObject("parade", parade);
@@ -115,7 +110,8 @@ public class BrotherhoodController extends AbstractController {
 
 		return result;
 	}
-	//CREATE
+
+	// CREATE
 	@RequestMapping(value = "/create", method = RequestMethod.GET)
 	public ModelAndView create() {
 		Brotherhood bro = new Brotherhood();
@@ -132,7 +128,7 @@ public class BrotherhoodController extends AbstractController {
 		return result;
 	}
 
-	//EDIT
+	// EDIT
 	@RequestMapping(value = "/edit", method = RequestMethod.GET)
 	public ModelAndView edit(@RequestParam int floatId) {
 		ModelAndView result;
@@ -165,8 +161,8 @@ public class BrotherhoodController extends AbstractController {
 		List<domain.Float> floatFinalMode = new ArrayList<domain.Float>();
 		floatFinalMode = this.floatService.floatsInParadeInFinalMode();
 
-		Assert.notNull(loggedBrotherhood.getArea());
 		Assert.isTrue(!floatFinalMode.contains(floatt));
+		Assert.notNull(loggedBrotherhood.getArea());
 		domain.Float f;
 
 		f = this.floatService.reconstruct(floatt, binding);
@@ -204,7 +200,7 @@ public class BrotherhoodController extends AbstractController {
 		return result;
 	}
 
-	//DELETE
+	// DELETE
 	@RequestMapping(value = "/edit", method = RequestMethod.POST, params = "delete")
 	public ModelAndView delete(domain.Float floatt, BindingResult binding) {
 		this.brotherhoodService.loggedAsBrotherhood();
@@ -226,6 +222,53 @@ public class BrotherhoodController extends AbstractController {
 
 		}
 		return result;
+	}
+
+	@RequestMapping(value = "/export", method = RequestMethod.GET)
+	public @ResponseBody String export(@RequestParam(value = "id", defaultValue = "-1") int id,
+			HttpServletResponse response) throws IOException {
+
+		this.brotherhoodService.loggedAsBrotherhood();
+
+		Brotherhood brotherhood = new Brotherhood();
+		brotherhood = this.brotherhoodService.findOne(id);
+
+		// Defines un StringBuilder para construir tu string
+		StringBuilder sb = new StringBuilder();
+
+		// Cada append a�ade una linea, cada "line.separator" a�ade un salto de
+		// linea
+		sb.append("Personal data:").append(System.getProperty("line.separator"));
+		sb.append("Name: " + brotherhood.getName()).append(System.getProperty("line.separator"));
+		sb.append("Middle name: " + brotherhood.getMiddleName()).append(System.getProperty("line.separator"));
+		sb.append("Surname: " + brotherhood.getSurname()).append(System.getProperty("line.separator"));
+		sb.append("Address: " + brotherhood.getAddress()).append(System.getProperty("line.separator"));
+		sb.append("Email: " + brotherhood.getEmail()).append(System.getProperty("line.separator"));
+		sb.append("Photo: " + brotherhood.getPhoto()).append(System.getProperty("line.separator"));
+		sb.append("Phone: " + brotherhood.getPhoneNumber()).append(System.getProperty("line.separator"));
+		sb.append(System.getProperty("line.separator"));
+		sb.append("SocialProfiles: ").append(System.getProperty("line.separator"));
+
+		// Este metodo te muestra los socialProfiles de la misma manera que el resto del
+		// documento
+		sb.append(this.brotherhoodService.SocialProfilesToString()).append(System.getProperty("line.separator"));
+		sb.append(this.brotherhoodService.HistoryToString()).append(System.getProperty("line.separator"));
+
+		if (brotherhood == null || this.brotherhoodService.loggedBrotherhood().getId() != id)
+			return null;
+
+		// Defines el nombre del archivo y la extension
+		response.setContentType("text/txt");
+		response.setHeader("Content-Disposition", "attachment;filename=exportDataBrotherhood.txt");
+
+		// Con estos comandos permites su descarga cuando clickas
+		ServletOutputStream outStream = response.getOutputStream();
+		outStream.println(sb.toString());
+		outStream.flush();
+		outStream.close();
+
+		// El return no llega nunca, es del metodo viejo
+		return sb.toString();
 	}
 
 }

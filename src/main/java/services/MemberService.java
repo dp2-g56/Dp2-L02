@@ -60,7 +60,7 @@ public class MemberService {
 
 		Member member = new Member();
 
-		// Se crean las listas vacías
+		// Se crean las listas vacÃ­as
 		// ACTOR
 		List<SocialProfile> socialProfiles = new ArrayList<>();
 		List<Box> boxes = new ArrayList<>();
@@ -108,7 +108,7 @@ public class MemberService {
 
 		List<Box> boxes = new ArrayList<>();
 
-		// Se crean las listas vacías
+		// Se crean las listas vacÃ­as
 		// ACTOR
 		List<SocialProfile> socialProfiles = new ArrayList<>();
 		member.setSocialProfiles(socialProfiles);
@@ -276,6 +276,22 @@ public class MemberService {
 		return result;
 	}
 
+	public String SocialProfilesToString() {
+		String res = "";
+		Member member = this.loggedMember();
+		List<SocialProfile> socialProfiles = new ArrayList<SocialProfile>();
+		StringBuilder sb = new StringBuilder();
+		socialProfiles = member.getSocialProfiles();
+
+		Integer cont = 1;
+
+		for (SocialProfile f : socialProfiles) {
+			sb.append("Profile" + cont + " Name: " + f.getName() + " Nick: " + f.getNick() + " Profile link: " + f.getProfileLink()).append(System.getProperty("line.separator"));
+			cont++;
+		}
+		return sb.toString();
+	}
+
 	public void flush() {
 		this.memberRepository.flush();
 
@@ -332,6 +348,7 @@ public class MemberService {
 		this.delete(member);
 
 		this.flush();
+
 	}
 
 }

@@ -46,11 +46,15 @@ public class ParadeServiceTest extends AbstractTest {
 		Class<?> caught = null;
 
 		try {
+			super.startTransaction();
+
 			super.authenticate(username);
 			this.paradeService.listAcceptedParadeIfSponsor();
 			super.unauthenticate();
 		} catch (Throwable oops) {
 			caught = oops.getClass();
+		} finally {
+			super.rollbackTransaction();
 		}
 
 		super.checkExceptions(expected, caught);

@@ -89,6 +89,24 @@ public class AdminServiceTest extends AbstractTest {
 
 	//********************************************************************************
 
+	/**
+	 * This next driver will test 7 cases about registering as a Administrator, the data in this drivers will only be those which have restrictions
+	 * about its persistence on database or business rules. This tested cases are:
+	 * 
+	 * 1. A positive case where no error is expected.
+	 * 
+	 * 2. A case where the new username is blank, a ConstraintViolationException is expected.
+	 * 
+	 * 3. A case where the new name is blank, a ConstraintViolationException is expected.
+	 * 
+	 * 4. A case where the new surname is blank, a ConstraintViolationException is expected.
+	 * 
+	 * 5. A case where the photo posted is not blank but neither a valid URL, a ConstraintViolationException is expected.
+	 * 
+	 * 6. A case where the email posted is not valid, a ConstraintViolationException is expected.
+	 * 
+	 * 7. A case where the actor trying to register a new Administrator account is not an Administrator, an IllegalArgumentException is expected.
+	 **/
 	@Test
 	public void driverRegister() {
 		Object testingData[][] = {
@@ -104,6 +122,8 @@ public class AdminServiceTest extends AbstractTest {
 				"admin1", "AdminTest4", "name1", "surname1", "emailTest@gmail.com", "invalid url", ConstraintViolationException.class
 			}, {
 				"admin1", "AdminTest8", "name1", "surname1", "invalid email", "https://www.example.com/", ConstraintViolationException.class
+			}, {
+				"chapter1", "AdminTest8", "name1", "surname1", "emailTest@gmail.com", "https://www.example.com/", IllegalArgumentException.class
 			}
 		};
 
@@ -112,6 +132,24 @@ public class AdminServiceTest extends AbstractTest {
 		}
 	}
 
+	/**
+	 * This next driver will test 7 cases about editing personal data as a Administrator, the data in this drivers will only be those which have restrictions
+	 * about its persistence on database or business rules. This tested cases are:
+	 * 
+	 * 1. A positive case where no error is expected.
+	 * 
+	 * 2. A case where the new name is blank, a ConstraintViolationException is expected.
+	 * 
+	 * 3. A case where the new surname is blank, a ConstraintViolationException is expected.
+	 * 
+	 * 4. A case where the new email is blank, a ConstraintViolationException is expected.
+	 * 
+	 * 5. A case where the email posted is not valid, a ConstraintViolationException is expected.
+	 * 
+	 * 6. A case where the photo posted is not blank but neither a valid URL, a ConstraintViolationException is expected.
+	 * 
+	 * 7. A case when an Actor tries to edit another actor personal data, an IllegalArgumentException.
+	 **/
 	@Test
 	public void driverEditPersonalData() {
 		Object testingData[][] = {
@@ -139,50 +177,50 @@ public class AdminServiceTest extends AbstractTest {
 	}
 
 	protected void templateRegister(String username, String newUsername, String name, String surname, String email, String photo, Class<?> expected) {
-		this.startTransaction();
-		super.authenticate(username);
-		Admin admin = this.adminService.createAdmin();
-		admin.setAddress("");
-		admin.setMiddleName("");
-		admin.setPhoneNumber("");
-		admin.setEmail(email);
-		admin.setName(name);
-		admin.setPhoto(photo);
-		admin.setSurname(surname);
-
-		UserAccount userAccount = new UserAccount();
-
-		// Authorities
-		List<Authority> authorities = new ArrayList<Authority>();
-		Authority authority = new Authority();
-		authority.setAuthority(Authority.ADMIN);
-		authorities.add(authority);
-		userAccount.setAuthorities(authorities);
-
-		// locked
-		userAccount.setIsNotLocked(true);
-
-		// Username
-		userAccount.setUsername(newUsername);
-
-		// Password
-		Md5PasswordEncoder encoder;
-		encoder = new Md5PasswordEncoder();
-		userAccount.setPassword(encoder.encodePassword("12345", null));
-
-		admin.setUserAccount(userAccount);
-
-		Class<?> caught = null;
-
 		/**
 		 * This is the first command used to force to rollback the database, it
 		 * initialise a Transaction in this point, before we add the entity in order to
 		 * set the rollback to this point.
 		 **/
+		this.startTransaction();
 
 		/** End of first command. **/
+		super.authenticate(username);
+		Class<?> caught = null;
 
 		try {
+
+			Admin admin = this.adminService.createAdmin();
+			admin.setAddress("");
+			admin.setMiddleName("");
+			admin.setPhoneNumber("");
+			admin.setEmail(email);
+			admin.setName(name);
+			admin.setPhoto(photo);
+			admin.setSurname(surname);
+
+			UserAccount userAccount = new UserAccount();
+
+			// Authorities
+			List<Authority> authorities = new ArrayList<Authority>();
+			Authority authority = new Authority();
+			authority.setAuthority(Authority.ADMIN);
+			authorities.add(authority);
+			userAccount.setAuthorities(authorities);
+
+			// locked
+			userAccount.setIsNotLocked(true);
+
+			// Username
+			userAccount.setUsername(newUsername);
+
+			// Password
+			Md5PasswordEncoder encoder;
+			encoder = new Md5PasswordEncoder();
+			userAccount.setPassword(encoder.encodePassword("12345", null));
+
+			admin.setUserAccount(userAccount);
+
 			this.adminService.saveCreate(admin);
 			this.adminService.flush();
 		} catch (Throwable oops) {

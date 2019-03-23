@@ -72,7 +72,11 @@ public class SegmentService {
 	}
 
 	public List<Segment> getSegmentByParade(Integer paradeId) {
+
 		Parade parade = this.paradeService.findOne(paradeId);
+
+		if (parade.getIsDraftMode())
+			Assert.isTrue(this.brotherhoodService.loggedBrotherhood().getParades().contains(parade));
 
 		return parade.getPath().getSegments();
 	}

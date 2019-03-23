@@ -18,6 +18,7 @@ import domain.Brotherhood;
 import domain.Member;
 import domain.Message;
 import domain.Parade;
+import domain.ParadeStatus;
 import domain.Request;
 import domain.Status;
 import repositories.RequestRepository;
@@ -134,7 +135,7 @@ public class RequestService {
 		Parade parade = this.paradeService.findOne(paradeId);
 		List<Request> requests = parade.getRequests();
 
-		Assert.isTrue(parade.getIsDraftMode() == false);
+		Assert.isTrue(parade.getIsDraftMode() == false && parade.getParadeStatus().equals(ParadeStatus.ACCEPTED));
 		for (Request r : requests)
 			Assert.isTrue(!r.getMember().equals(member));
 
@@ -172,6 +173,12 @@ public class RequestService {
 
 	public Request saveRequestWithPreviousChecking(Request request) {
 		Request requestSaved;
+
+		this.brotherhoodService.loggedAsBrotherhood();
+		Brotherhood logguedBrotherhood = this.brotherhoodService.loggedBrotherhood();
+		List<Request> brotherhoodRequest = (List<Request>) this.getRequestsByBrotherhood(logguedBrotherhood);
+
+		Assert.isTrue(brotherhoodRequest.contains(request));
 
 		if (request.getStatus().equals(Status.APPROVED)) {
 			Assert.notNull(request.getColumnNumber());
@@ -334,5 +341,9 @@ public class RequestService {
 
 		this.messageService.sendMessageAnotherSender(messageB);
 		this.messageService.sendMessageAnotherSender(messageM);
+	}
+
+	public void flush() {
+		this.requestRepository.flush();
 	}
 }

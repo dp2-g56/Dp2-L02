@@ -109,4 +109,64 @@ public class ParadeServiceTest extends AbstractTest {
 
 	}
 
+/**
+	 * This test is a valid case of the use of the copy method in ParadeService, all Asserts in this test
+	 * check of the copy has been made correctly.
+	 * 
+	 * **/
+
+	@Test
+	public void testCopy() {
+		super.authenticate("brotherhood1");
+		Parade parade = this.paradeService.findOne(super.getEntityId("parade1"));
+		List<domain.Float> floats = parade.getFloats();
+		Path path = parade.getPath();
+		int numParades = this.brotherhoodService.getBrotherhoodByUsername("brotherhood1").getParades().size();
+
+		this.paradeService.copy(parade);
+		this.paradeService.flush();
+
+		Parade paradeCopy = this.brotherhoodService.getBrotherhoodByUsername("brotherhood1").getParades().get(numParades);
+
+		Assert.isTrue(this.brotherhoodService.getBrotherhoodByUsername("brotherhood1").getParades().size() == numParades + 1);
+
+		Assert.isTrue(paradeCopy.getFloats().containsAll(floats) && paradeCopy.getFloats().size() == floats.size());
+
+		Assert.isTrue(paradeCopy.getRequests().isEmpty() && paradeCopy.getIsDraftMode() && paradeCopy.getParadeStatus().equals(ParadeStatus.SUBMITTED) && paradeCopy.getRejectedReason() == null);
+
+		Assert.isTrue(paradeCopy.getColumnNumber() == parade.getColumnNumber() && paradeCopy.getRowNumber() == parade.getRowNumber() && paradeCopy.getTitle() == parade.getTitle() && paradeCopy.getDescription() == parade.getDescription()
+			&& paradeCopy.getMoment().compareTo(parade.getMoment()) == 0);
+
+		Assert.isTrue(paradeCopy.getTicker() != parade.getTicker() && paradeCopy.getId() != parade.getId());
+
+		Assert.isTrue(paradeCopy.getPath().getId() != parade.getPath().getId() && paradeCopy.getPath().getSegments().size() == parade.getPath().getSegments().size());
+
+		for (Segment s : path.getSegments()) {
+			Segment sCopy = paradeCopy.getPath().getSegments().get(path.getSegments().indexOf(s));
+			Assert.isTrue(sCopy.getId() != s.getId());
+			Assert.isTrue(sCopy.getDestinationLatitude() == s.getDestinationLatitude() && sCopy.getDestinationLongitude() == s.getDestinationLongitude() && sCopy.getOriginLatitude() == s.getOriginLatitude()
+				&& sCopy.getOriginLongitude() == s.getOriginLongitude() && sCopy.getTime() == s.getTime());
+		}
+
+		super.unauthenticate();
+	}
+
+	/**
+	 * This test is a invalid case of the use of the copy method in ParadeService, one actor tries to copy a parade
+	 * that don't own. An IllegalArgumentException is expected.
+	 * 
+	 * **/
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testCopyWrong() {
+		super.authenticate("brotherhood2");
+		Parade parade = this.paradeService.findOne(super.getEntityId("parade1"));
+
+		this.paradeService.copy(parade);
+		this.paradeService.flush();
+
+		super.unauthenticate();
+	}
+}
+
 }

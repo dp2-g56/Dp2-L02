@@ -37,19 +37,16 @@ public class ChapterService {
 	// Managed repository ------------------------------------------
 
 	@Autowired
-	private ChapterRepository	chapterRepository;
+	private ChapterRepository chapterRepository;
 
 	@Autowired
-	private FinderRepository	finderRepository;
+	private FinderRepository finderRepository;
 
 	@Autowired
-	private BoxService			boxService;
+	private BoxService boxService;
 
 	@Autowired
-	private AreaService			areaService;
-
-	@Autowired
-	private ParadeService		paradeService;
+	private AreaService areaService;
 
 	@Autowired
 	private ProclaimService		proclaimService;
@@ -57,9 +54,12 @@ public class ChapterService {
 	@Autowired
 	private MessageService		messageService;
 
-	@Autowired(required = false)
-	private Validator			validator;
 
+	@Autowired
+	private ParadeService paradeService;
+
+	@Autowired
+	private Validator validator;
 
 	// Simple CRUD methods ------------------------------------------
 
@@ -235,6 +235,7 @@ public class ChapterService {
 			if (LocaleContextHolder.getLocale().getLanguage().toUpperCase().contains("ES"))
 				binding.addError(new FieldError("formObjectChapter", "password", formObjectChapter.getPassword(), false,
 						null, null, "Las contrasenas no coinciden"));
+
 			else
 				binding.addError(new FieldError("formObjectChapter", "password", formObjectChapter.getPassword(), false,
 						null, null, "Passwords don't match"));
@@ -386,6 +387,7 @@ public class ChapterService {
 		Assert.isTrue(chapter.getId() == this.loggedChapter().getId());
 		return this.chapterRepository.save(chapter);
 	}
+
 
 	public Parade changeParadeStatus(Parade parade) {
 

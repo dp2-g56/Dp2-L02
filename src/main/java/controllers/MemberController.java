@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,20 +16,20 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import domain.Brotherhood;
+import domain.Member;
 import services.BrotherhoodService;
 import services.MemberService;
-import domain.Brotherhood;
 
 @Controller
 @RequestMapping("/brotherhood/member")
 public class MemberController extends AbstractController {
 
 	@Autowired
-	private BrotherhoodService	brotherhoodService;
+	private BrotherhoodService brotherhoodService;
 
 	@Autowired
-	private MemberService		memberService;
-
+	private MemberService memberService;
 
 	public MemberController() {
 		super();
@@ -59,7 +60,8 @@ public class MemberController extends AbstractController {
 		// Defines un StringBuilder para construir tu string
 		StringBuilder sb = new StringBuilder();
 
-		// Cada append a�ade una linea, cada "line.separator" a�ade un salto de linea
+		// Cada append a�ade una linea, cada "line.separator" a�ade un salto de
+		// linea
 		sb.append("Personal data:").append(System.getProperty("line.separator"));
 		sb.append("Name: " + member.getName()).append(System.getProperty("line.separator"));
 		sb.append("Middle name: " + member.getMiddleName()).append(System.getProperty("line.separator"));

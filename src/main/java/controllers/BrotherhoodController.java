@@ -95,7 +95,7 @@ public class BrotherhoodController extends AbstractController {
 		floatt = this.floatService.findOne(floatId);
 
 		try {
-			if (picture.trim().isEmpty() || picture.trim().isEmpty() || !this.floatService.isUrl(picture)) {
+			if (picture.trim().isEmpty() || !this.floatService.isUrl(picture)) {
 				result = new ModelAndView("picture/brotherhood/createPicture");
 				result.addObject("floatId", floatId);
 				result.addObject("parade", parade);
@@ -161,8 +161,8 @@ public class BrotherhoodController extends AbstractController {
 		List<domain.Float> floatFinalMode = new ArrayList<domain.Float>();
 		floatFinalMode = this.floatService.floatsInParadeInFinalMode();
 
-		Assert.notNull(loggedBrotherhood.getArea());
 		Assert.isTrue(!floatFinalMode.contains(floatt));
+		Assert.notNull(loggedBrotherhood.getArea());
 		domain.Float f;
 
 		f = this.floatService.reconstruct(floatt, binding);
@@ -236,7 +236,8 @@ public class BrotherhoodController extends AbstractController {
 		// Defines un StringBuilder para construir tu string
 		StringBuilder sb = new StringBuilder();
 
-		// Cada append a�ade una linea, cada "line.separator" a�ade un salto de linea
+		// Cada append a�ade una linea, cada "line.separator" a�ade un salto de
+		// linea
 		sb.append("Personal data:").append(System.getProperty("line.separator"));
 		sb.append("Name: " + brotherhood.getName()).append(System.getProperty("line.separator"));
 		sb.append("Middle name: " + brotherhood.getMiddleName()).append(System.getProperty("line.separator"));

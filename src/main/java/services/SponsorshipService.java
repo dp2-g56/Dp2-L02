@@ -112,12 +112,15 @@ public class SponsorshipService {
 		if (sponsorship.getId() > 0)
 			Assert.isTrue(sponsor.equals(this.getSponsorOfSponsorship(sponsorship.getId())));
 
+		CreditCard creditCard = sponsorship.getCreditCard();
+
 		Assert.isTrue(cardType.contains(sponsorship.getCreditCard().getBrandName()));
 		Assert.isTrue(!sponsorship.getParade().getIsDraftMode()
 				&& sponsorship.getParade().getParadeStatus().equals(ParadeStatus.ACCEPTED));
-		Assert.isTrue(this.creditCardService.validateNumberCreditCard(sponsorship.getCreditCard()));
-		Assert.isTrue(this.creditCardService.validateDateCreditCard(sponsorship.getCreditCard()));
-		Assert.isTrue(this.creditCardService.validateCvvCreditCard(sponsorship.getCreditCard()));
+
+		Assert.isTrue(this.creditCardService.validateNumberCreditCard(creditCard));
+		Assert.isTrue(this.creditCardService.validateDateCreditCard(creditCard));
+		Assert.isTrue(this.creditCardService.validateCvvCreditCard(creditCard));
 
 		result = this.save(sponsorship);
 
@@ -213,13 +216,14 @@ public class SponsorshipService {
 
 		for (Sponsorship s : sponsorships) {
 			CreditCard card = s.getCreditCard();
-			if (!(this.creditCardService.validateNumberCreditCard(card) && this.creditCardService.validateDateCreditCard(card) && this.creditCardService.validateCvvCreditCard(card)) && s.getIsActivated()) {
+			if (!(this.creditCardService.validateNumberCreditCard(card)
+					&& this.creditCardService.validateDateCreditCard(card)
+					&& this.creditCardService.validateCvvCreditCard(card)) && s.getIsActivated()) {
 				s.setIsActivated(false);
 				this.save(s);
 			}
 		}
 	}
-
 
 	public void deleteAllSponsorships() {
 		Sponsor sponsor = this.sponsorService.loggedSponsor();
@@ -229,8 +233,8 @@ public class SponsorshipService {
 		sponsorships = sponsor.getSponsorships();
 
 		for (int i = 0; i < cont; i++)
-			//sponsorships.get(0).setParade(null);
-			//sponsorships.get(0).setCreditCard(null);
+			// sponsorships.get(0).setParade(null);
+			// sponsorships.get(0).setCreditCard(null);
 			this.deleteSponsorship(sponsorships.get(0));
 	}
 
@@ -289,7 +293,8 @@ public class SponsorshipService {
 		Assert.isTrue(sponsorship.getIsActivated());
 
 		Configuration conf = this.configurationService.getConfiguration();
-		java.lang.Float newSpentMoney = sponsorship.getSpentMoney() + conf.getFare() + conf.getFare() * conf.getVAT() / 100;
+		java.lang.Float newSpentMoney = sponsorship.getSpentMoney() + conf.getFare()
+				+ conf.getFare() * conf.getVAT() / 100;
 
 		sponsorship.setSpentMoney(newSpentMoney);
 
@@ -301,6 +306,5 @@ public class SponsorshipService {
 			this.flush();
 		}
 	}
-
 
 }

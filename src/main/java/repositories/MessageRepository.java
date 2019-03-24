@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import domain.Actor;
 import domain.Message;
 
 @Repository
@@ -23,5 +24,8 @@ public interface MessageRepository extends JpaRepository<Message, Integer> {
 
 	@Query("select a from Message a join a.receiver b where b.id = ?1")
 	public List<Message> getReceivedMessagesToActor(int idActor);
+
+	@Query("select m from Actor a join a.boxes b join b.messages m where a = ?1")
+	public List<Message> allMessagesOfActor(Actor a);
 
 }

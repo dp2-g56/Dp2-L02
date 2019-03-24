@@ -1283,6 +1283,7 @@
 					<property name="messages">
 						<list>
 							<ref bean="message2" />
+							<ref bean="message4" />
 						</list>
 					</property>
 				</bean>
@@ -1966,6 +1967,38 @@
 		</property>
 		<property name="receiver">
 				<ref bean="admin1" />
+		</property>
+	</bean>
+	
+	<bean class="domain.Message" id="message4">
+		<property value="11/11/2011 11:11" name="moment" />
+		<property value="This is a sent message by admin1"
+			name="subject" />
+		<property value="from admin1 to admin2" name="body" />
+		<property value="LOW" name="priority" />
+		<property value="tag" name="tags"/>
+			
+		<property name="sender">
+			<ref bean="sponsor1" />
+		</property>
+		<property name="receiver">
+				<ref bean="admin2" />
+		</property>
+	</bean>
+	
+		<bean class="domain.Message" id="message5">
+		<property value="11/11/2011 11:11" name="moment" />
+		<property value="This is a sent message by admin1"
+			name="subject" />
+		<property value="from admin1 to admin2" name="body" />
+		<property value="LOW" name="priority" />
+		<property value="tag" name="tags"/>
+			
+		<property name="sender">
+			<ref bean="admin1" />
+		</property>
+		<property name="receiver">
+				<ref bean="sponsor1" />
 		</property>
 	</bean>
 	

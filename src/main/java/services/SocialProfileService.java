@@ -32,6 +32,7 @@ public class SocialProfileService {
 
 
 	public SocialProfile save(SocialProfile socialProfile) {
+		this.actorService.loggedAsActor();
 		return this.socialProfileRepository.save(socialProfile);
 	}
 

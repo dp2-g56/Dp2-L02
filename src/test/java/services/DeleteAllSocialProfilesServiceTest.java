@@ -37,10 +37,10 @@ public class DeleteAllSocialProfilesServiceTest extends AbstractTest {
 		};
 
 		for (int i = 0; i < testingData.length; i++)
-			this.templateDeleteAllBoxes((String) testingData[i][0], (Class<?>) testingData[i][1]);
+			this.templateDeleteAllSocialProfiles((String) testingData[i][0], (Class<?>) testingData[i][1]);
 	}
 
-	protected void templateDeleteAllBoxes(String username, Class<?> expected) {
+	protected void templateDeleteAllSocialProfiles(String username, Class<?> expected) {
 
 		Class<?> caught = null;
 

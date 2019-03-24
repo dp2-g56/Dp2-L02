@@ -29,7 +29,7 @@ public class DeleteAllSponsorshipsServiceTest extends AbstractTest {
 
 
 	@Test
-	public void driverDeleteAllBoxes() {
+	public void driverDeleteAllSponsorships() {
 
 		Object testingData[][] = {
 			{
@@ -40,10 +40,10 @@ public class DeleteAllSponsorshipsServiceTest extends AbstractTest {
 		};
 
 		for (int i = 0; i < testingData.length; i++)
-			this.templateDeleteAllBoxes((String) testingData[i][0], (Class<?>) testingData[i][1]);
+			this.templateDeleteAllSponsorships((String) testingData[i][0], (Class<?>) testingData[i][1]);
 	}
 
-	protected void templateDeleteAllBoxes(String username, Class<?> expected) {
+	protected void templateDeleteAllSponsorships(String username, Class<?> expected) {
 
 		Class<?> caught = null;
 

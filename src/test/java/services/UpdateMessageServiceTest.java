@@ -36,6 +36,9 @@ public class UpdateMessageServiceTest extends AbstractTest {
 			}, {
 				//Negative test, move message to a box is not yours
 				"admin1", "message1", "inBoxAdmin2", IllegalArgumentException.class
+			}, {
+				//Negative test, move message to a box is not yours
+				"admin1", "message4", "inBoxAdmin1", IllegalArgumentException.class
 			}
 		};
 

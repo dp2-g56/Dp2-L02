@@ -2,7 +2,9 @@
 package controllers;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,28 +15,23 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import services.BrotherhoodService;
+import services.ChapterService;
 import services.FloatService;
 import services.InceptionRecordService;
 import services.LegalRecordService;
 import services.PeriodRecordService;
+import services.SponsorshipService;
 import domain.Brotherhood;
+import domain.Chapter;
 import domain.InceptionRecord;
 import domain.LegalRecord;
 import domain.LinkRecord;
-import domain.Chapter;
 import domain.Member;
 import domain.MiscellaneousRecord;
 import domain.Parade;
 import domain.PeriodRecord;
-
 import domain.Proclaim;
-import domain.Segment;
 import domain.Sponsorship;
-import services.BrotherhoodService;
-import services.ChapterService;
-import services.FloatService;
-import services.SegmentService;
-import services.SponsorshipService;
 
 @Controller
 @RequestMapping("/showAll/annonymous")
@@ -55,9 +52,12 @@ public class AnnonymousShowController extends AbstractController {
 	@Autowired
 	private PeriodRecordService		periodRecordService;
 
+	@Autowired
+	private SponsorshipService		sponsorshipService;
 
 	@Autowired
-	private ChapterService chapterService;
+	private ChapterService			chapterService;
+
 
 	@RequestMapping(value = "/brotherhood/list", method = RequestMethod.GET)
 	public ModelAndView listBrotherhood(@RequestParam(required = false) Integer brotherhoodId) {

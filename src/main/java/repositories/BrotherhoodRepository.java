@@ -34,4 +34,8 @@ public interface BrotherhoodRepository extends JpaRepository<Brotherhood, Intege
 
 	@Query("select c.id from Brotherhood c where c.history = (select a from History a join a.legalRecords b where b.id =?1)")
 	public int getBrotherhoodIdByLegalRecord(int legalRecordId);
+
+	@Query("select a from Brotherhood a where a.area.id = ?1")
+	public List<Brotherhood> getBrotherhoodByArea(Integer a);
+
 }

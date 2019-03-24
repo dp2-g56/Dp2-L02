@@ -28,6 +28,7 @@ public class PositionService {
 	// Simple CRUD methods ------------------------------------------
 
 	public Position createPosition() {
+		this.adminService.loggedAsAdmin();
 		Position position = new Position();
 
 		position.setTitleEnglish("");
@@ -83,6 +84,10 @@ public class PositionService {
 		this.adminService.loggedAsAdmin();
 		Assert.isTrue(this.canBeDeleted(position));
 		this.delete(position);
+	}
+
+	public void flush() {
+		this.positionRepository.flush();
 	}
 
 }

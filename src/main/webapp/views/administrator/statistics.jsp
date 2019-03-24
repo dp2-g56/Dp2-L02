@@ -34,7 +34,7 @@ tr:nth-child(even) {
 		style="width: 30%"></div>
 	<script>
 		new Chartist.Pie('.ct-chart-spammersAndNotSpammers', {
-			series : [ "${statistics.get(16)}", "${statistics.get(17)}" ]
+			series : [ "${statistics.get(34)}", "${statistics.get(35)}" ]
 		}, {
 			donut : false,
 			donutWidth : 60,
@@ -45,9 +45,9 @@ tr:nth-child(even) {
 	</script>
 	<ul>
 		<li><spring:message code="actor.spammers" />: <jstl:out
-				value="${statistics.get(16)}" />%</li>
+				value="${statistics.get(34)}" />%</li>
 		<li><spring:message code="actor.nonSpammers" />: <jstl:out
-				value="${statistics.get(17)}" />%</li>
+				value="${statistics.get(35)}" />%</li>
 	</ul>
 
 	<strong><spring:message code="statistics.avgPolarity" />:</strong>
@@ -55,8 +55,8 @@ tr:nth-child(even) {
 		style="width: 30%"></div>
 	<script>
 		new Chartist.Pie('.ct-chart-polarityAvgPerActor', {
-			series : [ "${statistics.get(18)}", "${statistics.get(19)}",
-					"${statistics.get(20)}" ]
+			series : [ "${statistics.get(36)}", "${statistics.get(37)}",
+					"${statistics.get(38)}" ]
 		}, {
 			donut : false,
 			donutWidth : 60,
@@ -67,11 +67,11 @@ tr:nth-child(even) {
 	</script>
 	<ul>
 		<li><spring:message code="actor.admin" />: <jstl:out
-				value="${statistics.get(18)}" /></li>
+				value="${statistics.get(36)}" /></li>
 		<li><spring:message code="actor.member" />: <jstl:out
-				value="${statistics.get(19)}" /></li>
+				value="${statistics.get(37)}" /></li>
 		<li><spring:message code="actor.brotherhood" />: <jstl:out
-				value="${statistics.get(20)}" /></li>
+				value="${statistics.get(38)}" /></li>
 	</ul>
 
 	<strong><spring:message
@@ -421,7 +421,7 @@ tr:nth-child(even) {
 	<table style="width: 100%">
 		<tr>
 			<jstl:choose>
-				<jstl:when test="${statistics.get(19) == -1}">
+				<jstl:when test="${statistics.get(33) == -1}">
 					<td><strong><spring:message
 								code="statistics.ratioNonEmptyVsEmpty" />:</strong></td>
 					<td><spring:message code="statistics.infinite" /></td>
@@ -429,7 +429,7 @@ tr:nth-child(even) {
 				<jstl:otherwise>
 					<td><strong><spring:message
 								code="statistics.ratioNonEmptyVsEmpty" />:</strong></td>
-					<td><jstl:out value="${statistics.get(19)}" /></td>
+					<td><jstl:out value="${statistics.get(33)}" /></td>
 				</jstl:otherwise>
 			</jstl:choose>
 		</tr>
@@ -549,15 +549,17 @@ tr:nth-child(even) {
 		</tr>
 	</table>
 	<br />
-	
+
 	<table style="width: 100%">
 		<tr>
-			<td><b><spring:message code="statistics.ratioActiveSponsorships" /></b></td>
+			<td><b><spring:message
+						code="statistics.ratioActiveSponsorships" /></b></td>
 			<td><jstl:out value="${statistics.get(28)}"></jstl:out>
 		</tr>
 	</table>
-	
-	<strong><spring:message code="statistics.sponsorshipsPerSponsor" />:</strong>
+
+	<strong><spring:message
+			code="statistics.sponsorshipsPerSponsor" />:</strong>
 	<br />
 	<table style="width: 100%">
 		<tr>
@@ -578,9 +580,8 @@ tr:nth-child(even) {
 		</tr>
 	</table>
 	<br />
-	
-	<strong><spring:message
-			code="statistics.top5Sponsor" />:</strong>
+
+	<strong><spring:message code="statistics.top5Sponsor" />:</strong>
 	<br />
 	<table style="width: 100%">
 		<jstl:choose>

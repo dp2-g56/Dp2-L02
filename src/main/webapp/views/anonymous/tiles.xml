@@ -77,6 +77,7 @@
 	<definition name="path/anon/list" extends="master.page">	
 		<put-attribute name="title" value="Path List" />
 		<put-attribute name="body" value="/views/anonymous/pathList.jsp" />
+	</definition>
 	
 	<definition name="showAll/annonymous/history/list" extends="master.page">	
 		<put-attribute name="title" value="History" />
@@ -105,8 +106,7 @@
 		<put-attribute name="title" value="Chapter List" />
 		<put-attribute name="body" value="/views/anonymous/chapterListt.jsp" />
 	</definition>
-		
-		
+			
 	
 	
 </tiles-definitions>

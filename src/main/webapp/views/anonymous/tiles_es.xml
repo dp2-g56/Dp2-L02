@@ -73,6 +73,7 @@
 	<definition name="path/anon/list" extends="master.page">	
 		<put-attribute name="title" value="Lista de la ruta" />
 		<put-attribute name="body" value="/views/anonymous/pathList.jsp" />
+	</definition>
 	
 	<definition name="showAll/annonymous/history/list" extends="master.page">	
 		<put-attribute name="title" value="Historial" />

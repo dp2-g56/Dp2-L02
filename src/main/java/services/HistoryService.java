@@ -2,6 +2,7 @@
 package services;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.transaction.Transactional;
 
@@ -43,5 +44,9 @@ public class HistoryService {
 
 	public void deleteHistory(History history) {
 		this.historyRepository.delete(history);
+	}
+
+	public List<History> findAll() {
+		return this.historyRepository.findAll();
 	}
 }

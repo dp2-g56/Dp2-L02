@@ -25,6 +25,7 @@ import security.UserAccount;
 import services.ActorService;
 import services.AdminService;
 import services.BrotherhoodService;
+import services.ChapterService;
 import services.ConfigurationService;
 import services.FloatService;
 import services.HistoryService;
@@ -39,6 +40,7 @@ import services.SponsorService;
 import domain.Actor;
 import domain.Admin;
 import domain.Brotherhood;
+import domain.Chapter;
 import domain.Configuration;
 import domain.InceptionRecord;
 import domain.LegalRecord;
@@ -96,6 +98,9 @@ public class SocialProfileController extends AbstractController {
 	@Autowired
 	private HistoryService				historyService;
 
+	@Autowired
+	private ChapterService				chapterService;
+
 
 	//-------------------------------------------------------------------
 	//---------------------------LIST BROTHERHOOD------------------------------------
@@ -103,12 +108,13 @@ public class SocialProfileController extends AbstractController {
 	public ModelAndView list() {
 		ModelAndView result;
 		Brotherhood broherhood = new Brotherhood();
+		Chapter chapter = new Chapter();
 		UserAccount userAccount;
 		userAccount = LoginService.getPrincipal();
 		Actor logguedActor = new Actor();
 		List<SocialProfile> socialProfiles = new ArrayList<SocialProfile>();
 
-		final List<Authority> authorities = (List<Authority>) userAccount.getAuthorities();
+		List<Authority> authorities = (List<Authority>) userAccount.getAuthorities();
 
 		result = new ModelAndView("authenticated/showProfile");
 
@@ -433,7 +439,7 @@ public class SocialProfileController extends AbstractController {
 			} catch (Throwable oops) {
 				result = this.createEditModelAndView(sponsor, "socialProfile.commit.error");
 			}
-		}
+
 		return result;
 	}
 
@@ -446,13 +452,12 @@ public class SocialProfileController extends AbstractController {
 		Configuration configuration = this.configurationService.getConfiguration();
 
 		String prefix = configuration.getSpainTelephoneCode();
-		if (chapter.getPhoneNumber().matches("([0-9]{4,})$")) {
+		if (chapter.getPhoneNumber().matches("([0-9]{4,})$"))
 			chapter.setPhoneNumber(prefix + chapter.getPhoneNumber());
-		}
 
-		if (binding.hasErrors()) {
+		if (binding.hasErrors())
 			result = this.createEditModelAndView(chapter);
-		} else {
+		else
 			try {
 
 				this.chapterService.update(chapter);
@@ -460,7 +465,6 @@ public class SocialProfileController extends AbstractController {
 			} catch (Throwable oops) {
 				result = this.createEditModelAndView(chapter, "socialProfile.commit.error");
 			}
-		}
 		return result;
 	}
 
@@ -1432,6 +1436,27 @@ public class SocialProfileController extends AbstractController {
 
 		result = new ModelAndView("authenticated/inceptionRecord");
 		result.addObject("inceptionRecord", inceptionRecord);
+		result.addObject("message", messageCode);
+
+		return result;
+	}
+
+	//Chapter
+	protected ModelAndView createEditModelAndView(Chapter chapter) {
+
+		ModelAndView result;
+
+		result = this.createEditModelAndView(chapter, null);
+
+		return result;
+	}
+
+	protected ModelAndView createEditModelAndView(Chapter chapter, String messageCode) {
+
+		ModelAndView result;
+
+		result = new ModelAndView("authenticated/inceptionRecord");
+		result.addObject("chapter", chapter);
 		result.addObject("message", messageCode);
 
 		return result;

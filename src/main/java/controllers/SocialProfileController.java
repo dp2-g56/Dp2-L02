@@ -114,16 +114,13 @@ public class SocialProfileController extends AbstractController {
 		Actor logguedActor = new Actor();
 		List<SocialProfile> socialProfiles = new ArrayList<SocialProfile>();
 
-		List<Authority> authorities = (List<Authority>) userAccount.getAuthorities();
+		final List<Authority> authorities = (List<Authority>) userAccount.getAuthorities();
 
 		result = new ModelAndView("authenticated/showProfile");
 
 		if (authorities.get(0).toString().equals("BROTHERHOOD")) {
 			broherhood = this.brotherhoodService.loggedBrotherhood();
 			socialProfiles = broherhood.getSocialProfiles();
-		} else if (authorities.get(0).toString().equals("CHAPTER")) {
-			chapter = this.chapterService.loggedChapter();
-			socialProfiles = chapter.getSocialProfiles();
 
 			Boolean showHistory = false;
 
@@ -156,6 +153,10 @@ public class SocialProfileController extends AbstractController {
 
 			result.addObject("showHistory", showHistory);
 
+		} else if (authorities.get(0).toString().equals("CHAPTER")) {
+			chapter = this.chapterService.loggedChapter();
+			socialProfiles = chapter.getSocialProfiles();
+
 		} else {
 
 			logguedActor = this.actorService.getActorByUsername(userAccount.getUsername());
@@ -163,10 +164,9 @@ public class SocialProfileController extends AbstractController {
 			socialProfiles = logguedActor.getSocialProfiles();
 		}
 
-		result = new ModelAndView("authenticated/showProfile");
 		result.addObject("socialProfiles", socialProfiles);
-		result.addObject("chapter", chapter);
 		result.addObject("actor", logguedActor);
+		result.addObject("chapter", chapter);
 		result.addObject("broherhood", broherhood);
 		result.addObject("pictures", broherhood.getPictures());
 		result.addObject("requestURI", "authenticated/showProfile.do");
@@ -175,7 +175,6 @@ public class SocialProfileController extends AbstractController {
 	}
 
 	//---------------------------------------------------------------------
-	//---------------------------CREATE BROTHERHOOD------------------------------------
 	@RequestMapping(value = "/socialProfile/create", method = RequestMethod.GET)
 	public ModelAndView create() {
 		ModelAndView result;
@@ -318,12 +317,12 @@ public class SocialProfileController extends AbstractController {
 		else
 			try {
 				if (admin.getPhoneNumber().matches("(\\+[0-9]{1,3})(\\([0-9]{1,3}\\))([0-9]{4,})$") || admin.getPhoneNumber().matches("(\\+[0-9]{1,3})([0-9]{4,})$"))
-					this.adminService.save(admin);
+					this.adminService.updateAdmin(admin);
 				else if (admin.getPhoneNumber().matches("([0-9]{4,})$")) {
 					admin.setPhoneNumber(prefix + admin.getPhoneNumber());
-					this.adminService.save(admin);
+					this.adminService.updateAdmin(admin);
 				} else
-					this.adminService.save(admin);
+					this.adminService.updateAdmin(admin);
 				result = new ModelAndView("redirect:/authenticated/showProfile.do");
 			} catch (Throwable oops) {
 				result = this.createEditModelAndView(admin, "socialProfile.commit.error");
@@ -355,12 +354,12 @@ public class SocialProfileController extends AbstractController {
 					}
 
 				} else if (member.getPhoneNumber().matches("(\\+[0-9]{1,3})(\\([0-9]{1,3}\\))([0-9]{4,})$") || member.getPhoneNumber().matches("(\\+[0-9]{1,3})([0-9]{4,})$"))
-					this.memberService.save(member);
+					this.memberService.updateMember(member);
 				else if (member.getPhoneNumber().matches("([0-9]{4,})$")) {
 					member.setPhoneNumber(prefix + member.getPhoneNumber());
-					this.memberService.save(member);
+					this.memberService.updateMember(member);
 				} else
-					this.memberService.save(member);
+					this.memberService.updateMember(member);
 				result = new ModelAndView("redirect:/authenticated/showProfile.do");
 			} catch (Throwable oops) {
 				result = this.createEditModelAndView(member, "socialProfile.commit.error");
@@ -370,7 +369,7 @@ public class SocialProfileController extends AbstractController {
 
 	//Brotherhood
 	@RequestMapping(value = "/editBrotherhood", method = RequestMethod.POST, params = "save")
-	public ModelAndView saveMember(Brotherhood brotherhood, BindingResult binding) {
+	public ModelAndView saveBrotherhood(Brotherhood brotherhood, BindingResult binding) {
 		ModelAndView result;
 
 		brotherhood = this.brotherhoodService.reconstructBrotherhood(brotherhood, binding);
@@ -439,7 +438,6 @@ public class SocialProfileController extends AbstractController {
 			} catch (Throwable oops) {
 				result = this.createEditModelAndView(sponsor, "socialProfile.commit.error");
 			}
-
 		return result;
 	}
 
@@ -918,7 +916,7 @@ public class SocialProfileController extends AbstractController {
 		else
 			try {
 
-				//Comprobacion aï¿½o inicio y fin	
+				//Comprobacion año inicio y fin	
 				if (periodRecord.getStartYear() > periodRecord.getEndYear())
 					if (LocaleContextHolder.getLocale().getLanguage().toUpperCase().contains("ES")) {
 						binding.addError(new FieldError("periodRecord", "startYear", periodRecord.getStartYear(), false, null, null, "El a&ntildeo de inicio debe ser anterior al de fin"));
@@ -1455,7 +1453,7 @@ public class SocialProfileController extends AbstractController {
 
 		ModelAndView result;
 
-		result = new ModelAndView("authenticated/inceptionRecord");
+		result = new ModelAndView("authenticated/edit");
 		result.addObject("chapter", chapter);
 		result.addObject("message", messageCode);
 

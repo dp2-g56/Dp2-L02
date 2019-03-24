@@ -99,9 +99,9 @@
 		<bean class="converters.PeriodRecordToStringConverter" />
 		<bean class="converters.StringToPeriodRecordConverter" />
 		
-		
 		<bean class="converters.ProclaimToStringConverter" />
 		<bean class="converters.StringToProclaimConverter" />
+		
 		<bean class="converters.SegmentToStringConverter" />
 		<bean class="converters.StringToSegmentConverter" />
 		

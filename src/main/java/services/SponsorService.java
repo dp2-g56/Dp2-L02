@@ -277,6 +277,7 @@ public class SponsorService {
 
 		this.boxService.deleteAllBoxes();
 		this.messageService.updateSendedMessageByLogguedActor();
+		this.messageService.updateReceivedMessageToLogguedActor();
 		this.socialProfileService.deleteAllSocialProfiles();
 		this.sponsorshipService.deleteAllSponsorships();
 		this.delete(sponsor);

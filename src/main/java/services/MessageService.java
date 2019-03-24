@@ -110,8 +110,9 @@ public class MessageService {
 		spam = this.configurationService.getSpamWords();
 
 		Message messageSaved = this.messageRepository.save(message);
-		Message messageCopy = this.create(messageSaved.getSubject(), messageSaved.getBody(), messageSaved.getPriority(),
-				messageSaved.getReceiver());
+		Message messageCopy = this.create(messageSaved.getSubject(), messageSaved.getBody(), messageSaved.getPriority(), messageSaved.getReceiver());
+		messageCopy.setTags(messageSaved.getTags());
+
 		Message messageCopySaved = this.messageRepository.save(messageCopy);
 
 		boxSent = this.boxService.getSentBoxByActor(messageSaved.getSender());
@@ -251,48 +252,48 @@ public class MessageService {
 
 	}
 
-//	public Message sendMessageAnotherSender(Message message) {
-//
-//		Actor actorRecieved = message.getReceiver();
-//		List<String> spam = new ArrayList<String>();
-//
-//		spam = this.configurationService.getSpamWords();
-//
-//		Box boxRecieved = new Box();
-//		Box boxSpam = new Box();
-//		Box boxNotification = new Box();
-//
-//		Message messageSaved = this.messageRepository.save(message);
-//		Message messageCopy = this.createNotification(messageSaved.getSubject(), messageSaved.getBody(),
-//				messageSaved.getPriority(), message.getTags(), messageSaved.getReceiver());
-//		Message messageCopySaved = this.messageRepository.save(messageCopy);
-//		boxRecieved = this.boxService.getRecievedBoxByActor(actorRecieved);
-//		boxSpam = this.boxService.getSpamBoxByActor(actorRecieved);
-//		boxNotification = this.boxService.getNotificationBoxByActor(actorRecieved);
-//
-//		// Guardar la box con ese mensaje;
-//
-//		if (this.configurationService.isStringSpam(messageSaved.getBody(), spam)
-//				|| this.configurationService.isStringSpam(messageSaved.getSubject(), spam)) {
-//			boxNotification.getMessages().add(messageSaved);
-//			boxSpam.getMessages().add(messageCopySaved);
-//
-//			this.boxService.saveSystem(boxNotification);
-//			this.boxService.saveSystem(boxSpam);
-//			this.actorService.save(messageSaved.getSender());
-//			this.actorService.save(actorRecieved);
-//
-//		} else {
-//			boxRecieved.getMessages().add(messageCopySaved);
-//			boxNotification.getMessages().add(messageSaved);
-//			// boxRecieved.setMessages(list);
-//			this.boxService.saveSystem(boxNotification);
-//			this.boxService.saveSystem(boxRecieved);
-//			this.actorService.save(messageSaved.getSender());
-//			this.actorService.save(actorRecieved);
-//		}
-//		return messageSaved;
-//	}
+	//	public Message sendMessageAnotherSender(Message message) {
+	//
+	//		Actor actorRecieved = message.getReceiver();
+	//		List<String> spam = new ArrayList<String>();
+	//
+	//		spam = this.configurationService.getSpamWords();
+	//
+	//		Box boxRecieved = new Box();
+	//		Box boxSpam = new Box();
+	//		Box boxNotification = new Box();
+	//
+	//		Message messageSaved = this.messageRepository.save(message);
+	//		Message messageCopy = this.createNotification(messageSaved.getSubject(), messageSaved.getBody(),
+	//				messageSaved.getPriority(), message.getTags(), messageSaved.getReceiver());
+	//		Message messageCopySaved = this.messageRepository.save(messageCopy);
+	//		boxRecieved = this.boxService.getRecievedBoxByActor(actorRecieved);
+	//		boxSpam = this.boxService.getSpamBoxByActor(actorRecieved);
+	//		boxNotification = this.boxService.getNotificationBoxByActor(actorRecieved);
+	//
+	//		// Guardar la box con ese mensaje;
+	//
+	//		if (this.configurationService.isStringSpam(messageSaved.getBody(), spam)
+	//				|| this.configurationService.isStringSpam(messageSaved.getSubject(), spam)) {
+	//			boxNotification.getMessages().add(messageSaved);
+	//			boxSpam.getMessages().add(messageCopySaved);
+	//
+	//			this.boxService.saveSystem(boxNotification);
+	//			this.boxService.saveSystem(boxSpam);
+	//			this.actorService.save(messageSaved.getSender());
+	//			this.actorService.save(actorRecieved);
+	//
+	//		} else {
+	//			boxRecieved.getMessages().add(messageCopySaved);
+	//			boxNotification.getMessages().add(messageSaved);
+	//			// boxRecieved.setMessages(list);
+	//			this.boxService.saveSystem(boxNotification);
+	//			this.boxService.saveSystem(boxRecieved);
+	//			this.actorService.save(messageSaved.getSender());
+	//			this.actorService.save(actorRecieved);
+	//		}
+	//		return messageSaved;
+	//	}
 
 	/**
 	 * METODO CORREGIDO Arriba está el antiguo comentado
@@ -445,6 +446,7 @@ public class MessageService {
 		Actor actor = this.actorService.getActorByUsername(userAccount.getUsername());
 
 		Assert.isTrue(actor.getBoxes().contains(box));
+		Assert.isTrue(this.allMessagesOfActor(actor).contains(message));
 
 		boxesContainingMessage = this.boxService.getCurrentBoxByMessage(message);
 
@@ -603,6 +605,23 @@ public class MessageService {
 
 	public void flush() {
 		this.messageRepository.flush();
+	}
+
+	public List<Message> allMessagesOfActor(Actor a) {
+
+		List<Message> messages = new ArrayList<Message>();
+
+		if (!this.messageRepository.allMessagesOfActor(a).isEmpty())
+			return this.messageRepository.allMessagesOfActor(a);
+
+		else
+			return messages;
+
+	}
+
+	public List<Message> getSendedMessagesByActor(int actorId) {
+
+		return this.messageRepository.getSendedMessagesByActor(actorId);
 	}
 
 }

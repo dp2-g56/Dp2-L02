@@ -49,6 +49,9 @@ public class CreateSocialProfileServiceTest extends AbstractTest {
 			}, {
 				//Negative test, Not an URL
 				"member1", "nick", "name", "fafafafa", ConstraintViolationException.class
+			}, {
+				//Negative test, Not an URL
+				"", "nick", "name", "https://trello.com/b/Jsbt8NQy/acme-parade", IllegalArgumentException.class
 			}
 		};
 

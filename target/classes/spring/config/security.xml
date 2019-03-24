@@ -39,15 +39,31 @@
 		<security:intercept-url pattern="/security/login.do" access="permitAll" /> 
 		<security:intercept-url pattern="/security/loginFailure.do" access="permitAll" /> 
 		<security:intercept-url pattern="/welcome/index.do" access="permitAll" /> 
+		<security:intercept-url pattern="/anonymous/termsAndConditionsEN.do" access="permitAll" />
+		<security:intercept-url pattern="/anonymous/termsAndConditionsES.do" access="permitAll" />
+		<security:intercept-url pattern="/showAll/annonymous/**" access="permitAll" /> 
 	
 		<!-- admin -->
 		<!-- <security:intercept-url pattern="/administrator/action-1.do" access="hasRole('ADMIN')" /> 
 		<security:intercept-url pattern="/administrator/action-2.do" access="hasRole('ADMIN')" />  -->
+		<security:intercept-url pattern="/words/administrator/**" access="hasRole('ADMIN')" />
+		<security:intercept-url pattern="/suspicious/administrator/**" access="hasRole('ADMIN')"  />
+		<security:intercept-url pattern="/configuration/administrator/**" access="hasRole('ADMIN')"/>
+		<security:intercept-url pattern="/position/administrator/**" access="hasRole('ADMIN')"/> 
+		<security:intercept-url pattern="/area/administrator/**" access="hasRole('ADMIN')" />
+		<security:intercept-url pattern="/statistics/administrator/**" access="hasRole('ADMIN')" />
+		<security:intercept-url pattern="/priority/administrator/**" access="hasRole('ADMIN')" />
+		<security:intercept-url pattern="/broadcast/administrator/**" access="hasRole('ADMIN')"  />
+		<security:intercept-url pattern="/administrator/**" access="hasRole('ADMIN')"  />
 		
 		<!-- brotherhood -->
 		<security:intercept-url pattern="/area/brotherhood/**" access="hasRole('BROTHERHOOD')" />
 		<security:intercept-url pattern="/procession/brotherhood/**" access="hasRole('BROTHERHOOD')" />
+		<security:intercept-url pattern="/parade/brotherhood/**" access="hasRole('BROTHERHOOD')" />
 		<security:intercept-url pattern="/float/brotherhood/**" access="hasRole('BROTHERHOOD')" />
+		<security:intercept-url pattern="/request/brotherhood/**" access="hasRole('BROTHERHOOD')" />
+		<security:intercept-url pattern="/member/brotherhood/**" access="hasRole('BROTHERHOOD')" />
+		<security:intercept-url pattern="/enrolment/brotherhood/**" access="hasRole('BROTHERHOOD')" />
 		
 		<!-- Member -->
 		<security:intercept-url pattern="/area/administrator/**" access="hasRole('ADMIN')" />
@@ -56,11 +72,20 @@
 		<security:intercept-url pattern="/enrolment/member/**" access="hasRole('MEMBER')" /> 
 		<security:intercept-url pattern="/picture/member/**" access="hasRole('MEMBER')" /> 
 		<security:intercept-url pattern="/brotherhood/member/**" access="hasRole('MEMBER')" /> 
+		<security:intercept-url pattern="/float/member/**" access="hasRole('MEMBER')" /> 
 		
 		<!-- Authenticated -->
 		<!-- <security:intercept-url pattern="/profile/action-1.do" access="isAuthenticated()" /> 
 		<security:intercept-url pattern="/profile/action-2.do" access="isAuthenticated()" /> 
 		<security:intercept-url pattern="/profile/action-3.do" access="isAuthenticated()" />  -->
+		 <security:intercept-url pattern="/authenticated/**" access="isAuthenticated()" /> 
+		 <security:intercept-url pattern="/box/actor/**" access="isAuthenticated()" /> 
+		 <security:intercept-url pattern="/message/actor/**" access="isAuthenticated()" /> 
+		 
+		 
+		<!-- Anonymous -->
+		<security:intercept-url pattern="/anonymous/**" access="isAnonymous()" />
+		
 		
 		<!-- None -->
 		<security:intercept-url pattern="/**" access="hasRole('NONE')" />

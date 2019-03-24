@@ -2,9 +2,7 @@
 package controllers;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,10 +12,21 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import services.BrotherhoodService;
+import services.FloatService;
+import services.InceptionRecordService;
+import services.LegalRecordService;
+import services.PeriodRecordService;
 import domain.Brotherhood;
+import domain.InceptionRecord;
+import domain.LegalRecord;
+import domain.LinkRecord;
 import domain.Chapter;
 import domain.Member;
+import domain.MiscellaneousRecord;
 import domain.Parade;
+import domain.PeriodRecord;
+
 import domain.Proclaim;
 import domain.Segment;
 import domain.Sponsorship;
@@ -32,30 +41,42 @@ import services.SponsorshipService;
 public class AnnonymousShowController extends AbstractController {
 
 	@Autowired
-	private BrotherhoodService brotherhoodService;
+	private BrotherhoodService		brotherhoodService;
 
 	@Autowired
-	private FloatService floatService;
+	private FloatService			floatService;
 
 	@Autowired
-	private SponsorshipService sponsorshipService;
+	private LegalRecordService		legalRecordService;
 
 	@Autowired
-	private SegmentService segmentService;
+	private InceptionRecordService	inceptionRecordService;
+
+	@Autowired
+	private PeriodRecordService		periodRecordService;
+
 
 	@Autowired
 	private ChapterService chapterService;
 
 	@RequestMapping(value = "/brotherhood/list", method = RequestMethod.GET)
-	public ModelAndView listBrotherhood() {
+	public ModelAndView listBrotherhood(@RequestParam(required = false) Integer brotherhoodId) {
 		ModelAndView result;
 		List<Brotherhood> brotherhoods = new ArrayList<Brotherhood>();
-		brotherhoods = this.brotherhoodService.findAll();
+		boolean cancelButton = false;
+		if (brotherhoodId == null)
+			brotherhoods = this.brotherhoodService.findAll();
+		else {
+			Brotherhood bro = this.brotherhoodService.findOne(brotherhoodId);
+			brotherhoods.add(bro);
+			cancelButton = true;
+		}
 
 		result = new ModelAndView("showAll/annonymous/brotherhood/list");
 
 		result.addObject("brotherhoods", brotherhoods);
 		result.addObject("requestURI", "showAll/annonymous/brotherhood/list.do");
+		result.addObject("cancelButton", cancelButton);
 		return result;
 	}
 
@@ -162,15 +183,127 @@ public class AnnonymousShowController extends AbstractController {
 		return result;
 	}
 
-	@RequestMapping(value = "path/list", method = RequestMethod.GET)
-	public ModelAndView paradesListAnon(@RequestParam Integer paradeId) {
+	@RequestMapping(value = "/history/list", method = RequestMethod.GET)
+	public ModelAndView listHistory(@RequestParam int brotherhoodId) {
+		ModelAndView result;
+		Brotherhood brotherhood = new Brotherhood();
+
+		result = new ModelAndView("showAll/annonymous/history/list");
+
+		brotherhood = this.brotherhoodService.findOne(brotherhoodId);
+
+		Boolean showHistory = false;
+
+		if (!(brotherhood.getHistory() == null)) {
+			//History
+			List<LinkRecord> linkRecords = new ArrayList<>();
+			linkRecords = brotherhood.getHistory().getLinkRecords();
+
+			List<MiscellaneousRecord> miscellaneousRecords = new ArrayList<>();
+			miscellaneousRecords = brotherhood.getHistory().getMiscellaneousRecords();
+
+			List<LegalRecord> legalRecords = new ArrayList<>();
+			legalRecords = brotherhood.getHistory().getLegalRecords();
+
+			List<PeriodRecord> periodRecords = new ArrayList<>();
+			periodRecords = brotherhood.getHistory().getPeriodRecords();
+
+			InceptionRecord inceptionRecord = brotherhood.getHistory().getInceptionRecord();
+			List<InceptionRecord> inceptionRecords = new ArrayList<>();
+			inceptionRecords.add(inceptionRecord);
+
+			result.addObject("linkRecords", linkRecords);
+			result.addObject("miscellaneousRecords", miscellaneousRecords);
+			result.addObject("legalRecords", legalRecords);
+			result.addObject("periodRecords", periodRecords);
+			result.addObject("inceptionRecords", inceptionRecords);
+
+			showHistory = true;
+		}
+
+		result.addObject("showHistory", showHistory);
+		result.addObject("requestURI", "showAll/annonymous/history/list.do");
+
+		return result;
+	}
+
+	//LEGAL RECORD LAWS
+	//LIST
+	@RequestMapping(value = "/history/law/list", method = RequestMethod.GET)
+	public ModelAndView listLawsLegalRecord(@RequestParam int legalRecordId) {
+
 		ModelAndView result;
 
-		List<Segment> segments = this.segmentService.getSegmentByParade(paradeId);
+		List<String> laws;
 
-		result = new ModelAndView("path/anon/list");
+		LegalRecord legalRecord = this.legalRecordService.findOne(legalRecordId);
 
-		result.addObject("segments", segments);
+		Assert.notNull(legalRecord);
+
+		int brotherhoodId = this.brotherhoodService.getBrotherhoodIdByLegalRecord(legalRecordId);
+
+		laws = legalRecord.getLaws();
+
+		result = new ModelAndView("showAll/annonymous/history/law/list");
+
+		result.addObject("laws", laws);
+		result.addObject("requestURI", "showAll/annonymous/history/law/list.do");
+		result.addObject("legalRecordId", legalRecordId);
+		result.addObject("brotherhoodId", brotherhoodId);
+
+		return result;
+	}
+
+	//INCEPTION RECORD PHOTOS
+	//LIST
+	@RequestMapping(value = "/history/inceptionPhotos/list", method = RequestMethod.GET)
+	public ModelAndView listPhotosInceptionRecord(@RequestParam int inceptionRecordId) {
+
+		ModelAndView result;
+
+		List<String> photos;
+
+		InceptionRecord inceptionRecord = this.inceptionRecordService.findOne(inceptionRecordId);
+
+		Assert.notNull(inceptionRecord);
+
+		int brotherhoodId = this.brotherhoodService.getBrotherhoodIdByInceptionRecord(inceptionRecordId);
+
+		photos = inceptionRecord.getPhotos();
+
+		result = new ModelAndView("showAll/annonymous/history/photos/list");
+
+		result.addObject("photos", photos);
+		result.addObject("requestURI", "showAll/annonymous/history/inceptionPhotos/list.do");
+		result.addObject("inceptionRecordId", inceptionRecordId);
+		result.addObject("brotherhoodId", brotherhoodId);
+
+		return result;
+	}
+
+	//INCEPTION RECORD PHOTOS
+	//LIST
+	@RequestMapping(value = "/history/periodPhotos/list", method = RequestMethod.GET)
+	public ModelAndView listPhotosPeriodRecord(@RequestParam int periodRecordId) {
+
+		ModelAndView result;
+
+		List<String> photos;
+
+		PeriodRecord periodRecord = this.periodRecordService.findOne(periodRecordId);
+
+		Assert.notNull(periodRecord);
+
+		int brotherhoodId = this.brotherhoodService.getBrotherhoodIdByPeriodRecord(periodRecordId);
+
+		photos = periodRecord.getPhotos();
+
+		result = new ModelAndView("showAll/annonymous/history/photos/list");
+
+		result.addObject("photos", photos);
+		result.addObject("requestURI", "showAll/annonymous/history/periodPhotos/list.do");
+		result.addObject("periodRecordId", periodRecordId);
+		result.addObject("brotherhoodId", brotherhoodId);
 
 		return result;
 	}

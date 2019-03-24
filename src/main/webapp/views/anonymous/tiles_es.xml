@@ -73,7 +73,22 @@
 	<definition name="path/anon/list" extends="master.page">	
 		<put-attribute name="title" value="Lista de la ruta" />
 		<put-attribute name="body" value="/views/anonymous/pathList.jsp" />
+	
+	<definition name="showAll/annonymous/history/list" extends="master.page">	
+		<put-attribute name="title" value="Historial" />
+		<put-attribute name="body" value="/views/anonymous/showHistory.jsp" />
 	</definition>
+	
+	<definition name="showAll/annonymous/history/law/list" extends="master.page">	
+		<put-attribute name="title" value="Leyes" />
+		<put-attribute name="body" value="/views/anonymous/showLaws.jsp" />
+	</definition>
+	
+	<definition name="showAll/annonymous/history/photos/list" extends="master.page">	
+		<put-attribute name="title" value="Imagenes" />
+		<put-attribute name="body" value="/views/anonymous/showPhotosRecord.jsp" />
+	</definition>
+		
 	
 	<definition name="showAll/annonymous/proclaim/list" extends="master.page">	
 		<put-attribute name="title" value="Lsita de anuncios" />
@@ -86,6 +101,5 @@
 		<put-attribute name="body" value="/views/anonymous/chapterListt.jsp" />
 	</definition>
 		
-	
-	
+
 </tiles-definitions>

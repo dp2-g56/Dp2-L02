@@ -26,6 +26,16 @@ public interface BrotherhoodRepository extends JpaRepository<Brotherhood, Intege
 	@Query("select p from Brotherhood b join b.parades p where p.paradeStatus='ACCEPTED' and b.id = ?1")
 	public List<Parade> getParadesByBrotherhoodFinal(int id);
 
+	@Query("select c.id from Brotherhood c where c.history = (select a from History a join a.periodRecords b where b.id =?1)")
+	public int getBrotherhoodIdByPeriodRecord(int periodRecordId);
+
+	@Query("select b.id from Brotherhood b where b.history.inceptionRecord.id=?1")
+	public int getBrotherhoodIdByInceptionRecord(int inceptionRecordId);
+
+	@Query("select c.id from Brotherhood c where c.history = (select a from History a join a.legalRecords b where b.id =?1)")
+	public int getBrotherhoodIdByLegalRecord(int legalRecordId);
+
 	@Query("select a from Brotherhood a where a.area.id = ?1")
 	public List<Brotherhood> getBrotherhoodByArea(Integer a);
+
 }

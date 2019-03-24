@@ -14,13 +14,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import services.BrotherhoodService;
-import services.ChapterService;
-import services.FloatService;
-import services.InceptionRecordService;
-import services.LegalRecordService;
-import services.PeriodRecordService;
-import services.SponsorshipService;
 import domain.Brotherhood;
 import domain.Chapter;
 import domain.InceptionRecord;
@@ -31,33 +24,44 @@ import domain.MiscellaneousRecord;
 import domain.Parade;
 import domain.PeriodRecord;
 import domain.Proclaim;
+import domain.Segment;
 import domain.Sponsorship;
+import services.BrotherhoodService;
+import services.ChapterService;
+import services.FloatService;
+import services.InceptionRecordService;
+import services.LegalRecordService;
+import services.PeriodRecordService;
+import services.SegmentService;
+import services.SponsorshipService;
 
 @Controller
 @RequestMapping("/showAll/annonymous")
 public class AnnonymousShowController extends AbstractController {
 
 	@Autowired
-	private BrotherhoodService		brotherhoodService;
+	private BrotherhoodService brotherhoodService;
 
 	@Autowired
-	private FloatService			floatService;
+	private FloatService floatService;
 
 	@Autowired
-	private LegalRecordService		legalRecordService;
+	private LegalRecordService legalRecordService;
 
 	@Autowired
-	private InceptionRecordService	inceptionRecordService;
+	private InceptionRecordService inceptionRecordService;
 
 	@Autowired
-	private PeriodRecordService		periodRecordService;
+	private PeriodRecordService periodRecordService;
 
 	@Autowired
-	private SponsorshipService		sponsorshipService;
+	private SponsorshipService sponsorshipService;
 
 	@Autowired
-	private ChapterService			chapterService;
+	private ChapterService chapterService;
 
+	@Autowired
+	private SegmentService segmentService;
 
 	@RequestMapping(value = "/brotherhood/list", method = RequestMethod.GET)
 	public ModelAndView listBrotherhood(@RequestParam(required = false) Integer brotherhoodId) {
@@ -195,7 +199,7 @@ public class AnnonymousShowController extends AbstractController {
 		Boolean showHistory = false;
 
 		if (!(brotherhood.getHistory() == null)) {
-			//History
+			// History
 			List<LinkRecord> linkRecords = new ArrayList<>();
 			linkRecords = brotherhood.getHistory().getLinkRecords();
 
@@ -227,8 +231,8 @@ public class AnnonymousShowController extends AbstractController {
 		return result;
 	}
 
-	//LEGAL RECORD LAWS
-	//LIST
+	// LEGAL RECORD LAWS
+	// LIST
 	@RequestMapping(value = "/history/law/list", method = RequestMethod.GET)
 	public ModelAndView listLawsLegalRecord(@RequestParam int legalRecordId) {
 
@@ -254,8 +258,8 @@ public class AnnonymousShowController extends AbstractController {
 		return result;
 	}
 
-	//INCEPTION RECORD PHOTOS
-	//LIST
+	// INCEPTION RECORD PHOTOS
+	// LIST
 	@RequestMapping(value = "/history/inceptionPhotos/list", method = RequestMethod.GET)
 	public ModelAndView listPhotosInceptionRecord(@RequestParam int inceptionRecordId) {
 
@@ -281,8 +285,8 @@ public class AnnonymousShowController extends AbstractController {
 		return result;
 	}
 
-	//INCEPTION RECORD PHOTOS
-	//LIST
+	// INCEPTION RECORD PHOTOS
+	// LIST
 	@RequestMapping(value = "/history/periodPhotos/list", method = RequestMethod.GET)
 	public ModelAndView listPhotosPeriodRecord(@RequestParam int periodRecordId) {
 
@@ -345,6 +349,20 @@ public class AnnonymousShowController extends AbstractController {
 		result.addObject("requestURI", "showAll/annonymous/proclaim/list.do");
 
 		result.addObject("proclaims", proclaims);
+
+		return result;
+	}
+
+	@RequestMapping(value = "path/list", method = RequestMethod.GET)
+	public ModelAndView pathListAnon(@RequestParam Integer paradeId) {
+		ModelAndView result;
+
+		List<Segment> segments = this.segmentService.getSegmentByParade(paradeId);
+
+		result = new ModelAndView("path/anon/list");
+		result.addObject("requestURI", "showAll/annonymous/path/list.do");
+
+		result.addObject("segments", segments);
 
 		return result;
 	}

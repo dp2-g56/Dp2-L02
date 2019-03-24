@@ -380,7 +380,6 @@ public class BrotherhoodService {
 		return this.save(brotherhood);
 	}
 
-
 	public String SocialProfilesToString() {
 		String res = "";
 		Brotherhood brotherhood = this.loggedBrotherhood();
@@ -451,9 +450,13 @@ public class BrotherhoodService {
 		this.brotherhoodRepository.flush();
 
 	}
+
 	public Brotherhood getBrotherhoodByUsername(String username) {
 		return this.brotherhoodRepository.getBrotherhoodByUsername(username);
 	}
 
+	public List<Brotherhood> getBrotherhoodsByArea(Integer areaId) {
+		return this.brotherhoodRepository.getBrotherhoodByArea(areaId);
+	}
 
 }

@@ -25,4 +25,7 @@ public interface BrotherhoodRepository extends JpaRepository<Brotherhood, Intege
 
 	@Query("select p from Brotherhood b join b.parades p where p.paradeStatus='ACCEPTED' and b.id = ?1")
 	public List<Parade> getParadesByBrotherhoodFinal(int id);
+
+	@Query("select a from Brotherhood a where a.area.id = ?1")
+	public List<Brotherhood> getBrotherhoodByArea(Integer a);
 }

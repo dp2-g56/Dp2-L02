@@ -89,6 +89,7 @@
 		<security:authorize access="isAnonymous()">
 			<li><a class="fNiv" href="security/login.do"><spring:message code="master.page.login" /></a></li>
 			<li><a class="fNiv" href="showAll/annonymous/brotherhood/list.do"><spring:message code="master.page.annonymous" /></a></li>
+			<li><a class="fNiv" href="showAll/annonymous/chapter/list.do"><spring:message code="master.page.chapters" /></a></li>
 			<li><a class="fNiv"><spring:message	code="master.page.register" /></a>
 				<ul>
 					<li class="arrow"></li>	
@@ -123,6 +124,7 @@
 				</ul>
 			</li>
 			<li><a class="fNiv" href="showAll/annonymous/brotherhood/list.do"><spring:message code="master.page.annonymous" /></a></li>
+			<li><a class="fNiv" href="showAll/annonymous/chapter/list.do"><spring:message code="master.page.chapters" /></a></li>
 		</security:authorize>
 		
 		<security:authorize access="hasAnyRole('CHAPTER', 'MEMBER', 'SPONSOR', 'BROTHERHOOD' )">

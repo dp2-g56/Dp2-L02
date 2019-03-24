@@ -364,6 +364,7 @@ public class BrotherhoodService {
 		result.setPolarity(pururu.getPolarity());
 		result.setEstablishmentDate(pururu.getEstablishmentDate());
 
+		result.setHistory(pururu.getHistory());
 		result.setEnrolments(pururu.getEnrolments());
 		result.setFloats(pururu.getFloats());
 		result.setArea(pururu.getArea());
@@ -458,11 +459,11 @@ public class BrotherhoodService {
 	}
 
 	public int getBrotherhoodIdByPeriodRecord(int periodRecordId) {
-		return this.getBrotherhoodIdByPeriodRecord(periodRecordId);
+		return this.brotherhoodRepository.getBrotherhoodIdByPeriodRecord(periodRecordId);
 	}
 
 	public int getBrotherhoodIdByLegalRecord(int legalRecordId) {
-		return this.getBrotherhoodIdByLegalRecord(legalRecordId);
+		return this.brotherhoodRepository.getBrotherhoodIdByLegalRecord(legalRecordId);
 	}
 
 }

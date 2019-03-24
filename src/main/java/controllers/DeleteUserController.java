@@ -1,8 +1,8 @@
 /*
  * AdministratorController.java
- *
+ * 
  * Copyright (C) 2019 Universidad de Sevilla
- *
+ * 
  * The use of this project is hereby constrained to the conditions of the
  * TDG Licence, a copy of which you may download from
  * http://www.tdg-seville.info/License.html
@@ -20,6 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import security.Authority;
 import services.ActorService;
+import services.ChapterService;
 import services.MemberService;
 import services.SponsorService;
 import domain.Actor;
@@ -34,6 +35,8 @@ public class DeleteUserController extends AbstractController {
 	private MemberService	memberService;
 	@Autowired
 	private SponsorService	sponsorService;
+	@Autowired
+	private ChapterService	chapterService;
 
 
 	// Constructors -----------------------------------------------------------
@@ -55,6 +58,8 @@ public class DeleteUserController extends AbstractController {
 				this.memberService.deleteLoggedMember();
 			else if (authorities.get(0).toString().equals("SPONSOR"))
 				this.sponsorService.deleteSponsor();
+			else if (authorities.get(0).toString().equals("CHAPTER"))
+				this.chapterService.deleteAccountChapter();
 			result = new ModelAndView("redirect:/j_spring_security_logout");
 		} catch (Throwable oops) {
 			result = new ModelAndView("redirect:/");

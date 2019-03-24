@@ -328,8 +328,8 @@ public class ParadeServiceTest extends AbstractTest {
 
 		Object testingData[][] = {
 				// Positive test
-				{ p1Draft, "Parade title", p1Draft.getDescription(), futureDate, p1Draft.getIsDraftMode(),
-						p1Draft.getRowNumber(), p1Draft.getColumnNumber(), p1Draft.getFloats(), "brotherhood1", null },
+				{ p1Draft, "Parade title", p1Draft.getDescription(), futureDate, false, p1Draft.getRowNumber(),
+						p1Draft.getColumnNumber(), p1Draft.getFloats(), "brotherhood1", null },
 				// Negative test: Trying to update a parade with a past moment
 				{ p1Draft, p1Draft.getTitle(), p1Draft.getDescription(), pastDate, p1Draft.getIsDraftMode(),
 						p1Draft.getRowNumber(), p1Draft.getColumnNumber(), p1Draft.getFloats(), "brotherhood1",
@@ -444,7 +444,7 @@ public class ParadeServiceTest extends AbstractTest {
 	/**
 	 * This test is a valid case of the use of the copy method in ParadeService, all
 	 * Asserts in this test check of the copy has been made correctly.
-	 * 
+	 *
 	 **/
 
 	@Test
@@ -496,7 +496,7 @@ public class ParadeServiceTest extends AbstractTest {
 	 * This test is a invalid case of the use of the copy method in ParadeService,
 	 * one actor tries to copy a parade that don't own. An IllegalArgumentException
 	 * is expected.
-	 * 
+	 *
 	 **/
 
 	@Test(expected = IllegalArgumentException.class)

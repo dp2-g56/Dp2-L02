@@ -3,6 +3,7 @@ package domain;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Entity;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 @Entity
@@ -52,6 +53,7 @@ public class Segment extends DomainEntity {
 	}
 
 	@NotNull
+	@Min(value = 0)
 	public Integer getTime() {
 		return this.time;
 	}

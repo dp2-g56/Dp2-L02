@@ -1,3 +1,4 @@
+
 package domain;
 
 import java.util.List;
@@ -7,6 +8,7 @@ import javax.persistence.AccessType;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotBlank;
@@ -15,11 +17,12 @@ import org.hibernate.validator.constraints.NotBlank;
 @Access(AccessType.PROPERTY)
 public class PeriodRecord extends DomainEntity {
 
-	private String title;
-	private String description;
-	private Integer startYear;
-	private Integer endYear;
-	private List<String> photos;
+	private String			title;
+	private String			description;
+	private Integer			startYear;
+	private Integer			endYear;
+	private List<String>	photos;
+
 
 	public PeriodRecord() {
 		super();
@@ -44,7 +47,7 @@ public class PeriodRecord extends DomainEntity {
 	}
 
 	@NotNull
-	@Valid
+	@Min(1)
 	public Integer getStartYear() {
 		return this.startYear;
 	}
@@ -53,7 +56,8 @@ public class PeriodRecord extends DomainEntity {
 		this.startYear = startYear;
 	}
 
-	@Valid
+	@NotNull
+	@Min(1)
 	public Integer getEndYear() {
 		return this.endYear;
 	}

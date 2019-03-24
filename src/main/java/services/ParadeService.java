@@ -41,13 +41,13 @@ public class ParadeService {
 	@Autowired
 	private BrotherhoodService brotherhoodService;
 	@Autowired
-	private SponsorService		sponsorService;
+	private SponsorService sponsorService;
 	@Autowired
 	private FloatService floatService;
 	@Autowired
-	private PathService			pathService;
+	private PathService pathService;
 	@Autowired
-	private SegmentService		segmentService;
+	private SegmentService segmentService;
 
 	// Simple CRUD methods ------------------------------------------
 
@@ -211,17 +211,25 @@ public class ParadeService {
 		else
 			result = this.paradeRepository.findOne(formObjectParadeFloatCheckbox.getId());
 
-		result.setTitle(formObjectParadeFloatCheckbox.getTitleParade());
-		result.setDescription(formObjectParadeFloatCheckbox.getDescriptionParade());
-		result.setMoment(formObjectParadeFloatCheckbox.getMoment());
-		result.setIsDraftMode(formObjectParadeFloatCheckbox.getIsDraftMode());
-		result.setRowNumber(formObjectParadeFloatCheckbox.getRowNumber());
-		result.setColumnNumber(formObjectParadeFloatCheckbox.getColumnNumber());
-		result.setParadeStatus(ParadeStatus.SUBMITTED);
+		Parade result2 = new Parade();
+		result2.setId(result.getId());
+		result2.setVersion(result.getVersion());
+		result2.setTicker(result.getTicker());
+		result2.setMoment(formObjectParadeFloatCheckbox.getMoment());
+		result2.setTitle(formObjectParadeFloatCheckbox.getTitleParade());
+		result2.setDescription(formObjectParadeFloatCheckbox.getDescriptionParade());
+		result2.setIsDraftMode(formObjectParadeFloatCheckbox.getIsDraftMode());
+		result2.setColumnNumber(formObjectParadeFloatCheckbox.getColumnNumber());
+		result2.setRowNumber(formObjectParadeFloatCheckbox.getRowNumber());
+		result2.setRejectedReason(result.getRejectedReason());
+		result2.setParadeStatus(ParadeStatus.SUBMITTED);
+		result2.setFloats(result.getFloats());
+		result2.setPath(result.getPath());
+		result2.setRequests(result.getRequests());
 
 		// this.validator.validate(result, binding); //YA VIENE VALIDADO
 
-		return result;
+		return result2;
 	}
 
 	public Parade saveAssign(Parade parade, domain.Float newFloat) {
@@ -283,7 +291,6 @@ public class ParadeService {
 
 		paradeCopy.setPath(savedPath);
 
-
 		Parade saved = new Parade();
 		saved = this.paradeRepository.save(paradeCopy);
 
@@ -340,8 +347,10 @@ public class ParadeService {
 		for (Float f : floats)
 			Assert.isTrue(brotherhood.getFloats().contains(f) && f.getId() > 0);
 
-		if (parade.getId() > 0)
-			Assert.isTrue(this.findOne(parade.getId()).getIsDraftMode());
+		if (parade.getId() > 0) {
+			Parade paradeFounded = this.findOne(parade.getId());
+			Assert.isTrue(paradeFounded.getIsDraftMode());
+		}
 
 		parade.setFloats(floats);
 		Parade saved = new Parade();

@@ -36,8 +36,18 @@
 			</a>
 		</display:column>
 		
-		<display:column>
 		
+		
+		<display:column>
+			<spring:url var="createUrl0"
+				value="/showAll/annonymous/history/list.do?brotherhoodId={brotherhoodId}">
+				<spring:param name="brotherhoodId" value="${row.id}" />
+			</spring:url>
+				<a href="${createUrl0}"><spring:message code="annonymous.histories"/></a>
+		</display:column>
+		
+		
+		<display:column>
 			<spring:url var="createUrl1"
 				value="/showAll/annonymous/parade/list.do?brotherhoodId={brotherhoodId}">
 				<spring:param name="brotherhoodId" value="${row.id}" />
@@ -62,4 +72,9 @@
 		</display:column>
 		
 		</display:table>
+		
+		<jstl:if test="${cancelButton}">
+			<spring:url var="cancelar" value="/showAll/annonymous/brotherhood/list.do"/>
+			<p><a href="${cancelar}"><spring:message code="annonymous.cancel"/></a></p>
+		</jstl:if>
 

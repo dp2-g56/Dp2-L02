@@ -43,5 +43,60 @@
 		<put-attribute name="body" value="/views/actor/createPictureBrotherhood.jsp" />
 	</definition>
 	
+	<definition name="authenticated/linkRecord" extends="master.page">	
+		<put-attribute name="title" value="Crear/Editar Un registro de enlace" />
+		<put-attribute name="body" value="/views/actor/editLinkRecord.jsp" />
+	</definition>
+	
+	<definition name="authenticated/miscellaneousRecord" extends="master.page">	
+		<put-attribute name="title" value="Crear/Editar un Registro miscelaneo" />
+		<put-attribute name="body" value="/views/actor/editMiscellaneousRecord.jsp" />
+	</definition>
+	
+	<definition name="authenticated/legalRecord" extends="master.page">	
+		<put-attribute name="title" value="Crear/Editar un registro legal" />
+		<put-attribute name="body" value="/views/actor/editLegalRecord.jsp" />
+	</definition>
+	
+	<definition name="authenticated/periodRecord" extends="master.page">	
+		<put-attribute name="title" value="Crear/Editar un registro de periodo" />
+		<put-attribute name="body" value="/views/actor/editPeriodRecord.jsp" />
+	</definition>
+	
+	<definition name="authenticated/inceptionRecord" extends="master.page">	
+		<put-attribute name="title" value="Crear/Editar Registro de Inicio" />
+		<put-attribute name="body" value="/views/actor/editInceptionRecord.jsp" />
+	</definition>
+	
+	<definition name="authenticated/inceptionRecord/photo/list" extends="master.page">	
+		<put-attribute name="title" value="Imagenes" />
+		<put-attribute name="body" value="/views/actor/photoInceptionRecord.jsp" />
+	</definition>
+	
+	<definition name="authenticated/inceptionRecord/photo/create" extends="master.page">	
+		<put-attribute name="title" value="Crear imagen" />
+		<put-attribute name="body" value="/views/actor/createPhotoInceptionRecord.jsp" />
+	</definition>
+	
+	<definition name="authenticated/periodRecord/photo/list" extends="master.page">	
+		<put-attribute name="title" value="Fotos" />
+		<put-attribute name="body" value="/views/actor/photoPeriodRecord.jsp" />
+	</definition>
+	
+	<definition name="authenticated/periodRecord/photo/create" extends="master.page">	
+		<put-attribute name="title" value="Crear imagen" />
+		<put-attribute name="body" value="/views/actor/createPhotoPeriodRecord.jsp" />
+	</definition>
+	
+	<definition name="authenticated/legalRecord/law/list" extends="master.page">	
+		<put-attribute name="title" value="Leyes" />
+		<put-attribute name="body" value="/views/actor/lawLegalRecord.jsp" />
+	</definition>
+	
+	<definition name="authenticated/legalRecord/law/create" extends="master.page">	
+		<put-attribute name="title" value="Crear Ley" />
+		<put-attribute name="body" value="/views/actor/createLawLegalRecord.jsp" />
+	</definition>
+	
 	
 </tiles-definitions>

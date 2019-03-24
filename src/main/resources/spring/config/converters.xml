@@ -77,6 +77,28 @@
 		
 		<bean class="converters.CreditCardToStringConverter" />
 		<bean class="converters.StringToCreditCardConverter" />
+		<bean class="converters.ChapterToStringConverter" />
+		<bean class="converters.StringToChapterConverter" />
+		
+		<!-- HISTORY AND RECORDS -->
+		<bean class="converters.HistoryToStringConverter" />
+		<bean class="converters.StringToHistoryConverter" />
+		
+		<bean class="converters.InceptionRecordToStringConverter" />
+		<bean class="converters.StringToInceptionRecordConverter" />
+		
+		<bean class="converters.LegalRecordToStringConverter" />
+		<bean class="converters.StringToLegalRecordConverter" />
+		
+		<bean class="converters.LinkRecordToStringConverter" />
+		<bean class="converters.StringToLinkRecordConverter" />
+		
+		<bean class="converters.MiscellaneousRecordToStringConverter" />
+		<bean class="converters.StringToMiscellaneousRecordConverter" />
+		
+		<bean class="converters.PeriodRecordToStringConverter" />
+		<bean class="converters.StringToPeriodRecordConverter" />
+		
 		
 		<bean class="converters.ProclaimToStringConverter" />
 		<bean class="converters.StringToProclaimConverter" />

@@ -15,11 +15,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import domain.Brotherhood;
+import domain.Chapter;
 import domain.Member;
 import domain.Parade;
+import domain.Proclaim;
 import domain.Segment;
 import domain.Sponsorship;
 import services.BrotherhoodService;
+import services.ChapterService;
 import services.FloatService;
 import services.SegmentService;
 import services.SponsorshipService;
@@ -39,6 +42,9 @@ public class AnnonymousShowController extends AbstractController {
 
 	@Autowired
 	private SegmentService segmentService;
+
+	@Autowired
+	private ChapterService chapterService;
 
 	@RequestMapping(value = "/brotherhood/list", method = RequestMethod.GET)
 	public ModelAndView listBrotherhood() {
@@ -165,6 +171,47 @@ public class AnnonymousShowController extends AbstractController {
 		result = new ModelAndView("path/anon/list");
 
 		result.addObject("segments", segments);
+
+		return result;
+	}
+
+	@RequestMapping(value = "chapter/list", method = RequestMethod.GET)
+	public ModelAndView chpaterListAnon() {
+		ModelAndView result;
+
+		List<Chapter> chapters = this.chapterService.findAll();
+
+		result = new ModelAndView("chapter/anon/list");
+
+		result.addObject("chapters", chapters);
+
+		return result;
+	}
+
+	@RequestMapping(value = "brotherhood/listByArea", method = RequestMethod.GET)
+	public ModelAndView chpaterListAnon(@RequestParam Integer areaId) {
+		ModelAndView result;
+
+		List<Brotherhood> brotherhoods = this.brotherhoodService.getBrotherhoodsByArea(areaId);
+
+		result = new ModelAndView("showAll/annonymous/brotherhood/list");
+		result.addObject("requestURI", "showAll/annonymous/brotherhood/listByArea.do");
+
+		result.addObject("brotherhoods", brotherhoods);
+
+		return result;
+	}
+
+	@RequestMapping(value = "proclaim/list", method = RequestMethod.GET)
+	public ModelAndView proclaimListAnon(@RequestParam Integer chapterId) {
+		ModelAndView result;
+
+		List<Proclaim> proclaims = this.chapterService.findOne(chapterId).getProclaims();
+
+		result = new ModelAndView("showAll/annonymous/proclaim/list");
+		result.addObject("requestURI", "showAll/annonymous/proclaim/list.do");
+
+		result.addObject("proclaims", proclaims);
 
 		return result;
 	}

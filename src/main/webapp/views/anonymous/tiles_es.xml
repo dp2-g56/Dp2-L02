@@ -75,4 +75,17 @@
 		<put-attribute name="body" value="/views/anonymous/pathList.jsp" />
 	</definition>
 	
+	<definition name="showAll/annonymous/proclaim/list" extends="master.page">	
+		<put-attribute name="title" value="Lsita de anuncios" />
+		<put-attribute name="body" value="/views/anonymous/proclaimList.jsp" />
+	</definition>
+	
+		
+	<definition name="chapter/anon/list" extends="master.page">	
+		<put-attribute name="title" value="Lsita de Sucursales" />
+		<put-attribute name="body" value="/views/anonymous/chapterListt.jsp" />
+	</definition>
+		
+	
+	
 </tiles-definitions>

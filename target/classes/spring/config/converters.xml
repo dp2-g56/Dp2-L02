@@ -57,12 +57,46 @@
 		
 		<bean class="converters.ProcessionToStringConverter" />
 		<bean class="converters.StringToProcessionConverter" />
+		<bean class="converters.ParadeToStringConverter" />
+		<bean class="converters.StringToParadeConverter" />
 		
 		<bean class="converters.RequestToStringConverter" />
 		<bean class="converters.StringToRequestConverter" />
 		
 		<bean class="converters.ConfigurationToStringConverter" />
 		<bean class="converters.StringToConfigurationConverter" />
+		
+		<bean class="converters.PositionToStringConverter" />
+		<bean class="converters.StringToPositionConverter" />
+		
+		<bean class="converters.SponsorToStringConverter" />
+		<bean class="converters.StringToSponsorConverter" />
+		
+		<bean class="converters.SponsorshipToStringConverter" />
+		<bean class="converters.StringToSponsorshipConverter" />
+		
+		<bean class="converters.ChapterToStringConverter" />
+		<bean class="converters.StringToChapterConverter" />
+		
+		<!-- HISTORY AND RECORDS -->
+		<bean class="converters.HistoryToStringConverter" />
+		<bean class="converters.StringToHistoryConverter" />
+		
+		<bean class="converters.InceptionRecordToStringConverter" />
+		<bean class="converters.StringToInceptionRecordConverter" />
+		
+		<bean class="converters.LegalRecordToStringConverter" />
+		<bean class="converters.StringToLegalRecordConverter" />
+		
+		<bean class="converters.LinkRecordToStringConverter" />
+		<bean class="converters.StringToLinkRecordConverter" />
+		
+		<bean class="converters.MiscellaneousRecordToStringConverter" />
+		<bean class="converters.StringToMiscellaneousRecordConverter" />
+		
+		<bean class="converters.PeriodRecordToStringConverter" />
+		<bean class="converters.StringToPeriodRecordConverter" />
+		
 		
 		
 	</util:list>

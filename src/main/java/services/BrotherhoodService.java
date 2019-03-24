@@ -15,6 +15,10 @@ import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
 
+import repositories.BrotherhoodRepository;
+import security.Authority;
+import security.LoginService;
+import security.UserAccount;
 import domain.Box;
 import domain.Brotherhood;
 import domain.Enrolment;
@@ -30,23 +34,20 @@ import domain.PeriodRecord;
 import domain.SocialProfile;
 import domain.StatusEnrolment;
 import forms.FormObjectBrotherhood;
-import repositories.BrotherhoodRepository;
-import security.Authority;
-import security.LoginService;
-import security.UserAccount;
 
 @Service
 @Transactional
 public class BrotherhoodService {
 
 	@Autowired
-	private BrotherhoodRepository brotherhoodRepository;
+	private BrotherhoodRepository	brotherhoodRepository;
 
 	@Autowired
-	private BoxService boxService;
+	private BoxService				boxService;
 
 	@Autowired
-	private Validator validator;
+	private Validator				validator;
+
 
 	public List<Brotherhood> findAll() {
 		return this.brotherhoodRepository.findAll();
@@ -363,6 +364,7 @@ public class BrotherhoodService {
 		result.setPolarity(pururu.getPolarity());
 		result.setEstablishmentDate(pururu.getEstablishmentDate());
 
+		result.setHistory(pururu.getHistory());
 		result.setEnrolments(pururu.getEnrolments());
 		result.setFloats(pururu.getFloats());
 		result.setArea(pururu.getArea());
@@ -390,8 +392,7 @@ public class BrotherhoodService {
 		Integer cont = 1;
 
 		for (SocialProfile f : socialProfiles) {
-			sb.append("Profile" + cont + " Name: " + f.getName() + " Nick: " + f.getNick() + " Profile link: "
-					+ f.getProfileLink()).append(System.getProperty("line.separator"));
+			sb.append("Profile" + cont + " Name: " + f.getName() + " Nick: " + f.getNick() + " Profile link: " + f.getProfileLink()).append(System.getProperty("line.separator"));
 			cont++;
 		}
 		return sb.toString();
@@ -408,14 +409,12 @@ public class BrotherhoodService {
 		List<PeriodRecord> pr = h.getPeriodRecords();
 		Integer cont = 1;
 		sb.append("History: ").append(System.getProperty("line.separator"));
-		sb.append("Inception record: " + "Title: " + ir.getTitle() + " Description: " + ir.getDescription()
-				+ " Photos: ");
+		sb.append("Inception record: " + "Title: " + ir.getTitle() + " Description: " + ir.getDescription() + " Photos: ");
 		for (String s : ir.getPhotos())
 			sb.append(s + " ");
 		sb.append(System.getProperty("line.separator"));
 		for (LegalRecord l : lr) {
-			sb.append("Legal record " + cont + " Title: " + l.getTitle() + " Legal name: " + l.getLegalName()
-					+ " Description: " + l.getDescription() + " VAT number: " + l.getVatNumber() + " Laws: ");
+			sb.append("Legal record " + cont + " Title: " + l.getTitle() + " Legal name: " + l.getLegalName() + " Description: " + l.getDescription() + " VAT number: " + l.getVatNumber() + " Laws: ");
 			for (String s : l.getLaws())
 				sb.append(s + " ");
 			sb.append(System.getProperty("line.separator"));
@@ -423,21 +422,17 @@ public class BrotherhoodService {
 		}
 		cont = 1;
 		for (LinkRecord lk : lkr) {
-			sb.append("Link record " + cont + " Title: " + lk.getTitle() + " Description: " + lk.getDescription()
-					+ " Link: " + lk.getLink()).append(System.getProperty("line.separator"));
+			sb.append("Link record " + cont + " Title: " + lk.getTitle() + " Description: " + lk.getDescription() + " Link: " + lk.getLink()).append(System.getProperty("line.separator"));
 			cont++;
 		}
 		cont = 1;
 		for (MiscellaneousRecord m : mr) {
-			sb.append(
-					"Miscellaneous record " + cont + " Title: " + m.getTitle() + " Description: " + m.getDescription())
-					.append(System.getProperty("line.separator"));
+			sb.append("Miscellaneous record " + cont + " Title: " + m.getTitle() + " Description: " + m.getDescription()).append(System.getProperty("line.separator"));
 			cont++;
 		}
 		cont = 1;
 		for (PeriodRecord p : pr) {
-			sb.append("Period record " + cont + " Title: " + p.getTitle() + " Description: " + p.getDescription()
-					+ " Start year: " + p.getStartYear() + " End year: " + p.getEndYear() + " Photos: ");
+			sb.append("Period record " + cont + " Title: " + p.getTitle() + " Description: " + p.getDescription() + " Start year: " + p.getStartYear() + " End year: " + p.getEndYear() + " Photos: ");
 			for (String s : p.getPhotos())
 				sb.append(s + " ");
 			sb.append(System.getProperty("line.separator"));
@@ -457,6 +452,18 @@ public class BrotherhoodService {
 
 	public List<Brotherhood> getBrotherhoodsByArea(Integer areaId) {
 		return this.brotherhoodRepository.getBrotherhoodByArea(areaId);
+	}
+
+	public int getBrotherhoodIdByInceptionRecord(int inceptionRecordId) {
+		return this.brotherhoodRepository.getBrotherhoodIdByInceptionRecord(inceptionRecordId);
+	}
+
+	public int getBrotherhoodIdByPeriodRecord(int periodRecordId) {
+		return this.brotherhoodRepository.getBrotherhoodIdByPeriodRecord(periodRecordId);
+	}
+
+	public int getBrotherhoodIdByLegalRecord(int legalRecordId) {
+		return this.brotherhoodRepository.getBrotherhoodIdByLegalRecord(legalRecordId);
 	}
 
 }

@@ -5,11 +5,12 @@
 <%@taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@taglib prefix="security" uri="http://www.springframework.org/security/tags"%>
 <%@taglib prefix="display" uri="http://displaytag.sf.net"%>
+<%@ taglib prefix="acme" tagdir="/WEB-INF/tags" %>
 
 
 <security:authorize access="hasRole('BROTHERHOOD')">
 
-		<h3>	<a href="path/brotherhood/delete.do?paradeId=${param.paradeId}">
+		<h3>	<a href="path/brotherhood/delete.do?paradeId=${param.paradeId}" onClick="return confirm('<spring:message code="path.confirmDelete" />')">
 			<spring:message code="parade.path.delete" /> 
 			</a></h3>
 	
@@ -41,8 +42,17 @@
 		<spring:param name="paradeId" value="${param.paradeId}"/>
 		<spring:param name="segmentId" value="0"/>
 	</spring:url>
+
 	<a href="${create}">
-		<spring:message code="segment.create"/>
+		<button><spring:message code="segment.create"/></button>
 	</a> 
+	<br/>
+
+		<spring:url value="parade/brotherhood/list.do" var="cancel"/>
+		<a href="${cancel}">
+		<button><spring:message code="segment.cancel"/></button>
+	</a> 
+	
+	
 
 </security:authorize>

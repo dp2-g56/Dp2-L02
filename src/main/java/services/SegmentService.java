@@ -95,18 +95,17 @@ public class SegmentService {
 		List<Segment> segments = parade.getPath().getSegments();
 		Boolean isNew = segmentForm.getId() == 0;
 
-		if (!this.isOrigin(segmentForm, paradeId)) {
+		if (!this.isOrigin(segmentForm, paradeId) && isNew) {
 			Segment segmentBefore = segments.get(segments.size() - 1);
 			result.setOriginLatitude(segmentBefore.getDestinationLatitude());
 			result.setOriginLongitude(segmentBefore.getDestinationLongitude());
-		} else if (isNew) {
+		} else if (this.isOrigin(segmentForm, paradeId)) {
 			result.setOriginLatitude(segmentForm.getOriginLatitude());
 			result.setOriginLongitude(segmentForm.getOriginLongitude());
 		} else {
 			Segment segmentOld = this.findOne(segmentForm.getId());
 			result.setOriginLatitude(segmentOld.getOriginLatitude());
 			result.setOriginLongitude(segmentOld.getOriginLongitude());
-			result.setVersion(segmentOld.getVersion());
 		}
 
 		result.setId(segmentForm.getId());
@@ -126,13 +125,17 @@ public class SegmentService {
 		List<Segment> segments = path.getSegments();
 		Boolean isNew = segment.getId() == 0;
 
-		if (!this.isLast(segment, path)) {
-			Segment segmentAfter = segments.get(segments.indexOf(segment) + 1);
+		if (!isNew)
+			segment = this.saveSegment(segment);
+
+		if (!this.isLast(segment, path) && !isNew) {
+			Segment segmentBD = this.findOne(segment.getId());
+			Segment segmentAfter = segments.get(segments.indexOf(segmentBD) + 1);
+			segment = this.recontruct(segment, paradeId, null);
 			segmentAfter.setOriginLatitude(segment.getDestinationLatitude());
 			segmentAfter.setOriginLongitude(segment.getDestinationLongitude());
 			this.save(segmentAfter);
 		}
-		segment = this.save(segment);
 
 		if (isNew) {
 			segments.add(segment);
@@ -144,16 +147,30 @@ public class SegmentService {
 		return segment;
 	}
 
-	public boolean isOrigin(Segment segment, Integer paradeId) {
+	public Segment saveSegment(Segment segmentForm) {
+		Segment segmentBD = this.findOne(segmentForm.getId());
+		segmentBD.setDestinationLatitude(segmentForm.getDestinationLatitude());
+		segmentBD.setDestinationLongitude(segmentForm.getDestinationLongitude());
+		segmentBD.setOriginLatitude(segmentForm.getOriginLatitude());
+		segmentBD.setOriginLongitude(segmentForm.getOriginLongitude());
+		segmentBD.setTime(segmentForm.getTime());
+		return this.save(segmentBD);
+	}
+
+	public boolean isOrigin(Segment segmentForm, Integer paradeId) {
 		Path path = this.paradeService.findOne(paradeId).getPath();
 		List<Segment> segments = path.getSegments();
+		Segment segment = this.findOne(segmentForm.getId());
 
 		return segments.indexOf(segment) == 0 || segments.size() == 0;
 	}
 
 	public boolean isLast(Segment segment, Path path) {
 		List<Segment> segments = path.getSegments();
-		return segments.indexOf(segment) == segments.size() - 1;
+		if (segments.size() != 0)
+			return segments.indexOf(segment) == segments.size() - 1;
+		else
+			return true;
 	}
 
 	public void deleteSegment(Segment segment, Integer paradeId) {
@@ -178,6 +195,36 @@ public class SegmentService {
 		parade.setPath(path);
 		this.paradeService.save(parade);
 		this.delete(segment);
+	}
+
+	public Segment recontructTest(Segment segmentForm, Integer paradeId) {
+
+		Segment result = new Segment();
+
+		Parade parade = this.paradeService.findOne(paradeId);
+		List<Segment> segments = parade.getPath().getSegments();
+		Boolean isNew = segmentForm.getId() == 0;
+
+		if (!this.isOrigin(segmentForm, paradeId) && isNew) {
+			Segment segmentBefore = segments.get(segments.size() - 1);
+			result.setOriginLatitude(segmentBefore.getDestinationLatitude());
+			result.setOriginLongitude(segmentBefore.getDestinationLongitude());
+		} else if (this.isOrigin(segmentForm, paradeId)) {
+			result.setOriginLatitude(segmentForm.getOriginLatitude());
+			result.setOriginLongitude(segmentForm.getOriginLongitude());
+		} else {
+			Segment segmentOld = this.findOne(segmentForm.getId());
+			result.setOriginLatitude(segmentOld.getOriginLatitude());
+			result.setOriginLongitude(segmentOld.getOriginLongitude());
+		}
+
+		result.setId(segmentForm.getId());
+		result.setDestinationLatitude(segmentForm.getDestinationLatitude());
+		result.setDestinationLongitude(segmentForm.getDestinationLongitude());
+		result.setTime(segmentForm.getTime());
+
+		return result;
+
 	}
 
 }

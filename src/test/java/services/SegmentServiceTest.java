@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.BindingResult;
 
 import domain.Brotherhood;
 import domain.Segment;
@@ -108,7 +107,8 @@ public class SegmentServiceTest extends AbstractTest {
 			Double destinationLatitude, Double destinationLongitude, Integer time, Class<?> expected) {
 
 		Class<?> caught = null;
-		BindingResult binding = null;
+		this.startTransaction();
+		super.authenticate(brotherhood);
 		Segment segmentForm = new Segment();
 		segmentForm.setId(segmentId);
 		segmentForm.setDestinationLatitude(destinationLatitude);
@@ -116,13 +116,15 @@ public class SegmentServiceTest extends AbstractTest {
 		segmentForm.setTime(time);
 
 		try {
-			super.authenticate(brotherhood);
-			Segment segment = this.segmentService.recontruct(segmentForm, paradeId, binding);
+			Segment segment = this.segmentService.recontructTest(segmentForm, paradeId);
 			this.segmentService.editSegment(segment, paradeId);
-			super.unauthenticate();
 		} catch (Throwable oops) {
 			caught = oops.getClass();
 		}
+
+		super.unauthenticate();
+
+		this.rollbackTransaction();
 
 		super.checkExceptions(expected, caught);
 

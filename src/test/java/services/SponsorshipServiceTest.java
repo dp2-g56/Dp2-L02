@@ -447,8 +447,7 @@ public class SponsorshipServiceTest extends AbstractTest {
 		Integer anotherParadeId = 637;
 
 		Object testingData[][] = {
-				// Positive test: The parade of the sponsorship agrees with the
-				// indicated parade
+				// Positive test: The parade of the sponsorship agrees with the indicated parade
 				{ parade.getId(), sponsorship.getId(), null },
 				// Negative test: The parade of the sponsorship does not agree with the
 				// indicated parade

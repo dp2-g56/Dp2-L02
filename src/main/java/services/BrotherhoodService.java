@@ -273,7 +273,6 @@ public class BrotherhoodService {
 			result = brotherhood;
 		else {
 			result = this.brotherhoodRepository.findOne(brotherhood.getId());
-
 			result.setArea(brotherhood.getArea());
 
 			this.validator.validate(result, binding);

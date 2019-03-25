@@ -60,13 +60,6 @@
 		
 		<display:column property="targetURL" titleKey="sponsorship.targetURL" style="color:${color}"/>
 		
-		<display:column property="spentMoney" titleKey="sponsorship.spentMoney" style="color:${color}"/>
-			
-		<display:column titleKey="sponsorship.creditCard" style="color:${color}">
-			<jstl:set var="number" value="${row.creditCard.number.toString()}"/>
-			<jstl:out value="*${number.toString().charAt(number.toString().length() - 4)}${number.toString().charAt(number.toString().length() - 3)}${number.toString().charAt(number.toString().length() - 2)}${number.toString().charAt(number.toString().length() - 1)}"/>
-		</display:column>
-		
 		<display:column titleKey="sponsorship.creditCard.isValid" style="color:${color}">
 			<jstl:set var="valid" value="${isValid.get(row.id)}"/>
 			<jstl:choose>

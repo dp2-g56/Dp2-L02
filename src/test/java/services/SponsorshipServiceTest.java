@@ -50,10 +50,12 @@ public class SponsorshipServiceTest extends AbstractTest {
 		Parade parade2 = (new ArrayList<Parade>(this.paradeService.getDraftParades())).get(0);
 
 		Object testingData[][] = {
-				// Positive test
+				// Positive test: Creating a sponsorship logged in as sponsor with correct
+				// content and a valid credit card to a accepted parade
 				{ "https://www.imagen.com.mx/assets/img/imagen_share.png",
 						"https://www.imagen.com.mx/assets/img/imagen_share.png", "David", "VISA", 4980003406100008L, 3,
 						24, 778, parade, "sponsor1", null },
+				// Negative test: Trying to create a sponsorship with a different role
 				{ "https://www.imagen.com.mx/assets/img/imagen_share.png",
 						"https://www.imagen.com.mx/assets/img/imagen_share.png", "David", "VISA", 4980003406100008L, 3,
 						24, 778, parade, "admin1", IllegalArgumentException.class },
@@ -71,11 +73,6 @@ public class SponsorshipServiceTest extends AbstractTest {
 				{ "https://www.imagen.com.mx/assets/img/imagen_share.png",
 						"https://www.imagen.com.mx/assets/img/imagen_share.png", "David", "VISA", 4980003406100008L, 3,
 						16, 778, parade, "sponsor1", IllegalArgumentException.class },
-				// Negative test: Trying to create an sponsorship with a credit card whose CVV
-				// is invalid
-				{ "https://www.imagen.com.mx/assets/img/imagen_share.png",
-						"https://www.imagen.com.mx/assets/img/imagen_share.png", "David", "VISA", 4980003406100008L, 3,
-						24, 1, parade, "sponsor1", IllegalArgumentException.class },
 				// Negative test: Trying to create a sponsorship to an unaccepted parade
 				{ "https://www.imagen.com.mx/assets/img/imagen_share.png",
 						"https://www.imagen.com.mx/assets/img/imagen_share.png", "David", "VISA", 4980003406100008L, 3,
@@ -152,13 +149,7 @@ public class SponsorshipServiceTest extends AbstractTest {
 				{ false, "sponsor1", null },
 				// Negative test: Trying to list all sponsorships of an actor with a different
 				// role
-				{ null, "admin1", IllegalArgumentException.class },
-				// Negative test: Trying to list activated sponsorships of an actor with a
-				// different role
-				{ true, "admin1", IllegalArgumentException.class },
-				// Negative test: Trying to list deactivated sponsorships of an actor with a
-				// different role
-				{ false, "admin1", IllegalArgumentException.class } };
+				{ null, "admin1", IllegalArgumentException.class } };
 
 		for (int i = 0; i < testingData.length; i++)
 			this.templateListSponsorships((Boolean) testingData[i][0], (String) testingData[i][1],
@@ -214,7 +205,8 @@ public class SponsorshipServiceTest extends AbstractTest {
 				this.sponsorshipService.getActivatedSponsorshipsOfSponsor(sponsor.getId()))).get(0);
 
 		Object testingData[][] = {
-				// Positive test
+				// Positive test: Updating a sponsorship logged in as sponsor that owns the
+				// sponsorship with correct content and a valid credit card
 				{ "https://www.imagen.com", sponsorship.getTargetURL(), "Ramon", "VISA",
 						sponsorship.getCreditCard().getNumber(), sponsorship.getCreditCard().getExpirationMonth(),
 						sponsorship.getCreditCard().getExpirationYear(), sponsorship.getCreditCard().getCvvCode(),
@@ -244,25 +236,12 @@ public class SponsorshipServiceTest extends AbstractTest {
 						sponsorship.getCreditCard().getBrandName(), sponsorship.getCreditCard().getNumber(), 3, 16,
 						sponsorship.getCreditCard().getCvvCode(), sponsorship.getId(), "sponsor1",
 						IllegalArgumentException.class },
-				// Negative test: Trying to update an sponsorship with a credit card whose CVV
-				// is invalid
-				{ sponsorship.getBanner(), sponsorship.getTargetURL(), sponsorship.getCreditCard().getHolderName(),
-						sponsorship.getCreditCard().getBrandName(), sponsorship.getCreditCard().getNumber(),
-						sponsorship.getCreditCard().getExpirationMonth(),
-						sponsorship.getCreditCard().getExpirationYear(), 1, sponsorship.getId(), "sponsor1",
-						IllegalArgumentException.class },
 				// Negative test: Trying to update a sponsorship with the banner and the
 				// targetURL in blank
 				{ "", "", sponsorship.getCreditCard().getHolderName(), sponsorship.getCreditCard().getBrandName(),
 						sponsorship.getCreditCard().getNumber(), sponsorship.getCreditCard().getExpirationMonth(),
 						sponsorship.getCreditCard().getExpirationYear(), sponsorship.getCreditCard().getCvvCode(),
-						sponsorship.getId(), "sponsor1", ConstraintViolationException.class },
-				// Negative test: Trying to update a sponsorship with number as null
-				{ sponsorship.getBanner(), sponsorship.getTargetURL(), sponsorship.getCreditCard().getHolderName(),
-						sponsorship.getCreditCard().getBrandName(), null,
-						sponsorship.getCreditCard().getExpirationMonth(),
-						sponsorship.getCreditCard().getExpirationYear(), sponsorship.getCreditCard().getCvvCode(),
-						sponsorship.getId(), "sponsor1", NullPointerException.class } };
+						sponsorship.getId(), "sponsor1", ConstraintViolationException.class } };
 
 		for (int i = 0; i < testingData.length; i++)
 			this.templateUpdateSponsorship((String) testingData[i][0], (String) testingData[i][1],
@@ -321,17 +300,17 @@ public class SponsorshipServiceTest extends AbstractTest {
 		// Activated sponsorship with a valid credit card
 		Sponsorship sponsorship = (new ArrayList<Sponsorship>(
 				this.sponsorshipService.getActivatedSponsorshipsOfSponsor(sponsor.getId()))).get(0);
-		// Activated sponsorship with an expired credit card
+		// Deactivated sponsorship with an expired credit card
 		Sponsorship sponsorship2 = (new ArrayList<Sponsorship>(
-				this.sponsorshipService.getActivatedSponsorshipsOfSponsor(sponsor.getId()))).get(1);
+				this.sponsorshipService.getDeactivatedSponsorshipsOfSponsor(sponsor.getId()))).get(0);
 
 		Object testingData[][] = {
-				// Positive case: Deactivating and activating an active sponsorship
+				// Positive case: Deactivating an active sponsorship logged in as admin
 				{ sponsorship.getId(), "sponsor1", null },
-				// Negative case: Trying to deactivate and deactivate an active sponsorship with
+				// Negative case: Trying to deactivate an active sponsorship with
 				// a different role
 				{ sponsorship.getId(), "admin1", IllegalArgumentException.class },
-				// Negative case: Trying to deactivate and deactivate an active sponsorship
+				// Negative case: Trying to activate a deactivated sponsorship
 				// whose credit card is expired
 				{ sponsorship2.getId(), "sponsor1", IllegalArgumentException.class } };
 
@@ -348,9 +327,6 @@ public class SponsorshipServiceTest extends AbstractTest {
 			this.startTransaction();
 
 			super.authenticate(username);
-			this.sponsorshipService.changeStatus(sponsorshipId);
-			this.sponsorshipService.flush();
-
 			this.sponsorshipService.changeStatus(sponsorshipId);
 			this.sponsorshipService.flush();
 
@@ -380,13 +356,7 @@ public class SponsorshipServiceTest extends AbstractTest {
 				{ false, "admin1", null },
 				// Negative test: Trying to list all sponsorships with a
 				// different role
-				{ null, "sponsor1", IllegalArgumentException.class },
-				// Negative test: Trying to list activated sponsorships with a
-				// different role
-				{ true, "sponsor1", IllegalArgumentException.class },
-				// Negative test: Trying to list deactivated sponsorships with a
-				// different role
-				{ false, "sponsor1", IllegalArgumentException.class } };
+				{ null, "sponsor1", IllegalArgumentException.class } };
 
 		for (int i = 0; i < testingData.length; i++)
 			this.templateListSponsorshipsAsAdmin((Boolean) testingData[i][0], (String) testingData[i][1],
@@ -427,7 +397,7 @@ public class SponsorshipServiceTest extends AbstractTest {
 	public void driverCheckAndDeactivateSponsorshipsAsAdmin() {
 
 		Object testingData[][] = {
-				// Positive case
+				// Positive case: Launching the process logged in as admin
 				{ "admin1", null },
 				// Negative case: Trying to launch the process with a different role
 				{ "sponsor1", IllegalArgumentException.class } };
@@ -477,7 +447,8 @@ public class SponsorshipServiceTest extends AbstractTest {
 		Integer anotherParadeId = 637;
 
 		Object testingData[][] = {
-				// Positive test
+				// Positive test: The parade of the sponsorship agrees with the
+				// indicated parade
 				{ parade.getId(), sponsorship.getId(), null },
 				// Negative test: The parade of the sponsorship does not agree with the
 				// indicated parade

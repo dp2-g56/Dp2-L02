@@ -48,6 +48,33 @@ public class BrotherhoodService {
 	@Autowired
 	private Validator				validator;
 
+	@Autowired
+	private MessageService			messageService;
+
+	@Autowired
+	private SocialProfileService	socialProfileService;
+
+	@Autowired
+	private HistoryService			historyService;
+
+	@Autowired
+	private EnrolmentService		enrolmentService;
+
+	@Autowired
+	private ParadeService			paradeService;
+
+	@Autowired
+	private FloatService			floatService;
+
+	@Autowired
+	private ActorService			actorService;
+
+	@Autowired
+	private RequestService			requestService;
+
+	@Autowired
+	private SponsorshipService		sponsorshipService;
+
 
 	public List<Brotherhood> findAll() {
 		return this.brotherhoodRepository.findAll();
@@ -466,4 +493,83 @@ public class BrotherhoodService {
 		return this.brotherhoodRepository.getBrotherhoodIdByLegalRecord(legalRecordId);
 	}
 
+	public void deleteBrotherhoodss() {
+
+		this.loggedAsBrotherhood();
+		Brotherhood brotherhood = this.loggedBrotherhood();
+
+		this.boxService.deleteAllBoxes();
+		this.messageService.updateReceivedMessageToLogguedActor();
+		this.messageService.updateSendedMessageByLogguedActor();
+		this.socialProfileService.deleteAllSocialProfiles();
+
+		if (brotherhood.getHistory() != null)
+			this.historyService.deleteAllHistory();
+
+		brotherhood.setArea(null);
+
+		//this.save(brotherhood);
+		//this.enrolmentService.deleteAllEnrolmentsBrotherhood();
+
+		brotherhood.setEnrolments(new ArrayList<Enrolment>());
+		brotherhood.setParades(new ArrayList<Parade>()); //Parades blank
+		brotherhood.setFloats(new ArrayList<domain.Float>());
+		//this.paradeService.deleteAllParadesTest();
+		//this.floatService.deleteAllFloatsBrotherhood();
+
+		this.save(brotherhood);
+		this.flush();
+		this.delete(brotherhood);
+	}
+
+	public void deleteBrotherhood() {
+
+		this.loggedAsBrotherhood();
+
+		Brotherhood brotherhood = this.loggedBrotherhood();
+
+		this.boxService.deleteAllBoxes();	//Delete all boxes and messages
+		this.messageService.updateReceivedMessageToLogguedActor();
+		this.messageService.updateSendedMessageByLogguedActor();
+		this.socialProfileService.deleteAllSocialProfiles(); // Delete all socialProfiles
+
+		if (brotherhood.getHistory() != null)
+			this.historyService.deleteAllHistory();
+
+		List<Enrolment> enrolments = brotherhood.getEnrolments();
+
+		for (Enrolment e : enrolments) {
+			Member me = e.getMember();
+			me.getEnrolments().remove(e);
+
+			e.setBrotherhood(null);
+			e.setMember(null);
+			this.enrolmentService.delete(e);
+		}
+
+		brotherhood.setEnrolments(new ArrayList<Enrolment>());
+
+		brotherhood.setArea(null); //Area null
+
+		List<Parade> parades = brotherhood.getParades();
+		int sizeParades = parades.size();
+
+		for (int i = 0; i < sizeParades; i++)
+			if (parades.get(0).getIsDraftMode() == true)
+				this.paradeService.deleteParadetest(parades.get(0));
+			else
+				this.paradeService.deleteInFinal(parades.get(0));
+
+		brotherhood.setParades(new ArrayList<Parade>()); //Parades blank
+
+		//this.save(brotherhood);
+		//this.enrolmentService.deleteAllEnrolmentsBrotherhood();
+		//this.paradeService.deleteAllParadesTest();
+		//	this.floatService.deleteAllFloatsBrotherhood();
+
+		//this.save(brotherhood);
+		this.flush();
+		this.delete(brotherhood);
+
+	}
 }

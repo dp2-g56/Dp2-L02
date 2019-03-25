@@ -13,28 +13,29 @@ import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
 
+import repositories.EnrolmentRepository;
 import domain.Brotherhood;
 import domain.Enrolment;
 import domain.Member;
 import domain.Position;
 import domain.StatusEnrolment;
-import repositories.EnrolmentRepository;
 
 @Service
 @Transactional
 public class EnrolmentService {
 
 	@Autowired
-	private EnrolmentRepository enrolmentRepository;
+	private EnrolmentRepository	enrolmentRepository;
 
 	@Autowired
-	private MemberService memberService;
+	private MemberService		memberService;
 
 	@Autowired
-	private BrotherhoodService brotherhoodService;
+	private BrotherhoodService	brotherhoodService;
 
 	@Autowired
-	private Validator validator;
+	private Validator			validator;
+
 
 	public List<Enrolment> findAll() {
 		return this.enrolmentRepository.findAll();
@@ -145,4 +146,22 @@ public class EnrolmentService {
 
 		return enrolmentSaved;
 	}
+
+	public void deleteAllEnrolmentsBrotherhood() {
+		Brotherhood brotherhood = this.brotherhoodService.loggedBrotherhood();
+
+		List<Enrolment> enrolmentsToDelete = brotherhood.getEnrolments();
+
+		brotherhood.setEnrolments(new ArrayList<Enrolment>());
+
+		List<Member> members = this.memberService.findAll();
+
+		for (Member m : members) {
+			List<Enrolment> enrolmentsOfMember = m.getEnrolments();
+			enrolmentsOfMember.removeAll(enrolmentsToDelete);
+			m.setEnrolments(enrolmentsOfMember);
+			this.memberService.save(m);
+		}
+	}
+
 }

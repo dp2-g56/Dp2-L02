@@ -15,25 +15,26 @@ import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
 
+import repositories.FloatRepository;
 import domain.Brotherhood;
 import domain.Parade;
 import forms.FormObjectParadeFloat;
 import forms.FormObjectParadeFloatCheckbox;
-import repositories.FloatRepository;
 
 @Service
 @Transactional
 public class FloatService {
 
 	@Autowired
-	private FloatRepository floatRepository;
+	private FloatRepository		floatRepository;
 
 	@Autowired
-	private BrotherhoodService brotherhoodService;
+	private BrotherhoodService	brotherhoodService;
 	@Autowired
-	private ParadeService paradeService;
+	private ParadeService		paradeService;
 	@Autowired
-	private Validator validator;
+	private Validator			validator;
+
 
 	public domain.Float reconstruct(domain.Float floatt, BindingResult binding) {
 		domain.Float result = new domain.Float();
@@ -286,4 +287,17 @@ public class FloatService {
 		this.floatRepository.flush();
 	}
 
+	public void deleteAllFloatsBrotherhood() {
+		this.brotherhoodService.loggedAsBrotherhood();
+		Brotherhood brother = this.brotherhoodService.loggedBrotherhood();
+
+		List<domain.Float> floatsToDelete = new ArrayList<domain.Float>();
+		floatsToDelete = brother.getFloats();
+		List<domain.Float> emptyFloats = new ArrayList<domain.Float>();
+		brother.setFloats(emptyFloats);
+		this.brotherhoodService.save(brother);
+
+		for (domain.Float f : floatsToDelete)
+			this.floatRepository.delete(f);
+	}
 }

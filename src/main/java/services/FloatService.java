@@ -277,6 +277,9 @@ public class FloatService {
 
 		Assert.notNull(floatt);
 
+		Brotherhood bro = this.brotherhoodService.loggedBrotherhood();
+		Assert.isTrue(bro.getFloats().contains(floatt));
+
 		pictures = floatt.getPictures();
 
 		return pictures;

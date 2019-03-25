@@ -37,7 +37,8 @@ public class FloatServiceTest extends AbstractTest {
 	public void driverListFloatsAndPicturesIfBrotherhood() {
 
 		Object testingData[][] = {
-				// Positive test
+				// Positive test: Listing the floats of a brotherhood and the images of a
+				// parade in final mode
 				{ "brotherhood1", true, null },
 				// Negative test: Trying to access with a different role
 				{ "member1", true, IllegalArgumentException.class },
@@ -87,7 +88,7 @@ public class FloatServiceTest extends AbstractTest {
 	public void driverCreateFloatAndPictureIfBrotherhood() {
 
 		Object testingData[][] = {
-				// Positive test
+				// Positive test: Creating a float with title and description, and a valid url
 				{ "brotherhood1", "Float title", "Float description", "https://www.url.com", null },
 				// Negative test: Trying to save a float with a different role
 				{ "admin1", "Float title", "Float description", "https://www.url.com", IllegalArgumentException.class },

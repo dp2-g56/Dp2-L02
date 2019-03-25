@@ -16,83 +16,80 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
-import repositories.MessageRepository;
-import security.Authority;
-import security.UserAccount;
-import utilities.AbstractTest;
 import domain.Area;
 import domain.Chapter;
 import domain.Message;
 import domain.Parade;
 import domain.ParadeStatus;
 import domain.Proclaim;
+import repositories.MessageRepository;
+import security.Authority;
+import security.UserAccount;
+import utilities.AbstractTest;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {
-	"classpath:spring/junit.xml"
-})
+@ContextConfiguration(locations = { "classpath:spring/junit.xml" })
 
 @Transactional
 public class ChapterServiceTest extends AbstractTest {
 
 	@Autowired
-	private ChapterService		chapterService;
+	private ChapterService chapterService;
 	@Autowired
-	private ParadeService		paradeService;
+	private ParadeService paradeService;
 	@Autowired
-	private MessageRepository	messageRepository;
+	private MessageRepository messageRepository;
 	@Autowired
-	private MessageService		messageService;
+	private MessageService messageService;
 	@Autowired
-	private ProclaimService		proclaimService;
-
+	private ProclaimService proclaimService;
 
 	/**
-	 * Driver for the method saveCreate from ChapterService. In this driver
-	 * eight cases are tested, being in order:
-	 * 
+	 * Driver for the method saveCreate from ChapterService. In this driver eight
+	 * cases are tested, being in order:
+	 *
 	 * 1. A positive case where none of the parameters are wrong and no error is
 	 * expected, which is indicated by "null" at the last parameter.
-	 * 
+	 *
 	 * 2. A case where the username is blank and an ConstraintViolationException is
 	 * expected.
-	 * 
+	 *
 	 * 3. A case where the name is blank and an ConstraintViolationException is
 	 * expected.
-	 * 
+	 *
 	 * 4. A case where the surname is blank and an ConstraintViolationException is
 	 * expected.
-	 * 
+	 *
 	 * 5. A case where the URL is invalid and not blank, an
 	 * ConstraintViolationException is expected.
-	 * 
+	 *
 	 * 6. A case where the title is blank and an ConstraintViolationException is
 	 * expected.
-	 * 
+	 *
 	 * 7. A case where the assigned area is already assigned which is restricted by
 	 * the requirement number 5 of Acme Parade. This restriction is checked by an
 	 * Assert and thus an IllegalArgumentException is expected.
-	 * 
+	 *
 	 * 8. A case where the email is invalid (it didn't follow the pattern) and a
 	 * ConstraintViolationException is expected.
-	 * 
+	 *
 	 * Note that the restrictions tested in cases 3, 4, 5 and 8 are from Actor; the
 	 * restrictions tested in cases 6 and 7 are from Chapter; and the restriction
 	 * tested in case 2 is from UserAccount.
-	 * 
+	 *
 	 * Note as well the name of this driver, we encountered problem with the current
 	 * driver and template methods for testing regarding adding new entities to the
 	 * database multiple times on the same driver. This error occurs due to the
 	 * database not rolling back its tested content until the driver has been fully
 	 * executed.
-	 
+	 *
 	 * This causes that the first added entity with an error remains on database
 	 * when it tries to add the second. Due to the database keeping the tested
 	 * entity with an id of 0 (because is new and being a test, its id is not
 	 * changed) it will throw a Duplicate Key error instead of the expected one for
 	 * every case after the first.
-
-
+	 *
+	 *
 	 * We managed to resolve this by forcing the database to rollback to a previous
 	 * state without the new entity after every iteration of the template method.
 	 * This will be explained later as there are 2 more drivers that shows an
@@ -122,7 +119,6 @@ public class ChapterServiceTest extends AbstractTest {
 				{ "ChapterTest8", "name1", "surname1", "invalid email", "titleTest1", "https://www.example.com/", null,
 						ConstraintViolationException.class } };
 
-
 		for (int i = 0; i < testingData.length; i++)
 			this.templateRegister((String) testingData[i][0], (String) testingData[i][1], (String) testingData[i][2],
 					(String) testingData[i][3], (String) testingData[i][4], (String) testingData[i][5],
@@ -134,13 +130,13 @@ public class ChapterServiceTest extends AbstractTest {
 	 * This second driver is the alternative to the forced rollback applied on the
 	 * template. It consist of getting an exception before adding the new entity to
 	 * the database through Asserts in the tested method.
-
+	 *
 	 * By getting this exceptions we will only add one entity before the driver is
 	 * fully executed the one on the positive case without exceptions. For every
 	 * other iteration, an IllegalArgumentException will be expected as an Assert
 	 * will be triggered instead of the ConstraintViolationException for the tags in
 	 * the Domain.
-
+	 *
 	 * This driver won't give errors only if the Asserts commented in the tested
 	 * methods become uncommented.
 	 **/
@@ -166,7 +162,6 @@ public class ChapterServiceTest extends AbstractTest {
 				{ "ChapterTest8", "name1", "surname1", "invalid email", "titleTest1", "https://www.example.com/", null,
 						IllegalArgumentException.class } };
 
-
 		for (int i = 0; i < testingData.length; i++)
 			this.templateRegister((String) testingData[i][0], (String) testingData[i][1], (String) testingData[i][2],
 					(String) testingData[i][3], (String) testingData[i][4], (String) testingData[i][5],
@@ -179,7 +174,7 @@ public class ChapterServiceTest extends AbstractTest {
 	 * additional Asserts are uncommented from the tested method. As you can see it
 	 * is expected DataIntegrityViolationException after the second test for every
 	 * consequent test because of the Duplicate Key from id = 0.
-	 
+	 *
 	 * The downside effect is the inability to recognise if the tests throw the
 	 * expected result beyond this test error, making this driver model unable to
 	 * provide the information in this cases.
@@ -206,35 +201,34 @@ public class ChapterServiceTest extends AbstractTest {
 				{ "ChapterTest8", "name1", "surname1", "invalid email", "titleTest1", "https://www.example.com/", null,
 						DataIntegrityViolationException.class } };
 
-		for (int i = 0; i < testingData.length; i++) {
-			this.templateRegister((String) testingData[i][0], (String) testingData[i][1], (String) testingData[i][2], (String) testingData[i][3], (String) testingData[i][4], (String) testingData[i][5], (Area) testingData[i][6],
-				(Class<?>) testingData[i][7]);
-		}
+		for (int i = 0; i < testingData.length; i++)
+			this.templateRegister((String) testingData[i][0], (String) testingData[i][1], (String) testingData[i][2],
+					(String) testingData[i][3], (String) testingData[i][4], (String) testingData[i][5],
+					(Area) testingData[i][6], (Class<?>) testingData[i][7]);
 	}
 
 	/**
 	 * In this driver we are testing that the Chapter must select an Area that is
 	 * free.
-	 * 
+	 *
 	 * 1. This is a positive test, is simple.
-	 * 
-	 * 2. The Chapter 2 is trying to take an Area that is taken by another
-	 * chapter.
-	 * 
+	 *
+	 * 2. The Chapter 2 is trying to take an Area that is taken by another chapter.
+	 *
 	 * 3. The Chapter 1 is trying to null his Area when he almost select one.
-	 * 
+	 *
 	 * 4. The Chapter 1 is trying to change his area to a free area.
-	 * 
+	 *
 	 * 5. The Chapter 1 is trying to change his area to a take up area.
-	 * 
+	 *
 	 * 6. The Chapter 1 is trying to changing the Chapter 2's Area to a null.
-	 * 
+	 *
 	 * 7. The Chapter 1 is trying to changing the Chapter 2's Area to a free area.
-	 * 
+	 *
 	 * 8. The Chapter 1 is trying to changing the Chapter 2's Area to a take up
 	 * area.
-	 * 
-	 * 
+	 *
+	 *
 	 **/
 
 	@Test
@@ -243,87 +237,74 @@ public class ChapterServiceTest extends AbstractTest {
 		Area areaTakeUp = this.chapterService.listOccupiedAreas().get(0);
 		Object testingData[][] = {
 
-			{
-				"Chapter2", "Chapter2", null, null
-			}, {
-				"Chapter2", "Chapter2", areaFree, null
-			}, {
-				"Chapter2", "Chapter2", areaTakeUp, IllegalArgumentException.class
-			}, {
-				"Chapter1", "Chapter1", null, IllegalArgumentException.class
-			}, {
-				"Chapter1", "Chapter1", areaFree, IllegalArgumentException.class
-			}, {
-				"Chapter1", "Chapter1", areaTakeUp, IllegalArgumentException.class
-			}, {
-				"Chapter1", "Chapter2", null, IllegalArgumentException.class
-			}, {
-				"Chapter1", "Chapter2", areaFree, IllegalArgumentException.class
-			}, {
-				"Chapter1", "Chapter2", areaTakeUp, IllegalArgumentException.class
-			}
-		};
+				{ "Chapter2", "Chapter2", null, null }, { "Chapter2", "Chapter2", areaFree, null },
+				{ "Chapter2", "Chapter2", areaTakeUp, IllegalArgumentException.class },
+				{ "Chapter1", "Chapter1", null, IllegalArgumentException.class },
+				{ "Chapter1", "Chapter1", areaFree, IllegalArgumentException.class },
+				{ "Chapter1", "Chapter1", areaTakeUp, IllegalArgumentException.class },
+				{ "Chapter1", "Chapter2", null, IllegalArgumentException.class },
+				{ "Chapter1", "Chapter2", areaFree, IllegalArgumentException.class },
+				{ "Chapter1", "Chapter2", areaTakeUp, IllegalArgumentException.class } };
 
-		for (int i = 0; i < testingData.length; i++) {
-			this.templateSelectArea((String) testingData[i][0], (String) testingData[i][1], (Area) testingData[i][2], (Class<?>) testingData[i][3]);
-		}
+		for (int i = 0; i < testingData.length; i++)
+			this.templateSelectArea((String) testingData[i][0], (String) testingData[i][1], (Area) testingData[i][2],
+					(Class<?>) testingData[i][3]);
 	}
 
 	/**
-	 * Driver for the method update from ChapterService. In this driver
-	 * eight cases are tested, being in order:
-	 * 
+	 * Driver for the method update from ChapterService. In this driver eight cases
+	 * are tested, being in order:
+	 *
 	 * 1. A positive case where none of the parameters are wrong and no error is
 	 * expected, which is indicated by "null" at the last parameter.
-	 * 
+	 *
 	 * 2. A case where the name is blank and an ConstraintViolationException is
 	 * expected.
-	 * 
+	 *
 	 * 3. A case where the surname is blank and an ConstraintViolationException is
 	 * expected.
-	 * 
-	 * 4. A case where the email is blank and a
-	 * ConstraintViolationException is expected.
-	 * 
+	 *
+	 * 4. A case where the email is blank and a ConstraintViolationException is
+	 * expected.
+	 *
 	 * 5. A case where the email is invalid (it didn't follow the pattern) and a
 	 * ConstraintViolationException is expected.
-	 * 
+	 *
 	 * 6. A case where the title is blank and an ConstraintViolationException is
 	 * expected.
-	 * 
+	 *
 	 * 7. A case where the URL is invalid and not blank, an
 	 * ConstraintViolationException is expected.
-	 * 
-	 * 8. A case where the logged actor tries to edit personal data from another actor, an IllegalArgumentException is expected.
-	 * 
+	 *
+	 * 8. A case where the logged actor tries to edit personal data from another
+	 * actor, an IllegalArgumentException is expected.
+	 *
 	 **/
 	@Test
 	public void driverEditPersonalData() {
 		Object testingData[][] = {
 
-			{
-				"Chapter1", "Chapter1", "name1", "surname1", "emailTest@gmail.com", "titleTest1", "https://www.example.com/", null
-			}, {
-				"Chapter1", "Chapter1", "", "surname1", "emailTest@gmail.com", "titleTest1", "https://www.example.com/", ConstraintViolationException.class
-			}, {
-				"Chapter1", "Chapter1", "name1", "", "emailTest@gmail.com", "titleTest1", "https://www.example.com/", ConstraintViolationException.class
-			}, {
-				"Chapter1", "Chapter1", "name1", "surname1", "", "titleTest1", "https://www.example.com/", ConstraintViolationException.class
-			}, {
-				"Chapter1", "Chapter1", "name1", "surname1", "invalid email", "titleTest1", "https://www.example.com/", ConstraintViolationException.class
-			}, {
-				"Chapter1", "Chapter1", "name1", "surname1", "emailTest@gmail.com", "", "https://www.example.com/", ConstraintViolationException.class
-			}, {
-				"Chapter1", "Chapter1", "name1", "surname1", "emailTest@gmail.com", "titleTest1", "invalid url", ConstraintViolationException.class
-			}, {
-				"Chapter2", "Chapter1", "name1", "surname1", "emailTest@gmail.com", "titleTest1", "https://www.example.com/", IllegalArgumentException.class
-			}
-		};
+				{ "Chapter1", "Chapter1", "name1", "surname1", "emailTest@gmail.com", "titleTest1",
+						"https://www.example.com/", null },
+				{ "Chapter1", "Chapter1", "", "surname1", "emailTest@gmail.com", "titleTest1",
+						"https://www.example.com/", ConstraintViolationException.class },
+				{ "Chapter1", "Chapter1", "name1", "", "emailTest@gmail.com", "titleTest1", "https://www.example.com/",
+						ConstraintViolationException.class },
+				{ "Chapter1", "Chapter1", "name1", "surname1", "", "titleTest1", "https://www.example.com/",
+						ConstraintViolationException.class },
+				{ "Chapter1", "Chapter1", "name1", "surname1", "invalid email", "titleTest1",
+						"https://www.example.com/", ConstraintViolationException.class },
+				{ "Chapter1", "Chapter1", "name1", "surname1", "emailTest@gmail.com", "", "https://www.example.com/",
+						ConstraintViolationException.class },
+				{ "Chapter1", "Chapter1", "name1", "surname1", "emailTest@gmail.com", "titleTest1", "invalid url",
+						ConstraintViolationException.class },
+				{ "Chapter2", "Chapter1", "name1", "surname1", "emailTest@gmail.com", "titleTest1",
+						"https://www.example.com/", IllegalArgumentException.class } };
 
-		for (int i = 0; i < testingData.length; i++) {
-			this.templateEditPersonalData((String) testingData[i][0], (String) testingData[i][1], (String) testingData[i][2], (String) testingData[i][3], (String) testingData[i][4], (String) testingData[i][5], (String) testingData[i][6],
-				(Class<?>) testingData[i][7]);
-		}
+		for (int i = 0; i < testingData.length; i++)
+			this.templateEditPersonalData((String) testingData[i][0], (String) testingData[i][1],
+					(String) testingData[i][2], (String) testingData[i][3], (String) testingData[i][4],
+					(String) testingData[i][5], (String) testingData[i][6], (Class<?>) testingData[i][7]);
 
 	}
 
@@ -449,7 +430,6 @@ public class ChapterServiceTest extends AbstractTest {
 
 	}
 
-
 	/**
 	 * This test will tests the Requirment 2.2 of the level B: An actor who is
 	 * authenticated as a chapter must be able to: Manage the parades that are
@@ -457,27 +437,26 @@ public class ChapterServiceTest extends AbstractTest {
 	 * includes listing them grouped by status and making decisions on the parades
 	 * that have status submitted. When a parade is rejected by a chapter, the
 	 * chapter must jot down the reason why.
-
-
-	/**
-	 * 1. This case is a positive case where a chapter accept a parade that is in
-	 * his area.
-	 * 
+	 *
+	 *
+	 * /** 1. This case is a positive case where a chapter accept a parade that is
+	 * in his area.
+	 *
 	 * 2. This caso is also a positive case where a chapter reject a parade that is
 	 * in his area, writing a rejected reason.
-	 * 
+	 *
 	 * 3. In this case the chapter is trying to change the status of a parade that
 	 * is not in final mode.
-	 * 
+	 *
 	 * 4. The chapter is trying to reject a valid parade but not writing a reject
 	 * reason.
-	 * 
+	 *
 	 * 5. On this case the chapter is trying to change the status of an parade that
 	 * is accepted.
-	 * 
+	 *
 	 * 6. Finally, the chapter is trying to change the status of a parade that is
 	 * not in his area.
-	 * 
+	 *
 	 **/
 	@Test
 	public void driverChangeStatus() {
@@ -489,7 +468,7 @@ public class ChapterServiceTest extends AbstractTest {
 		Chapter chapter1 = this.chapterService.findOne(super.getEntityId("chapter1"));
 
 		// Parade that is in Draft Mode
-		Parade paradeDF = this.paradeService.findOne(super.getEntityId("parade4"));
+		Parade paradeDF = this.paradeService.findOne(super.getEntityId("parade1"));
 
 		// Parade that is Submitted and is in Area1
 		Parade paradeS = this.paradeService.findOne(super.getEntityId("parade2"));
@@ -501,29 +480,20 @@ public class ChapterServiceTest extends AbstractTest {
 
 		Parade paradeAreaD = this.paradeService.findOne(super.getEntityId("parade6"));
 
-		Object testingData[][] = {
-			{
-				chapter1, paradeS, accepted, "", null
-			}, {
-				chapter1, paradeS, rejected, "Yes", null
-			}, {
-				chapter1, paradeDF, rejected, "Yes", IllegalArgumentException.class
-			}, {
-				chapter1, paradeS, rejected, "", IllegalArgumentException.class
-			}, {
-				chapter1, paradeAccepted, rejected, "Yes", IllegalArgumentException.class
-			}, {
-				chapter1, paradeAreaD, rejected, "Yes", IllegalArgumentException.class
-			}
-		};
+		Object testingData[][] = { { chapter1, paradeS, accepted, "", null },
+				{ chapter1, paradeS, rejected, "Yes", null },
+				{ chapter1, paradeDF, rejected, "Yes", IllegalArgumentException.class },
+				{ chapter1, paradeS, rejected, "", IllegalArgumentException.class },
+				{ chapter1, paradeAccepted, rejected, "Yes", IllegalArgumentException.class },
+				{ chapter1, paradeAreaD, rejected, "Yes", IllegalArgumentException.class } };
 
-		for (int i = 0; i < testingData.length; i++) {
-			this.templateChangeStatus((Chapter) testingData[i][0], (Parade) testingData[i][1], (ParadeStatus) testingData[i][2], (String) testingData[i][3], (Class<?>) testingData[i][4]);
-		}
+		for (int i = 0; i < testingData.length; i++)
+			this.templateChangeStatus((Chapter) testingData[i][0], (Parade) testingData[i][1],
+					(ParadeStatus) testingData[i][2], (String) testingData[i][3], (Class<?>) testingData[i][4]);
 	}
 
-	protected void templateChangeStatus(Chapter chapter, Parade parade, ParadeStatus paradeStatus, String rejectedReason, Class<?> expected) {
-
+	protected void templateChangeStatus(Chapter chapter, Parade parade, ParadeStatus paradeStatus,
+			String rejectedReason, Class<?> expected) {
 
 		Parade newParade = new Parade();
 
@@ -550,7 +520,8 @@ public class ChapterServiceTest extends AbstractTest {
 
 	}
 
-	protected void templateEditPersonalData(String username, String usernameEdit, String name, String surname, String email, String title, String photo, Class<?> expected) {
+	protected void templateEditPersonalData(String username, String usernameEdit, String name, String surname,
+			String email, String title, String photo, Class<?> expected) {
 		this.startTransaction();
 		super.authenticate(username);
 		Chapter editChapter = this.chapterService.getChapterByUsername(usernameEdit);
@@ -579,8 +550,9 @@ public class ChapterServiceTest extends AbstractTest {
 		c.setId(editChapter.getId());
 
 		/**
-		 * This is the first command used to force to rollback the database, it initialise a Transaction in this point, before we add the entity
-		 * in order to set the rollback to this point.
+		 * This is the first command used to force to rollback the database, it
+		 * initialise a Transaction in this point, before we add the entity in order to
+		 * set the rollback to this point.
 		 **/
 
 		/** End of first command. **/
@@ -593,7 +565,10 @@ public class ChapterServiceTest extends AbstractTest {
 		}
 		super.checkExceptions(expected, caught);
 
-		/** This is the second command, it forces the database to rollback to the last transaction point that was set, in this case before we add the new entity. **/
+		/**
+		 * This is the second command, it forces the database to rollback to the last
+		 * transaction point that was set, in this case before we add the new entity.
+		 **/
 		this.unauthenticate();
 		this.rollbackTransaction();
 
@@ -602,15 +577,16 @@ public class ChapterServiceTest extends AbstractTest {
 	}
 
 	/**
-	 * This is a single test from a valid case of use of the method deleteAccount from ChapterService.
-	 * 
-	 * It is tested that after the call to the said method the logged chapter, it's messages and it's
-	 * proclaims are no longer on database.
-	 * 
-	 * The rest of entities associated to that chapter are compositions which are always deleted once
-	 * the actor is deleted.
-	 * 
-	 * **/
+	 * This is a single test from a valid case of use of the method deleteAccount
+	 * from ChapterService.
+	 *
+	 * It is tested that after the call to the said method the logged chapter, it's
+	 * messages and it's proclaims are no longer on database.
+	 *
+	 * The rest of entities associated to that chapter are compositions which are
+	 * always deleted once the actor is deleted.
+	 *
+	 **/
 	@Test
 	public void testDeleteAccount() {
 		super.authenticate("chapter1");
@@ -622,7 +598,7 @@ public class ChapterServiceTest extends AbstractTest {
 		Assert.isTrue(this.proclaimService.findAll().containsAll(proclaims));
 		Assert.notNull(chapter);
 
-		this.chapterService.deleteAccount();
+		this.chapterService.deleteAccountChapter();
 		this.chapterService.flush();
 
 		Assert.isTrue(!this.messageService.findAll().contains(messages));
@@ -632,16 +608,18 @@ public class ChapterServiceTest extends AbstractTest {
 	}
 
 	/**
-	 * This is a single test from a invalid case of use of the method deleteAccount from ChapterService.
-	 * 
-	 * It is tested that one actor with the wrong Authority calls the method, an IllegalArgumentException is expected.
-	 * 
-	 * **/
+	 * This is a single test from a invalid case of use of the method deleteAccount
+	 * from ChapterService.
+	 *
+	 * It is tested that one actor with the wrong Authority calls the method, an
+	 * IllegalArgumentException is expected.
+	 *
+	 **/
 	@Test(expected = IllegalArgumentException.class)
 	public void testDeleteAccountWrongAuthority() {
 		super.authenticate("brotherhood1");
 
-		this.chapterService.deleteAccount();
+		this.chapterService.deleteAccountChapter();
 		this.chapterService.flush();
 
 		super.unauthenticate();

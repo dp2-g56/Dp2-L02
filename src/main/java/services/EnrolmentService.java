@@ -36,6 +36,10 @@ public class EnrolmentService {
 	@Autowired
 	private Validator			validator;
 
+	@Autowired
+	private MessageService		messageService;
+
+
 
 	public List<Enrolment> findAll() {
 		return this.enrolmentRepository.findAll();
@@ -147,6 +151,7 @@ public class EnrolmentService {
 		return enrolmentSaved;
 	}
 
+
 	public void deleteAllEnrolmentsBrotherhood() {
 		Brotherhood brotherhood = this.brotherhoodService.loggedBrotherhood();
 
@@ -162,6 +167,58 @@ public class EnrolmentService {
 			m.setEnrolments(enrolmentsOfMember);
 			this.memberService.save(m);
 		}
+
+	//Reject as brotherhood
+	public void rejectEnrolment(Enrolment enrolment) {
+		this.brotherhoodService.loggedAsBrotherhood();
+		Assert.notNull(enrolment);
+
+		Brotherhood loggedBrotherhood = this.brotherhoodService.loggedBrotherhood();
+		Assert.isTrue(enrolment.getStatusEnrolment() == StatusEnrolment.PENDING);
+		Assert.isTrue(loggedBrotherhood.getEnrolments().contains(enrolment));
+		enrolment.setStatusEnrolment(StatusEnrolment.REJECTED);
+		this.save(enrolment);
+	}
+
+	//Create a pending enrolment as member
+	public boolean enrolmentMemberComprobation(Brotherhood brotherhood) {
+
+		this.memberService.loggedAsMember();
+
+		Member loggedMember = this.memberService.loggedMember();
+
+		List<Enrolment> enrolmentsBrotherhood = brotherhood.getEnrolments();
+		List<Enrolment> enrolmentsMember = loggedMember.getEnrolments();
+		enrolmentsBrotherhood.retainAll(enrolmentsMember);
+		boolean res = false;
+		for (Enrolment e : enrolmentsBrotherhood)
+			if (e.getStatusEnrolment() == StatusEnrolment.ACCEPTED || e.getStatusEnrolment() == StatusEnrolment.PENDING)
+				res = true;
+
+		return res;
+	}
+
+	public void flush() {
+		this.enrolmentRepository.flush();
+	}
+
+	public void dropout(int enrolmentId) {
+		this.memberService.loggedAsMember();
+		Date thisMoment = new Date();
+		thisMoment.setTime(thisMoment.getTime() - 1);
+
+		Enrolment enrolment = this.findOne(enrolmentId);
+		Assert.notNull(enrolment);
+		Assert.isTrue(enrolment.getStatusEnrolment() != StatusEnrolment.DROPOUT);
+		Assert.isTrue(enrolment.getDropOutDate() == null);
+		Assert.isTrue(this.memberService.loggedMember().getEnrolments().contains(enrolment));
+
+		enrolment.setStatusEnrolment(StatusEnrolment.DROPOUT);
+		enrolment.setDropOutDate(thisMoment);
+		this.enrolmentRepository.save(enrolment);
+		this.messageService.sendNotificationDropOut(enrolment.getBrotherhood());
+
+
 	}
 
 }

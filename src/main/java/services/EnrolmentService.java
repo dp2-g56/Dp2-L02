@@ -13,28 +13,32 @@ import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
 
+import repositories.EnrolmentRepository;
 import domain.Brotherhood;
 import domain.Enrolment;
 import domain.Member;
 import domain.Position;
 import domain.StatusEnrolment;
-import repositories.EnrolmentRepository;
 
 @Service
 @Transactional
 public class EnrolmentService {
 
 	@Autowired
-	private EnrolmentRepository enrolmentRepository;
+	private EnrolmentRepository	enrolmentRepository;
 
 	@Autowired
-	private MemberService memberService;
+	private MemberService		memberService;
 
 	@Autowired
-	private BrotherhoodService brotherhoodService;
+	private BrotherhoodService	brotherhoodService;
 
 	@Autowired
-	private Validator validator;
+	private Validator			validator;
+
+	@Autowired
+	private MessageService		messageService;
+
 
 	public List<Enrolment> findAll() {
 		return this.enrolmentRepository.findAll();
@@ -145,4 +149,57 @@ public class EnrolmentService {
 
 		return enrolmentSaved;
 	}
+
+	//Reject as brotherhood
+	public void rejectEnrolment(Enrolment enrolment) {
+		this.brotherhoodService.loggedAsBrotherhood();
+		Assert.notNull(enrolment);
+
+		Brotherhood loggedBrotherhood = this.brotherhoodService.loggedBrotherhood();
+		Assert.isTrue(enrolment.getStatusEnrolment() == StatusEnrolment.PENDING);
+		Assert.isTrue(loggedBrotherhood.getEnrolments().contains(enrolment));
+		enrolment.setStatusEnrolment(StatusEnrolment.REJECTED);
+		this.save(enrolment);
+	}
+
+	//Create a pending enrolment as member
+	public boolean enrolmentMemberComprobation(Brotherhood brotherhood) {
+
+		this.memberService.loggedAsMember();
+
+		Member loggedMember = this.memberService.loggedMember();
+
+		List<Enrolment> enrolmentsBrotherhood = brotherhood.getEnrolments();
+		List<Enrolment> enrolmentsMember = loggedMember.getEnrolments();
+		enrolmentsBrotherhood.retainAll(enrolmentsMember);
+		boolean res = false;
+		for (Enrolment e : enrolmentsBrotherhood)
+			if (e.getStatusEnrolment() == StatusEnrolment.ACCEPTED || e.getStatusEnrolment() == StatusEnrolment.PENDING)
+				res = true;
+
+		return res;
+	}
+
+	public void flush() {
+		this.enrolmentRepository.flush();
+	}
+
+	public void dropout(int enrolmentId) {
+		this.memberService.loggedAsMember();
+		Date thisMoment = new Date();
+		thisMoment.setTime(thisMoment.getTime() - 1);
+
+		Enrolment enrolment = this.findOne(enrolmentId);
+		Assert.notNull(enrolment);
+		Assert.isTrue(enrolment.getStatusEnrolment() != StatusEnrolment.DROPOUT);
+		Assert.isTrue(enrolment.getDropOutDate() == null);
+		Assert.isTrue(this.memberService.loggedMember().getEnrolments().contains(enrolment));
+
+		enrolment.setStatusEnrolment(StatusEnrolment.DROPOUT);
+		enrolment.setDropOutDate(thisMoment);
+		this.enrolmentRepository.save(enrolment);
+		this.messageService.sendNotificationDropOut(enrolment.getBrotherhood());
+
+	}
+
 }

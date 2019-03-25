@@ -2,13 +2,11 @@
 package controllers;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -62,22 +60,13 @@ public class EnrolmentController extends AbstractController {
 	@RequestMapping(value = "/create", method = RequestMethod.POST, params = "save")
 	public ModelAndView create(@RequestParam int brotherhoodId) {
 		ModelAndView result;
-		Member m = new Member();
-		m = this.memberService.loggedMember();
-		Brotherhood brotherhood = new Brotherhood();
+		Brotherhood brotherhood = this.brotherhoodService.findOne(brotherhoodId);
+		boolean res = this.enrolmentService.enrolmentMemberComprobation(brotherhood);
 		Enrolment enrolment = new Enrolment();
-		brotherhood = this.brotherhoodService.findOne(brotherhoodId);
+		Member member = this.memberService.loggedMember();
 
-		List<Enrolment> enrolmentsBro = brotherhood.getEnrolments();
-		List<Enrolment> enrolmentsMem = m.getEnrolments();
-		Boolean res = false;
-		enrolmentsBro.retainAll(enrolmentsMem);
-		for (Enrolment e : enrolmentsBro)
-			if (e.getStatusEnrolment() == StatusEnrolment.ACCEPTED || e.getStatusEnrolment() == StatusEnrolment.PENDING)
-				res = true;
-
-		if (res == false) {
-			this.enrolmentService.createEnrolment(brotherhood, enrolment, m);
+		if (!res) {
+			this.enrolmentService.createEnrolment(brotherhood, enrolment, member);
 			result = this.createEditModelAndView(enrolment);
 			result = new ModelAndView("redirect:list.do");
 		} else {
@@ -92,17 +81,14 @@ public class EnrolmentController extends AbstractController {
 		ModelAndView result;
 		Enrolment enrolment;
 
-		Date thisMoment = new Date();
-		thisMoment.setTime(thisMoment.getTime() - 1);
+		//Date thisMoment = new Date();
+		//thisMoment.setTime(thisMoment.getTime() - 1);
 
 		enrolment = this.enrolmentService.findOne(enrolmentId);
-		Assert.notNull(enrolment);
 
 		if (enrolment.getStatusEnrolment() != StatusEnrolment.DROPOUT && enrolment.getDropOutDate() == null && this.memberService.loggedMember().getEnrolments().contains(enrolment)) {
-			enrolment.setStatusEnrolment(StatusEnrolment.DROPOUT);
-			enrolment.setDropOutDate(thisMoment);
-			this.enrolmentService.save(enrolment);
-			this.messageService.sendNotificationDropOut(enrolment.getBrotherhood());
+
+			this.enrolmentService.dropout(enrolmentId);
 			result = new ModelAndView("redirect:list.do");
 		} else
 			result = new ModelAndView("redirect:list.do");

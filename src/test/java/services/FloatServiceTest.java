@@ -37,19 +37,15 @@ public class FloatServiceTest extends AbstractTest {
 	public void driverListFloatsAndPicturesIfBrotherhood() {
 
 		Object testingData[][] = {
-				// Positive test: Listing the floats of a brotherhood and the images of a
-				// parade in final mode
-				{ "brotherhood1", true, null },
+				// Positive test: Listing the floats of a brotherhood and the images
+				{ "brotherhood1", null },
 				// Negative test: Trying to access with a different role
-				{ "member1", true, IllegalArgumentException.class },
-				// Negative test: Trying to list pictures with the parade in draft mode
-				{ "brotherhood1", false, IllegalArgumentException.class } };
+				{ "member1", IllegalArgumentException.class } };
 		for (int i = 0; i < testingData.length; i++)
-			this.templateListFloatsAndPicturesIfBrotherhood((String) testingData[i][0], (Boolean) testingData[i][1],
-					(Class<?>) testingData[i][2]);
+			this.templateListFloatsAndPicturesIfBrotherhood((String) testingData[i][0], (Class<?>) testingData[i][1]);
 	}
 
-	private void templateListFloatsAndPicturesIfBrotherhood(String username, Boolean paradeInFinal, Class<?> expected) {
+	private void templateListFloatsAndPicturesIfBrotherhood(String username, Class<?> expected) {
 
 		Class<?> caught = null;
 
@@ -65,7 +61,7 @@ public class FloatServiceTest extends AbstractTest {
 
 			Integer floatId = floats.get(0).getId();
 
-			List<String> pictures = this.floatService.getPicturesOfFloat(floatId, paradeInFinal);
+			List<String> pictures = this.floatService.getPicturesOfFloat(floatId, true);
 
 			Assert.isTrue(pictures.size() > 0);
 
@@ -118,7 +114,11 @@ public class FloatServiceTest extends AbstractTest {
 
 			super.authenticate(username);
 
-			this.floatService.addPicture(picture, floatt);
+			domain.Float floatSaved = this.floatService.save(floatt);
+
+			this.floatService.flush();
+
+			this.floatService.addPicture(picture, floatSaved);
 
 			this.floatService.flush();
 
@@ -145,7 +145,8 @@ public class FloatServiceTest extends AbstractTest {
 		domain.Float floatt2 = this.floatService.findOne(super.getEntityId("float1"));
 
 		Object testingData[][] = {
-				// Positive test
+				// Positive test: Updating a float as brotherhood that owns the float and title
+				// is not blank
 				{ "brotherhood2", "Float title", floatt.getDescription(), floatt, null },
 				// Negative test: Trying to update a float with a different brotherhood
 				{ "brotherhood1", "Float title", floatt.getDescription(), floatt, IllegalArgumentException.class },
@@ -199,13 +200,15 @@ public class FloatServiceTest extends AbstractTest {
 		domain.Float floatt2 = this.floatService.findOne(super.getEntityId("float1"));
 
 		Object testingData[][] = {
-				// Positive test
+				// Positive test: Removing a float that is not assigned to any parade in final
+				// mode logged as the brotherhood owner of the float
 				{ "brotherhood2", floatt, null },
 				// Negative test: Trying to remove a float with a different brotherhood
 				{ "brotherhood1", floatt, IllegalArgumentException.class },
 				// Negative test: Trying to remove a float with a different role
 				{ "member1", floatt, IllegalArgumentException.class },
-				// Negative test: Trying to remove a float that is assigned to one parade
+				// Negative test: Trying to remove a float that is assigned to one parade in
+				// final mode
 				{ "brotherhood1", floatt2, IllegalArgumentException.class } };
 		for (int i = 0; i < testingData.length; i++)
 			this.templateRemoveFloatIfBrotherhood((String) testingData[i][0], (domain.Float) testingData[i][1],

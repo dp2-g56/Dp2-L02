@@ -349,7 +349,7 @@ public class ParadeService {
 
 		if (parade.getId() > 0) {
 			Parade paradeFounded = this.findOne(parade.getId());
-			Assert.isTrue(paradeFounded.getIsDraftMode());
+			Assert.isTrue(paradeFounded.getIsDraftMode() && brotherhood.getParades().contains(paradeFounded));
 		}
 
 		parade.setFloats(floats);

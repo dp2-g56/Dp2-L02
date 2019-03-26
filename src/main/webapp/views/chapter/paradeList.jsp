@@ -95,6 +95,14 @@
 			
 			<display:column titleKey= "parade.path">
 			
+			<jstl:choose>
+			
+			<jstl:when test="${row.path==null}">
+			N/A
+			</jstl:when>
+			<jstl:otherwise>
+
+			
 			<spring:url value="showAll/annonymous/path/list.do" var="pathUrl">
 			<spring:param name="paradeId" value="${row.id}"/>
 			<spring:param name="chapter" value="chapter"/>
@@ -102,6 +110,10 @@
 			<a href="${pathUrl}">
 				<spring:message code="parade.path" />
 			</a>
+			
+			</jstl:otherwise>
+			</jstl:choose>
+	
 			
 			</display:column>
 	

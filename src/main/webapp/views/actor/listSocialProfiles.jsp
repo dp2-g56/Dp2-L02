@@ -88,7 +88,6 @@
 
 	<a href="authenticated/socialProfile/create.do"><spring:message
 			code="socialProfile.create" /></a>
-<a href="authenticated/socialProfile/create.do"><spring:message code="socialProfile.create" /></a>
 
 
 </security:authorize>

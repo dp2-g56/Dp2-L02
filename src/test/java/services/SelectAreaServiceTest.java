@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
 import utilities.AbstractTest;
 import domain.Area;
@@ -58,7 +59,7 @@ public class SelectAreaServiceTest extends AbstractTest {
 			 * b)There is no error expected here, a brotherhood without an area assigns one to himself
 			 */
 			}, {
-				null, "area1", IllegalArgumentException.class
+				"brotherhood1", "area3", IllegalArgumentException.class
 			/**
 			 * a)Requirement 20.1
 			 * b)An anonymous user tries to select an area and an illegalArgumentexception is thrown
@@ -83,13 +84,16 @@ public class SelectAreaServiceTest extends AbstractTest {
 			int areaId = super.getEntityId(areaBean);
 			Area area = this.areaService.findOne(areaId);
 
-			loggedBrotherhood.setArea(area);
+			Brotherhood bro = new Brotherhood();
+			bro.setArea(area);
+			bro.setId(loggedBrotherhood.getId());
 
-			Brotherhood saved = this.brotherhoodService.reconstructArea(loggedBrotherhood, null);
+			Brotherhood saved = this.brotherhoodService.reconstructArea(bro, null);
 
 			this.brotherhoodService.updateBrotherhood(saved);
 
 			this.brotherhoodService.flush();
+			Assert.isTrue(this.brotherhoodService.loggedBrotherhood().getArea().equals(area));
 
 			this.unauthenticate();
 

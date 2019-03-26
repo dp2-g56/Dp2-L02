@@ -300,7 +300,8 @@ public class BrotherhoodService {
 			result = brotherhood;
 		else {
 			result = this.brotherhoodRepository.findOne(brotherhood.getId());
-			result.setArea(brotherhood.getArea());
+			if (result.getArea() == null)
+				result.setArea(brotherhood.getArea());
 
 			this.validator.validate(result, binding);
 		}
@@ -310,7 +311,11 @@ public class BrotherhoodService {
 
 	public Brotherhood updateBrotherhood(Brotherhood brotherhood) {
 		this.loggedAsBrotherhood();
-		Assert.isTrue(brotherhood.getId() != 0 && this.loggedBrotherhood().getId() == brotherhood.getId());
+		Brotherhood bro = this.loggedBrotherhood();
+		Assert.isTrue(brotherhood.getId() != 0 && bro.getId() == brotherhood.getId());
+		if( brotherhood.getArea() != null){
+			Assert.isTrue(bro.getArea().equals(brotherhood.getArea()));
+		}
 		return this.brotherhoodRepository.save(brotherhood);
 	}
 

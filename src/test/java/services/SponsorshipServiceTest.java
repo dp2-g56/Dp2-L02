@@ -236,10 +236,11 @@ public class SponsorshipServiceTest extends AbstractTest {
 						sponsorship.getCreditCard().getBrandName(), sponsorship.getCreditCard().getNumber(), 3, 16,
 						sponsorship.getCreditCard().getCvvCode(), sponsorship.getId(), "sponsor1",
 						IllegalArgumentException.class },
-				// Negative test: Trying to update a sponsorship with the banner and the
+				// Negative test: Trying to update a sponsorship with the
 				// targetURL in blank
-				{ "", "", sponsorship.getCreditCard().getHolderName(), sponsorship.getCreditCard().getBrandName(),
-						sponsorship.getCreditCard().getNumber(), sponsorship.getCreditCard().getExpirationMonth(),
+				{ sponsorship.getTargetURL(), "", sponsorship.getCreditCard().getHolderName(),
+						sponsorship.getCreditCard().getBrandName(), sponsorship.getCreditCard().getNumber(),
+						sponsorship.getCreditCard().getExpirationMonth(),
 						sponsorship.getCreditCard().getExpirationYear(), sponsorship.getCreditCard().getCvvCode(),
 						sponsorship.getId(), "sponsor1", ConstraintViolationException.class } };
 

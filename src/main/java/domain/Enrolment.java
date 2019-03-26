@@ -12,7 +12,6 @@ import javax.persistence.Index;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -73,8 +72,7 @@ public class Enrolment extends DomainEntity {
 		this.dropOutDate = dropOutDate;
 	}
 
-	@NotNull
-	@ManyToOne(optional = false)
+	@ManyToOne(optional = true)
 	public Member getMember() {
 		return this.member;
 	}
@@ -83,8 +81,7 @@ public class Enrolment extends DomainEntity {
 		this.member = member;
 	}
 
-	@NotNull
-	@ManyToOne(optional = false)
+	@ManyToOne(optional = true)
 	public Brotherhood getBrotherhood() {
 		return this.brotherhood;
 	}

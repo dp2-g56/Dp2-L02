@@ -478,9 +478,18 @@ tr:nth-child(even) {
 
 	<table style="width: 100%">
 		<tr>
-			<td><b><spring:message
-						code="statistics.ratioAreasNotCoordinated" /></b></td>
-			<td><jstl:out value="${statistics.get(19)}"></jstl:out>
+			<jstl:choose>
+				<jstl:when test="${statistics.get(19) == -1}">
+					<td><b><spring:message
+								code="statistics.ratioAreasNotCoordinated" /></b></td>
+					<td><spring:message code="statistics.infinite" /></td>
+				</jstl:when>
+				<jstl:otherwise>
+					<td><b><spring:message
+								code="statistics.ratioAreasNotCoordinated" /></b></td>
+					<td><jstl:out value="${statistics.get(19)}"></jstl:out>
+				</jstl:otherwise>
+			</jstl:choose>
 		</tr>
 	</table>
 
@@ -525,36 +534,81 @@ tr:nth-child(even) {
 	</table>
 	<br />
 
+
 	<table style="width: 100%">
 		<tr>
-			<td><b><spring:message code="statistics.paradesDraftVSFinal" /></b></td>
-			<td><jstl:out value="${statistics.get(24)}"></jstl:out>
+			<jstl:choose>
+				<jstl:when test="${statistics.get(24) == -1}">
+					<td><b><spring:message
+								code="statistics.paradesDraftVSFinal" /></b></td>
+					<td><spring:message code="statistics.infinite" /></td>
+				</jstl:when>
+				<jstl:otherwise>
+					<td><b><spring:message
+								code="statistics.paradesDraftVSFinal" /></b></td>
+					<td><jstl:out value="${statistics.get(24)}"></jstl:out>
+				</jstl:otherwise>
+			</jstl:choose>
 		</tr>
 	</table>
+
 
 	<strong><spring:message code="statistics.ratioParadesRequest" />:</strong>
 	<br />
 	<table style="width: 100%">
 		<tr>
-			<td><b><spring:message code="statistics.accepted" /></b></td>
-			<td><jstl:out value="${statistics.get(25)}" /></td>
+			<jstl:choose>
+				<jstl:when test="${statistics.get(25) == -1}">
+					<td><b><spring:message code="statistics.accepted" /></b></td>
+					<td><spring:message code="statistics.infinite" /></td>
+				</jstl:when>
+				<jstl:otherwise>
+					<td><b><spring:message code="statistics.accepted" /></b></td>
+					<td><jstl:out value="${statistics.get(25)}"></jstl:out>
+				</jstl:otherwise>
+			</jstl:choose>
 		</tr>
 		<tr>
-			<td><b><spring:message code="statistics.rejected" /></b></td>
-			<td><jstl:out value="${statistics.get(26)}" /></td>
+			<jstl:choose>
+				<jstl:when test="${statistics.get(26) == -1}">
+					<td><b><spring:message code="statistics.rejected" /></b></td>
+					<td><spring:message code="statistics.infinite" /></td>
+				</jstl:when>
+				<jstl:otherwise>
+					<td><b><spring:message code="statistics.rejected" /></b></td>
+					<td><jstl:out value="${statistics.get(26)}"></jstl:out>
+				</jstl:otherwise>
+			</jstl:choose>
 		</tr>
 		<tr>
-			<td><b><spring:message code="statistics.submitted" /></b></td>
-			<td><jstl:out value="${statistics.get(27)}" /></td>
+			<jstl:choose>
+				<jstl:when test="${statistics.get(27) == -1}">
+					<td><b><spring:message code="statistics.submitted" /></b></td>
+					<td><spring:message code="statistics.infinite" /></td>
+				</jstl:when>
+				<jstl:otherwise>
+					<td><b><spring:message code="statistics.submitted" /></b></td>
+					<td><jstl:out value="${statistics.get(27)}"></jstl:out>
+				</jstl:otherwise>
+			</jstl:choose>
 		</tr>
 	</table>
 	<br />
 
 	<table style="width: 100%">
 		<tr>
-			<td><b><spring:message
-						code="statistics.ratioActiveSponsorships" /></b></td>
-			<td><jstl:out value="${statistics.get(28)}"></jstl:out>
+			<jstl:choose>
+				<jstl:when test="${statistics.get(28) == -1}">
+					<td><b><spring:message
+								code="statistics.ratioActiveSponsorships" /></b></td>
+					<td><spring:message code="statistics.infinite" /></td>
+				</jstl:when>
+				<jstl:otherwise>
+					<td><b><spring:message
+								code="statistics.ratioActiveSponsorships" /></b></td>
+					<td><jstl:out value="${statistics.get(28)}"></jstl:out>
+				</jstl:otherwise>
+			</jstl:choose>
 		</tr>
 	</table>
 

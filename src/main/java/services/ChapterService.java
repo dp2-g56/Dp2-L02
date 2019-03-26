@@ -16,11 +16,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.Validator;
 
-import repositories.ChapterRepository;
-import repositories.FinderRepository;
-import security.Authority;
-import security.LoginService;
-import security.UserAccount;
 import domain.Area;
 import domain.Box;
 import domain.Chapter;
@@ -29,6 +24,11 @@ import domain.ParadeStatus;
 import domain.Proclaim;
 import domain.SocialProfile;
 import forms.FormObjectChapter;
+import repositories.ChapterRepository;
+import repositories.FinderRepository;
+import security.Authority;
+import security.LoginService;
+import security.UserAccount;
 
 @Service
 @Transactional
@@ -37,29 +37,28 @@ public class ChapterService {
 	// Managed repository ------------------------------------------
 
 	@Autowired
-	private ChapterRepository	chapterRepository;
+	private ChapterRepository chapterRepository;
 
 	@Autowired
-	private FinderRepository	finderRepository;
+	private FinderRepository finderRepository;
 
 	@Autowired
-	private BoxService			boxService;
+	private BoxService boxService;
 
 	@Autowired
-	private AreaService			areaService;
+	private AreaService areaService;
 
 	@Autowired
-	private ProclaimService		proclaimService;
+	private ProclaimService proclaimService;
 
 	@Autowired
-	private MessageService		messageService;
+	private MessageService messageService;
 
 	@Autowired
-	private ParadeService		paradeService;
+	private ParadeService paradeService;
 
 	@Autowired
-	private Validator			validator;
-
+	private Validator validator;
 
 	// Simple CRUD methods ------------------------------------------
 
@@ -215,22 +214,30 @@ public class ChapterService {
 
 		if (formObjectChapter.getEmail().matches("[\\w.%-]+\\<[\\w.%-]+\\@+\\>|[\\w.%-]+"))
 			if (LocaleContextHolder.getLocale().getLanguage().toUpperCase().contains("ES"))
-				binding.addError(new FieldError("chapter", "email", formObjectChapter.getEmail(), false, null, null, "No sigue el patron ejemplo@dominio.asd o alias <ejemplo@dominio.asd>"));
+				binding.addError(new FieldError("chapter", "email", formObjectChapter.getEmail(), false, null, null,
+						"No sigue el patron ejemplo@dominio.asd o alias <ejemplo@dominio.asd>"));
 			else
-				binding.addError(new FieldError("chapter", "email", formObjectChapter.getEmail(), false, null, null, "Dont follow the pattern example@domain.asd or alias <example@domain.asd>"));
+				binding.addError(new FieldError("chapter", "email", formObjectChapter.getEmail(), false, null, null,
+						"Dont follow the pattern example@domain.asd or alias <example@domain.asd>"));
 
 		if (!formObjectChapter.getTermsAndConditions())
 			if (LocaleContextHolder.getLocale().getLanguage().toUpperCase().contains("ES"))
-				binding.addError(new FieldError("formObjectChapter", "termsAndConditions", formObjectChapter.getTermsAndConditions(), false, null, null, "Debe aceptar los terminos y condiciones"));
+				binding.addError(new FieldError("formObjectChapter", "termsAndConditions",
+						formObjectChapter.getTermsAndConditions(), false, null, null,
+						"Debe aceptar los terminos y condiciones"));
 			else
-				binding.addError(new FieldError("formObjectChapter", "termsAndConditions", formObjectChapter.getTermsAndConditions(), false, null, null, "You must accept the terms and conditions"));
+				binding.addError(new FieldError("formObjectChapter", "termsAndConditions",
+						formObjectChapter.getTermsAndConditions(), false, null, null,
+						"You must accept the terms and conditions"));
 
 		if (!formObjectChapter.getPassword().equals(formObjectChapter.getConfirmPassword()))
 			if (LocaleContextHolder.getLocale().getLanguage().toUpperCase().contains("ES"))
-				binding.addError(new FieldError("formObjectChapter", "password", formObjectChapter.getPassword(), false, null, null, "Las contrasenas no coinciden"));
+				binding.addError(new FieldError("formObjectChapter", "password", formObjectChapter.getPassword(), false,
+						null, null, "Las contrasenas no coinciden"));
 
 			else
-				binding.addError(new FieldError("formObjectChapter", "password", formObjectChapter.getPassword(), false, null, null, "Passwords don't match"));
+				binding.addError(new FieldError("formObjectChapter", "password", formObjectChapter.getPassword(), false,
+						null, null, "Passwords don't match"));
 
 		return result;
 	}
@@ -353,7 +360,8 @@ public class ChapterService {
 
 	public Chapter updateChapterArea(Chapter chapter) {
 		Chapter c = this.loggedChapter();
-		Assert.isTrue(chapter.getId() != 0 && c.getId() == chapter.getId() && c.getArea() == null && !this.listOccupiedAreas().contains(chapter.getArea()));
+		Assert.isTrue(chapter.getId() != 0 && c.getId() == chapter.getId() && c.getArea() == null
+				&& !this.listOccupiedAreas().contains(chapter.getArea()));
 		return this.chapterRepository.save(chapter);
 	}
 
@@ -377,9 +385,11 @@ public class ChapterService {
 
 		if (chapter.getEmail().matches("[\\w.%-]+\\<[\\w.%-]+\\@+\\>|[\\w.%-]+"))
 			if (LocaleContextHolder.getLocale().getLanguage().toUpperCase().contains("ES"))
-				binding.addError(new FieldError("chapter", "email", chapter.getEmail(), false, null, null, "No sigue el patron ejemplo@dominio.asd o alias <ejemplo@dominio.asd>"));
+				binding.addError(new FieldError("chapter", "email", chapter.getEmail(), false, null, null,
+						"No sigue el patron ejemplo@dominio.asd o alias <ejemplo@dominio.asd>"));
 			else
-				binding.addError(new FieldError("chapter", "email", chapter.getEmail(), false, null, null, "Dont follow the pattern example@domain.asd or alias <example@domain.asd>"));
+				binding.addError(new FieldError("chapter", "email", chapter.getEmail(), false, null, null,
+						"Dont follow the pattern example@domain.asd or alias <example@domain.asd>"));
 
 		return result;
 	}
@@ -392,10 +402,9 @@ public class ChapterService {
 	public Parade changeParadeStatus(Parade parade) {
 
 		Assert.isTrue(!parade.getIsDraftMode());
-
 		Chapter chapter = this.loggedChapter();
 
-		Assert.isTrue(this.paradeService.getParadesByArea(chapter.getArea()).contains(parade));
+		this.paradeSecurity(parade);
 
 		if (parade.getParadeStatus().equals(ParadeStatus.REJECTED)) {
 			Assert.notNull(parade.getRejectedReason());
@@ -408,6 +417,14 @@ public class ChapterService {
 
 	}
 
+	public void paradeSecurity(Parade parade) {
+		Chapter chapter = this.loggedChapter();
+		this.loggedAsChapter();
+		List<Parade> parades = this.paradeService.getParadesByArea(chapter.getArea());
+		Parade paradeDB = this.paradeService.findOne(parade.getId());
+		Assert.isTrue(parades.contains(paradeDB));
+	}
+
 	public String SocialProfilesToString() {
 		String res = "";
 		Chapter chapter = this.loggedChapter();
@@ -418,7 +435,8 @@ public class ChapterService {
 		Integer cont = 1;
 
 		for (SocialProfile f : socialProfiles) {
-			sb.append("Profile" + cont + " Name: " + f.getName() + " Nick: " + f.getNick() + " Profile link: " + f.getProfileLink()).append(System.getProperty("line.separator"));
+			sb.append("Profile" + cont + " Name: " + f.getName() + " Nick: " + f.getNick() + " Profile link: "
+					+ f.getProfileLink()).append(System.getProperty("line.separator"));
 			cont++;
 		}
 		return sb.toString();

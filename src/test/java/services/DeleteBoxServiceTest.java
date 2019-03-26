@@ -1,14 +1,19 @@
 
 package services;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
 import utilities.AbstractTest;
+import domain.Actor;
 import domain.Box;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -19,7 +24,10 @@ import domain.Box;
 public class DeleteBoxServiceTest extends AbstractTest {
 
 	@Autowired
-	private BoxService	boxService;
+	private BoxService		boxService;
+
+	@Autowired
+	private ActorService	actorService;
 
 
 	@Test
@@ -57,11 +65,18 @@ public class DeleteBoxServiceTest extends AbstractTest {
 
 			super.authenticate(username);
 
+			Actor actor = this.actorService.loggedActor();
 			Box box = new Box();
+			List<Box> sonBoxes = new ArrayList<Box>();
 
 			box = this.boxService.findOne(super.getEntityId(boxName));
 
+			sonBoxes = this.boxService.getSonsBox(box);
+
 			this.boxService.deleteBox(box);
+
+			Assert.isTrue(!actor.getBoxes().contains(box));
+			Assert.isTrue(!actor.getBoxes().contains(sonBoxes));
 
 			this.boxService.flush();
 

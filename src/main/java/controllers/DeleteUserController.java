@@ -20,6 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import security.Authority;
 import services.ActorService;
+import services.BrotherhoodService;
 import services.ChapterService;
 import services.MemberService;
 import services.SponsorService;
@@ -30,13 +31,15 @@ import domain.Actor;
 public class DeleteUserController extends AbstractController {
 
 	@Autowired
-	private ActorService	actorService;
+	private ActorService		actorService;
 	@Autowired
-	private MemberService	memberService;
+	private MemberService		memberService;
 	@Autowired
-	private SponsorService	sponsorService;
+	private SponsorService		sponsorService;
 	@Autowired
-	private ChapterService	chapterService;
+	private ChapterService		chapterService;
+	@Autowired
+	private BrotherhoodService	brotherhoodService;
 
 
 	// Constructors -----------------------------------------------------------
@@ -60,6 +63,9 @@ public class DeleteUserController extends AbstractController {
 				this.sponsorService.deleteSponsor();
 			else if (authorities.get(0).toString().equals("CHAPTER"))
 				this.chapterService.deleteAccountChapter();
+			else if (authorities.get(0).toString().equals("BROTHERHOOD"))
+				this.brotherhoodService.deleteBrotherhood();
+
 			result = new ModelAndView("redirect:/j_spring_security_logout");
 		} catch (Throwable oops) {
 			result = new ModelAndView("redirect:/");

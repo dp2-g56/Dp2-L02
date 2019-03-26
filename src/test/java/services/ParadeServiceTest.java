@@ -1,7 +1,6 @@
 
 package services;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -37,13 +36,13 @@ public class ParadeServiceTest extends AbstractTest {
 
 	/**
 	 * Test the specific list that is shown to the sponsor of the accepted parades,
-	 * which may sponsor.
+	 * which can sponsor.
 	 */
 	@Test
 	public void driverListParadesIfSponsor() {
 
 		Object testingData[][] = {
-				// Positive test
+				// Positive test: Listing all accepted parades if a sponsor is logged in
 				{ "sponsor1", null },
 				// Negative test: Trying to access with a different role
 				{ "member1", IllegalArgumentException.class } };
@@ -90,15 +89,7 @@ public class ParadeServiceTest extends AbstractTest {
 				// Positive test: Listing draft parades of a brotherhood
 				{ "DRAFT", "brotherhood1", null },
 				// Negative test: Trying to list all parades with a different role
-				{ "", "member1", IllegalArgumentException.class },
-				// Negative test: Trying to list rejected parades with a different role
-				{ "REJECTED", "member1", IllegalArgumentException.class },
-				// Negative test: Trying to list accepted parades with a different role
-				{ "ACCEPTED", "member1", IllegalArgumentException.class },
-				// Negative test: Trying to list submitted parades with a different role
-				{ "SUBMITTED", "member1", IllegalArgumentException.class },
-				// Negative test: Trying to list draft parades with a different role
-				{ "DRAFT", "member1", IllegalArgumentException.class } };
+				{ "", "member1", IllegalArgumentException.class } };
 
 		for (int i = 0; i < testingData.length; i++)
 			this.templateListParadesIfBrotherhood((String) testingData[i][0], (String) testingData[i][1],
@@ -151,7 +142,8 @@ public class ParadeServiceTest extends AbstractTest {
 		Date pastDate = c.getTime();
 
 		Object testingData[][] = {
-				// Positive test
+				// Positive test: Creating a parade and a float with correct content, logged as
+				// brotherhood and having an area
 				{ "Parade title", "Parade description", futureDate, true, 5, 10, "Float title", "Float description",
 						"brotherhood1", null },
 				// Negative test: Trying to create a parade and a float with a past moment
@@ -239,7 +231,8 @@ public class ParadeServiceTest extends AbstractTest {
 		List<domain.Float> floats4 = b4.getFloats();
 
 		Object testingData[][] = {
-				// Positive test
+				// Positive test: Creating a parade with correct content, logged as brotherhood,
+				// having an area and using floats of the brotherhood
 				{ "Parade title", "Parade description", futureDate, true, 5, 10, floats1, "brotherhood1", null },
 				// Negative test: Trying to create a parade with a past moment
 				{ "Parade title", "Parade description", pastDate, true, 5, 10, floats1, "brotherhood1",
@@ -318,16 +311,9 @@ public class ParadeServiceTest extends AbstractTest {
 		Brotherhood b2 = this.brotherhoodService.getBrotherhoodByUsername("brotherhood2");
 		List<domain.Float> floats2 = b2.getFloats();
 
-		domain.Float newFloat = new domain.Float();
-		newFloat.setId(0);
-		newFloat.setVersion(0);
-		newFloat.setDescription("Description");
-		newFloat.setTitle("Title");
-		List<domain.Float> newFloats = new ArrayList<>();
-		newFloats.add(newFloat);
-
 		Object testingData[][] = {
-				// Positive test
+				// Positive test: Updating a parade in draft mode, with the correct content and
+				// logged in as a brotherhood with area
 				{ p1Draft, "Parade title", p1Draft.getDescription(), futureDate, false, p1Draft.getRowNumber(),
 						p1Draft.getColumnNumber(), p1Draft.getFloats(), "brotherhood1", null },
 				// Negative test: Trying to update a parade with a past moment
@@ -345,10 +331,6 @@ public class ParadeServiceTest extends AbstractTest {
 				// Negative test: Trying to update a parade with floats of other brotherhood
 				{ p1Draft, p1Draft.getTitle(), p1Draft.getDescription(), futureDate, p1Draft.getIsDraftMode(),
 						p1Draft.getRowNumber(), p1Draft.getColumnNumber(), floats2, "brotherhood1",
-						IllegalArgumentException.class },
-				// Negative test: Trying to update a parade with a float that does not exists
-				{ p1Draft, p1Draft.getTitle(), p1Draft.getDescription(), futureDate, p1Draft.getIsDraftMode(),
-						p1Draft.getRowNumber(), p1Draft.getColumnNumber(), newFloats, "brotherhood1",
 						IllegalArgumentException.class },
 				// Negative test: Trying to update a parade that is in final mode
 				{ p1Final, "Parade title", p1Final.getDescription(), p1Final.getMoment(), p1Final.getIsDraftMode(),
@@ -404,7 +386,8 @@ public class ParadeServiceTest extends AbstractTest {
 		Parade p1Final = this.paradeService.findOne(super.getEntityId("parade2"));
 
 		Object testingData[][] = {
-				// Positive test
+				// Positive test: Deleting a parade in draft mode, logged in as brotherhood that
+				// owns the parade
 				{ p1Draft, "brotherhood1", null },
 				// Negative test: Trying to delete a parade with a different role
 				{ p1Draft, "member1", IllegalArgumentException.class },

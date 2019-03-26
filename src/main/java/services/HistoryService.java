@@ -24,6 +24,9 @@ public class HistoryService {
 	@Autowired
 	private HistoryRepository	historyRepository;
 
+	@Autowired
+	private BrotherhoodService	brotherhoodService;
+
 
 	public History save(History history) {
 		return this.historyRepository.save(history);
@@ -48,5 +51,18 @@ public class HistoryService {
 
 	public List<History> findAll() {
 		return this.historyRepository.findAll();
+	}
+
+	public void deleteAllHistory() {
+		this.brotherhoodService.loggedAsBrotherhood();
+		Brotherhood brotherhood = this.brotherhoodService.loggedBrotherhood();
+
+		History history = brotherhood.getHistory();
+
+		brotherhood.setHistory(null);
+
+		this.deleteHistory(history);
+		this.brotherhoodService.save(brotherhood);
+
 	}
 }

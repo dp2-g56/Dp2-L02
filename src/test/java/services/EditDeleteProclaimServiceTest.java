@@ -3,8 +3,6 @@ package services;
 
 import java.util.Date;
 
-import javax.validation.ConstraintViolationException;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +18,7 @@ import domain.Proclaim;
 	"classpath:spring/junit.xml"
 })
 @Transactional
-public class ProclaimServiceTest extends AbstractTest {
+public class EditDeleteProclaimServiceTest extends AbstractTest {
 
 	@Autowired
 	private ProclaimService	proclaimService;
@@ -35,30 +33,18 @@ public class ProclaimServiceTest extends AbstractTest {
 		Object testingData[][] = {
 			{
 				// Positive test
-				"chapter1", thisMoment, "testPositivo", null
+				"chapter1", "proclaim1", IllegalArgumentException.class
 			}, {
-				// Null moment
-				"chapter1", null, "testNegativo", ConstraintViolationException.class
-			}, {
-				// Blank description
-				"chapter1", thisMoment, "", ConstraintViolationException.class
-			}, {
-				// Not logged
-				"", thisMoment, "testNegativo", IllegalArgumentException.class
-			}, {
-				// Wrong actor
-				"brotherhood1", thisMoment, "testNegativo", IllegalArgumentException.class
-			}, {
-				// Null description
-				"chapter1", thisMoment, null, ConstraintViolationException.class
-			}
+				// Positive test
+				"chapter1", "proclaim4", IllegalArgumentException.class
+			},
 		};
 
 		for (int i = 0; i < testingData.length; i++)
-			this.templatePublishProclaim((String) testingData[i][0], (Date) testingData[i][1], (String) testingData[i][2], (Class<?>) testingData[i][3]);
+			this.templateEditProclaim((String) testingData[i][0], (String) testingData[i][1], (Class<?>) testingData[i][2]);
 	}
 
-	protected void templatePublishProclaim(String username, Date moment, String descripcion, Class<?> expected) {
+	protected void templateEditProclaim(String username, String proclaimRe, Class<?> expected) {
 		Class<?> caught = null;
 
 		try {
@@ -67,10 +53,7 @@ public class ProclaimServiceTest extends AbstractTest {
 			this.startTransaction();
 
 			super.authenticate(username);
-			Proclaim proclaim = this.proclaimService.createProclaim();
-
-			proclaim.setDescription(descripcion);
-			proclaim.setPublishMoment(moment);
+			Proclaim proclaim = this.proclaimService.findOne(super.getEntityId(proclaimRe));
 
 			this.proclaimService.saveProclaim(proclaim);
 			this.proclaimService.flush();
@@ -85,4 +68,5 @@ public class ProclaimServiceTest extends AbstractTest {
 		}
 		super.checkExceptions(expected, caught);
 	}
+
 }

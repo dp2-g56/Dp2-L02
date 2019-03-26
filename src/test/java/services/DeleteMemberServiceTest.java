@@ -22,15 +22,15 @@ public class DeleteMemberServiceTest extends AbstractTest {
 	private ActorService actorService;
 
 	/**
-	 * Test the member deletion method
+	 * Removal of a member and all its data
 	 */
 	@Test
 	public void driverDeleteMember() {
 
 		Object testingData[][] = {
-				// Positive case
+				// Positive case: Deleting a logged member
 				{ "member1", null },
-				// Negative case: Trying to delete an user with a different role
+				// Negative case: Trying to eliminate an actor that is not a member
 				{ "sponsor1", NullPointerException.class } };
 
 		for (int i = 0; i < testingData.length; i++)

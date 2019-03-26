@@ -120,7 +120,6 @@ public class SponsorshipService {
 
 		Assert.isTrue(this.creditCardService.validateNumberCreditCard(creditCard));
 		Assert.isTrue(this.creditCardService.validateDateCreditCard(creditCard));
-		Assert.isTrue(this.creditCardService.validateCvvCreditCard(creditCard));
 
 		result = this.save(sponsorship);
 
@@ -188,7 +187,6 @@ public class SponsorshipService {
 		else {
 			Assert.isTrue(this.creditCardService.validateNumberCreditCard(sponsorship.getCreditCard()));
 			Assert.isTrue(this.creditCardService.validateDateCreditCard(sponsorship.getCreditCard()));
-			Assert.isTrue(this.creditCardService.validateCvvCreditCard(sponsorship.getCreditCard()));
 			sponsorship.setIsActivated(true);
 		}
 

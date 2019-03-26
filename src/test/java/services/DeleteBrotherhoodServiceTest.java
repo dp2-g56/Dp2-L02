@@ -13,25 +13,22 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import utilities.AbstractTest;
-import domain.Actor;
 import domain.Box;
+import domain.Brotherhood;
+import domain.Enrolment;
 import domain.Message;
+import domain.Parade;
 import domain.SocialProfile;
-import domain.Sponsor;
-import domain.Sponsorship;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
 	"classpath:spring/junit.xml"
 })
 @Transactional
-public class DeleteSponsorServiceTest extends AbstractTest {
+public class DeleteBrotherhoodServiceTest extends AbstractTest {
 
 	@Autowired
-	private ActorService			actorService;
-
-	@Autowired
-	private SponsorService			sponsorService;
+	private BrotherhoodService		brotherhoodService;
 
 	@Autowired
 	private SocialProfileService	socialProfileService;
@@ -45,6 +42,12 @@ public class DeleteSponsorServiceTest extends AbstractTest {
 	@Autowired
 	private BoxService				boxService;
 
+	@Autowired
+	private ParadeService			paradeService;
+
+	@Autowired
+	private EnrolmentService		enrolmentService;
+
 
 	@Test
 	public void driverDeleteAllBoxes() {
@@ -52,14 +55,8 @@ public class DeleteSponsorServiceTest extends AbstractTest {
 		Object testingData[][] = {
 			{
 				//Positive test, deleting a no system box that admin1 own
-				"sponsor1", null
-			}, {
-				//Positive test, deleting a no system box that admin1 own
-				"", IllegalArgumentException.class
-			}, {
-				//Positive test, deleting a no system box that admin1 own
-				"brotherhood1", IllegalArgumentException.class
-			},
+				"brotherhood1", null
+			}
 
 		};
 
@@ -78,46 +75,48 @@ public class DeleteSponsorServiceTest extends AbstractTest {
 
 			super.authenticate(username);
 
-			this.sponsorService.loggedAsSponsor();
-			Integer numActores = this.sponsorService.findAll().size();
+			this.brotherhoodService.loggedAsBrotherhood();
 
-			Sponsor sponsor = new Sponsor();
-			sponsor = this.sponsorService.loggedSponsor();
-
-			Actor deleted = this.actorService.getActorByUsername("DELETED");
+			Brotherhood brotherhood = new Brotherhood();
+			brotherhood = this.brotherhoodService.loggedBrotherhood();
 
 			List<Box> boxes = new ArrayList<Box>();
 			List<SocialProfile> socialProfiles = new ArrayList<SocialProfile>();
-			List<Sponsorship> sponsorships = new ArrayList<Sponsorship>();
+			List<Parade> parades = new ArrayList<Parade>();
 			List<Message> messages = new ArrayList<Message>();
+			List<Enrolment> enrolments = new ArrayList<Enrolment>();
 
 			List<Box> boxesDeleted = new ArrayList<Box>();
 			List<SocialProfile> socialProfilesDeleted = new ArrayList<SocialProfile>();
-			List<Sponsorship> sponsorshipsDeleted = new ArrayList<Sponsorship>();
+			List<Parade> paradesDeleted = new ArrayList<Parade>();
 			List<Message> messagesDeleted = new ArrayList<Message>();
+			List<Enrolment> enrolmentsDeleted = new ArrayList<Enrolment>();
 
-			boxes = sponsor.getBoxes();
-			socialProfiles = sponsor.getSocialProfiles();
-			sponsorships = sponsor.getSponsorships();
-			messages = this.messageService.allMessagesOfActor(sponsor);
+			boxes = brotherhood.getBoxes();
+			socialProfiles = brotherhood.getSocialProfiles();
+			parades = brotherhood.getParades();
+			messages = this.messageService.allMessagesOfActor(brotherhood);
+			enrolments = brotherhood.getEnrolments();
 
-			sponsor = this.sponsorService.loggedSponsor();
+			Integer numActores = this.brotherhoodService.findAll().size();
 
-			this.sponsorService.deleteSponsor();
+			this.brotherhoodService.deleteBrotherhood();
 
-			Integer numActoresDeleted = this.sponsorService.findAll().size();
+			Integer numActoresDeleted = this.brotherhoodService.findAll().size();
 
 			Assert.isTrue(numActores != numActoresDeleted);
 
 			boxesDeleted = this.boxService.findAll();
 			socialProfilesDeleted = this.socialProfileService.findAll();
-			sponsorshipsDeleted = this.sponsorshipService.findAll();
+			paradesDeleted = this.paradeService.findAll();
 			messagesDeleted = this.messageService.findAll();
+			enrolmentsDeleted = this.enrolmentService.findAll();
 
 			Assert.isTrue(!boxesDeleted.contains(boxes));
 			Assert.isTrue(!socialProfilesDeleted.contains(socialProfiles));
-			Assert.isTrue(!sponsorshipsDeleted.contains(sponsorships));
+			Assert.isTrue(!paradesDeleted.contains(parades));
 			Assert.isTrue(!messagesDeleted.contains(messages));
+			Assert.isTrue(!enrolmentsDeleted.contains(enrolments));
 
 			super.authenticate(null);
 

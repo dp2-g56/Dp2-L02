@@ -7,7 +7,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -70,18 +69,14 @@ public class EnrolmentBrotherhoodController extends AbstractController {
 		Enrolment enrolment;
 
 		enrolment = this.enrolmentService.findOne(enrolmentId);
-		Assert.notNull(enrolment);
 
-		if (enrolment.getStatusEnrolment() == StatusEnrolment.PENDING && this.brotherhoodService.loggedBrotherhood().getEnrolments().contains(enrolment)) {
-			enrolment.setStatusEnrolment(StatusEnrolment.REJECTED);
-			this.enrolmentService.save(enrolment);
-			result = new ModelAndView("redirect:list.do");
-		} else
-			result = new ModelAndView("redirect:list.do");
+		if (enrolment.getStatusEnrolment() == StatusEnrolment.PENDING && this.brotherhoodService.loggedBrotherhood().getEnrolments().contains(enrolment))
+			this.enrolmentService.rejectEnrolment(enrolment);
+		result = new ModelAndView("redirect:list.do");
 
 		return result;
-	}
 
+	}
 	@RequestMapping(value = "/assignPosition", method = RequestMethod.GET)
 	public ModelAndView assingPosition(@RequestParam int enrolmentId) {
 		ModelAndView result;
@@ -91,8 +86,7 @@ public class EnrolmentBrotherhoodController extends AbstractController {
 		Enrolment enrolment = this.enrolmentService.findOne(enrolmentId);
 
 		List<Position> positions = this.positionService.findAll();
-		if (enrolment.getId() != 0 && brotherhood.getEnrolments().contains(enrolment)
-				&& enrolment.getStatusEnrolment() == StatusEnrolment.PENDING) {
+		if (enrolment.getId() != 0 && brotherhood.getEnrolments().contains(enrolment) && enrolment.getStatusEnrolment() == StatusEnrolment.PENDING) {
 			result = new ModelAndView("enrolment/brotherhood/assignPosition");
 			result.addObject("positions", positions);
 			result.addObject("enrolment", enrolment);

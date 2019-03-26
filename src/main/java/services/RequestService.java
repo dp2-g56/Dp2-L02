@@ -13,6 +13,9 @@ import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
 
+import repositories.RequestRepository;
+import security.LoginService;
+import security.UserAccount;
 import domain.Actor;
 import domain.Brotherhood;
 import domain.Member;
@@ -21,9 +24,6 @@ import domain.Parade;
 import domain.ParadeStatus;
 import domain.Request;
 import domain.Status;
-import repositories.RequestRepository;
-import security.LoginService;
-import security.UserAccount;
 
 @Service
 @Transactional
@@ -32,19 +32,20 @@ public class RequestService {
 	// Managed repository ------------------------------------------
 
 	@Autowired
-	private RequestRepository requestRepository;
+	private RequestRepository	requestRepository;
 	@Autowired
-	private MemberService memberService;
+	private MemberService		memberService;
 	@Autowired
-	private ParadeService paradeService;
+	private ParadeService		paradeService;
 	@Autowired
-	private Validator validator;
+	private Validator			validator;
 	@Autowired
-	private BrotherhoodService brotherhoodService;
+	private BrotherhoodService	brotherhoodService;
 	@Autowired
-	private ActorService actorService;
+	private ActorService		actorService;
 	@Autowired
-	private MessageService messageService;
+	private MessageService		messageService;
+
 
 	// Simple CRUD methods
 	// ---------------------------------------------------------------------
@@ -65,7 +66,7 @@ public class RequestService {
 
 	// Simple CRUD methods ------------------------------------------
 
-	public Collection<Request> findAll() {
+	public List<Request> findAll() {
 		return this.requestRepository.findAll();
 	}
 
@@ -79,6 +80,10 @@ public class RequestService {
 
 	public void delete(Request request) {
 		this.requestRepository.delete(request);
+	}
+
+	public void deleteInBatch(List<Request> requests) {
+		this.requestRepository.deleteInBatch(requests);
 	}
 
 	// Other methods
@@ -345,5 +350,54 @@ public class RequestService {
 
 	public void flush() {
 		this.requestRepository.flush();
+	}
+
+	/*
+	 * public void deleteAllRequestParadesBrotherhood(Parade p) {
+	 * this.brotherhoodService.loggedAsBrotherhood();
+	 * 
+	 * List<Request> requestToDelete = new ArrayList<Request>();
+	 * requestToDelete = p.getRequests();
+	 * Integer size = requestToDelete.size();
+	 * 
+	 * for (int i = 0; i < size; i++) {
+	 * Member m = requestToDelete.get(0).getMember();
+	 * 
+	 * requestToDelete.get(0).setMember(null);
+	 * requestToDelete.get(0).setParade(null);
+	 * p.getRequests().remove(requestToDelete.get(0));
+	 * m.getRequests().remove(requestToDelete.get(0));
+	 * 
+	 * }
+	 * }
+	 */
+
+	public void deleteAllRequestParadesBrotherhood(Parade p) {
+		this.brotherhoodService.loggedAsBrotherhood();
+
+		List<Request> requestToDelete = p.getRequests();
+
+		List<Member> members = this.memberService.findAll();
+
+		p.setRequests(new ArrayList<Request>());
+		for (Request re : requestToDelete) {
+			Member me = re.getMember();
+			me.getRequests().remove(re);
+			p.getRequests().remove(re);
+
+			re.setMember(null);
+			re.setParade(null);
+
+			this.delete(re);
+
+		}
+		/*
+		 * for (Member m : members) {
+		 * List<Request> requestOfMember = m.getRequests();
+		 * requestOfMember.removeAll(requestToDelete);
+		 * m.setRequests(requestOfMember);
+		 * this.memberService.save(m);
+		 * }
+		 */
 	}
 }

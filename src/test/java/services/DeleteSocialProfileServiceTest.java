@@ -38,6 +38,9 @@ public class DeleteSocialProfileServiceTest extends AbstractTest {
 			}, {
 				//Negative test, try to delete a social profile that is not yours
 				"member1", "socialProfile1", IllegalArgumentException.class
+			}, {
+				//Negative test, try to delete a social profile when you are not logged
+				"", "socialProfile1", IllegalArgumentException.class
 			}
 		};
 

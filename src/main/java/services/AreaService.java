@@ -136,4 +136,9 @@ public class AreaService {
 		List<Authority> authorities = (List<Authority>) userAccount.getAuthorities();
 		Assert.isTrue(authorities.get(0).toString().equals("ADMIN"));
 	}
+
+	public void flush() {
+		this.areaRepository.flush();
+	}
+
 }

@@ -12,28 +12,29 @@ import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
 
-import domain.Actor;
-import domain.Box;
-import domain.Message;
 import repositories.BoxRepository;
 import security.LoginService;
 import security.UserAccount;
+import domain.Actor;
+import domain.Box;
+import domain.Message;
 
 @Transactional
 @Service
 public class BoxService {
 
 	@Autowired
-	private BoxRepository boxRepository;
+	private BoxRepository	boxRepository;
 
 	@Autowired
-	private MessageService messageService;
+	private MessageService	messageService;
 
 	@Autowired
-	private ActorService actorService;
+	private ActorService	actorService;
 
 	@Autowired
-	private Validator validator;
+	private Validator		validator;
+
 
 	public Box flushSave(Box box) {
 		return this.boxRepository.saveAndFlush(box);
@@ -97,6 +98,7 @@ public class BoxService {
 
 	public Box save(Box box) {
 		Assert.isTrue(!box.getIsSystem());
+
 		this.actorService.loggedAsActor();
 
 		UserAccount userAccount;
@@ -105,8 +107,7 @@ public class BoxService {
 
 		Box fatherBox = box.getFatherBox();
 
-		Assert.isTrue((fatherBox == null) || actor.getBoxes().contains(box.getFatherBox()));
-
+		Assert.isTrue((fatherBox == null) || actor.getBoxes().contains(fatherBox));
 
 		Box savedBox = new Box();
 		savedBox = this.boxRepository.save(box);
@@ -130,12 +131,17 @@ public class BoxService {
 		if (actor.getBoxes().contains(savedBox)) {
 			actor.getBoxes().remove(savedBox);
 			actor.getBoxes().add(savedBox);
-		} else {
+		} else
 			actor.getBoxes().add(savedBox);
-		}
 
 		this.actorService.save(actor);
 		return savedBox;
+	}
+
+	public void RecursiveDeleteBox(Box box) {
+
+		while (box.getIsSystem() == false)
+			this.deleteBox(box);
 	}
 
 	public void deleteBox(Box box) {
@@ -148,18 +154,49 @@ public class BoxService {
 		Assert.isTrue(actor.getBoxes().contains(box));
 
 		final List<Box> sonBoxes = this.boxRepository.getSonsBox(box);
-		if (sonBoxes.size() == 0) {
+		if (sonBoxes.size() == 0 && box.getIsSystem() == false) {
 			for (final Message m : box.getMessages())
 				this.messageService.delete(m);
+
+			actor.getBoxes().remove(box);
+			box.setFatherBox(null);
+			this.boxRepository.delete(box);
+			this.actorService.save(actor);
+
+		} else {
+
+			for (final Box sonBox : sonBoxes)
+				this.deleteBox(sonBox);
+
+			this.deleteBox(box);
+		}
+
+	}
+
+	public void deleteBoxA(Box box) {
+		this.actorService.loggedAsActor();
+		Assert.isTrue(!box.getIsSystem());
+		UserAccount userAccount;
+		userAccount = LoginService.getPrincipal();
+		Actor actor = this.actorService.getActorByUsername(userAccount.getUsername());
+
+		Assert.isTrue(actor.getBoxes().contains(box));
+
+		final List<Box> sonBoxes = this.boxRepository.getSonsBox(box);
+		if (sonBoxes.size() != 0)
+			for (final Box sonBox : sonBoxes)
+				this.deleteBox(sonBox);
+		else {
+			for (final Message m : box.getMessages())
+				this.messageService.delete(m);
+
 			box.getMessages().removeAll(box.getMessages());
 
 			actor.getBoxes().remove(box);
 			this.boxRepository.delete(box);
 			this.actorService.save(actor);
 
-		} else
-			for (final Box sonBox : sonBoxes)
-				this.deleteBox(sonBox);
+		}
 		// this.actorService.save(actor);
 
 	}
@@ -340,5 +377,9 @@ public class BoxService {
 			this.deleteBoxEvenIsSystem(boxes.get(i));
 		List<Box> deletedBoxes = new ArrayList<Box>();
 		deletedBoxes = actor.getBoxes();
+	}
+
+	public List<Box> getSonsBox(Box box) {
+		return this.boxRepository.getSonsBox(box);
 	}
 }

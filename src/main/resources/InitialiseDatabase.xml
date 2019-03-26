@@ -1,25 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- 
- * PopulateDatabase.xml
- *
- * Copyright (C) 2019 Universidad de Sevilla
- * 
- * The use of this project is hereby constrained to the conditions of the 
- * TDG Licence, a copy of which you may download from 
- * http://www.tdg-seville.info/License.html
- -->
+<!-- * PopulateDatabase.xml * * Copyright (C) 2019 Universidad de Sevilla 
+	* * The use of this project is hereby constrained to the conditions of the 
+	* TDG Licence, a copy of which you may download from * http://www.tdg-seville.info/License.html -->
 
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 	">
-	
-	<!--  CONFIGURATION -->
-	<bean id ="configuration" class="domain.Configuration">
+
+	<!-- CONFIGURATION -->
+	<bean id="configuration" class="domain.Configuration">
 		<property name="spainTelephoneCode" value="+34" />
-		<property name="maxFinderResults" value="100"/>
+		<property name="maxFinderResults" value="100" />
 		<property name="minFinderResults" value="10" />
 		<property name="spamWords">
 			<list>
@@ -48,6 +42,15 @@
 				<value>LOW</value>
 			</list>
 		</property>
+		<property name="cardType">
+			<list>
+				<value>VISA</value>
+				<value>MASTER</value>
+				<value>DINNERS</value>
+				<value>AMEX</value>
+				<value>FLY</value>
+			</list>
+		</property>
 		<property name="priorityLvlSpa">
 			<list>
 				<value>ALTA</value>
@@ -55,28 +58,37 @@
 				<value>BAJA</value>
 			</list>
 		</property>
-		<property name="goodWords" value="good, fantastic, excellent, great, amazing, terrific, beautiful, bueno, fantastico, excelente, increible, estupendo, hermoso" />
-		<property name="badWords" value="not, bad, horrible, average, disaster, no, malo, horrible, mediocre, desastre " />
-		
+		<property name="goodWords"
+			value="good, fantastic, excellent, great, amazing, terrific, beautiful, bueno, fantastico, excelente, increible, estupendo, hermoso" />
+		<property name="badWords"
+			value="not, bad, horrible, average, disaster, no, malo, horrible, mediocre, desastre " />
+
 		<property name="minTimeFinder" value="1" />
 		<property name="maxTimeFinder" value="24" />
-		<property name="finderResult" value="10"/>
-		<property name="timeFinder" value="1"/>
+		<property name="finderResult" value="10" />
+		<property name="timeFinder" value="1" />
 
-		
-		<property name="welcomeMessageEnglish" value="Welcome to Acme Madrugá, the site to organise your parades" />
-		<property name="welcomeMessageSpanish" value="¡Bienvenido a Acme Madrugá! el lugar para organizar tus desfiles" />
-		
-		<property name="systemName" value="Acme Madrugá" />
-		<property name="imageURL" value="https://tinyurl.com/acme-madruga" />
-		
+
+		<property name="welcomeMessageEnglish"
+			value="Welcome to Acme Parade, the site to organise your parades" />
+		<property name="welcomeMessageSpanish"
+			value="¡Bienvenido a Acme Parade! el lugar para organizar tus desfiles" />
+
+		<property name="systemName" value="Acme Parade" />
+		<property name="imageURL"
+			value="https://i.ibb.co/HhytG1y/Untitled.jpg" />
+
+		<property name="VAT" value="21" />
+		<property name="fare" value="1" />
+
 	</bean>
-	
+
 	<!-- USER ACCOUNT -->
 	<!-- admin1 -->
 	<bean id="userAccount1" class="security.UserAccount">
 		<property name="username" value="admin1" />
-		<property name="password" value="e00cf25ad42683b3df678c61f42c6bda" />
+		<property name="password"
+			value="e00cf25ad42683b3df678c61f42c6bda" />
 		<property name="authorities">
 			<list>
 				<bean class="security.Authority">
@@ -85,13 +97,14 @@
 			</list>
 		</property>
 		<property name="isNotLocked" value="True" />
-	</bean> 
-	
-	
+	</bean>
+
+
 	<!-- system -->
 	<bean id="userAccount12" class="security.UserAccount">
 		<property name="username" value="system" />
-		<property name="password" value="54b53072540eeeb8f8e9343e71f28176" />
+		<property name="password"
+			value="54b53072540eeeb8f8e9343e71f28176" />
 		<property name="authorities">
 			<list>
 				<bean class="security.Authority">
@@ -100,13 +113,27 @@
 			</list>
 		</property>
 		<property name="isNotLocked" value="True" />
-	</bean> 
-	
+	</bean>
+
+	<bean id="userAccount16" class="security.UserAccount">
+		<property name="username" value="DELETED" />
+		<property name="password"
+			value="63c2867fdcae0e8e8413d7ac21b69b59" />
+		<property name="authorities">
+			<list>
+				<bean class="security.Authority">
+					<property name="authority" value="ADMIN" />
+				</bean>
+			</list>
+		</property>
+		<property name="isNotLocked" value="False" />
+	</bean>
+
 	<!-- FIN USER ACCOUNT -->
-	
+
 
 	<!-- ADMIN -->
-		<!-- SYSTEM -->
+	<!-- SYSTEM -->
 	<bean id="system" class="domain.Admin">
 		<property name="name" value="System" />
 		<property name="middleName" value="" />
@@ -129,11 +156,11 @@
 			</list>
 		</property>
 		<property name="userAccount" ref="userAccount12" />
-		<property name="hasSpam" value = "false"/>
-		<property name="polarity" value ="0.0"/>
+		<property name="hasSpam" value="false" />
+		<property name="polarity" value="0.0" />
 	</bean>
-	
-		<!-- ADMIN1 -->
+
+	<!-- ADMIN1 -->
 	<bean id="admin1" class="domain.Admin">
 		<property name="name" value="Father" />
 		<property name="middleName" value="" />
@@ -157,155 +184,224 @@
 			</list>
 		</property>
 		<property name="userAccount" ref="userAccount1" />
-		<property name="hasSpam" value = "false"/>
-		<property name="polarity" value ="0.0"/>
+		<property name="hasSpam" value="false" />
+		<property name="polarity" value="0.0" />
 	</bean>
-		
-	
+
+	<bean id="DELETED" class="domain.Admin">
+		<property name="name" value="DELETED" />
+		<property name="middleName" value="" />
+		<property name="surname" value="ACTOR" />
+		<property name="photo" value="https://www.url.com/system" />
+		<property name="email"
+			value="notifications2@acmehandyworker.com" />
+		<property name="phoneNumber" value="+34676958523" />
+		<property name="address" value="Central Offices of Heaven" />
+		<property name="boxes">
+			<list>
+				<ref bean="inBoxDELETED" />
+				<ref bean="outBoxDELETED" />
+				<ref bean="trashBoxDELETED" />
+				<ref bean="spamBoxDELETED" />
+				<ref bean="notificationBoxDELETED" />
+			</list>
+		</property>
+		<property name="userAccount" ref="userAccount16" />
+		<property name="hasSpam" value="false" />
+		<property name="polarity" value="0.0" />
+	</bean>
+
+
 	<!-- SOCIAL PROFILES -->
-		<!-- ADMIN -->
-			<bean class="domain.SocialProfile" id="socialProfile1">
-				<property value="Administrador1" name="nick" />
-				<property value="Facebook" name="name" />
-				<property value="https://www.social1.com/link1" name="profileLink" />
-			</bean>
-		<!-- FIN ADMIN -->
-			
-			
-	
-	
+	<!-- ADMIN -->
+	<bean class="domain.SocialProfile" id="socialProfile1">
+		<property value="Administrador1" name="nick" />
+		<property value="Facebook" name="name" />
+		<property value="https://www.social1.com/link1"
+			name="profileLink" />
+	</bean>
+	<!-- FIN ADMIN -->
+
+
+
+
 	<!-- BOXES -->
-		<!-- ADMIN -->
-		<!-- SYSTEM -->
-				<bean class="domain.Box" id="inBoxAdmin4">
-					<property value="INBOX" name="name" />
-					<property value="true" name="isSystem" />
-					<property name="messages">
-						<list>
-						</list>
-					</property>
-				</bean>
-				
-				<bean class="domain.Box" id="outBoxAdmin4">
-					<property value="OUTBOX" name="name" />
-					<property value="true" name="isSystem" />
-					<property name="messages">
-						<list>
-						</list>
-					</property>
-				</bean>
-				
-				<bean class="domain.Box" id="trashBoxAdmin4">
-					<property value="TRASHBOX" name="name" />
-					<property value="true" name="isSystem" />
-					<property name="messages">
-						<list>
-						</list>
-					</property>
-				</bean>
-				
-				<bean class="domain.Box" id="spamBoxAdmin4">
-					<property value="SPAMBOX" name="name" />
-					<property value="true" name="isSystem" />
-					<property name="messages">
-						<list>
-						</list>
-					</property>
-				</bean>
-				
-				<bean class="domain.Box" id="notificationBoxAdmin4">
-					<property value="NOTIFICATIONBOX" name="name" />
-					<property value="true" name="isSystem" />
-					<property name="messages">
-						<list>
-						</list>
-					</property>
-				</bean>
-			<!-- FIN SYSTEM -->
-		
-			<!-- ADMIN1 -->
-				<bean class="domain.Box" id="inBoxAdmin1">
-					<property value="INBOX" name="name" />
-					<property value="true" name="isSystem" />
-					<property name="messages">
-						<list>
-						</list>
-					</property>
-				</bean>
-				
-				<bean class="domain.Box" id="outBoxAdmin1">
-					<property value="OUTBOX" name="name" />
-					<property value="true" name="isSystem" />
-					<property name="messages">
-						<list>
-						</list>
-					</property>
-				</bean>
-				
-				<bean class="domain.Box" id="trashBoxAdmin1">
-					<property value="TRASHBOX" name="name" />
-					<property value="true" name="isSystem" />
-					<property name="messages">
-						<list>
-						</list>
-					</property>
-				</bean>
-				
-				<bean class="domain.Box" id="spamBoxAdmin1">
-					<property value="SPAMBOX" name="name" />
-					<property value="true" name="isSystem" />
-					<property name="messages">
-						<list>
-						</list>
-					</property>
-				</bean>
-				
-				<bean class="domain.Box" id="notificationBoxAdmin1">
-					<property value="NOTIFICATIONBOX" name="name" />
-					<property value="true" name="isSystem" />
-					<property name="messages">
-						<list>
-						</list>
-					</property>
-				</bean>
-			<!-- FIN ADMIN1 -->
-		
+	<!-- ADMIN -->
+	<!-- SYSTEM -->
+	<bean class="domain.Box" id="inBoxAdmin4">
+		<property value="INBOX" name="name" />
+		<property value="true" name="isSystem" />
+		<property name="messages">
+			<list>
+			</list>
+		</property>
+	</bean>
+
+	<bean class="domain.Box" id="outBoxAdmin4">
+		<property value="OUTBOX" name="name" />
+		<property value="true" name="isSystem" />
+		<property name="messages">
+			<list>
+			</list>
+		</property>
+	</bean>
+
+	<bean class="domain.Box" id="trashBoxAdmin4">
+		<property value="TRASHBOX" name="name" />
+		<property value="true" name="isSystem" />
+		<property name="messages">
+			<list>
+			</list>
+		</property>
+	</bean>
+
+	<bean class="domain.Box" id="spamBoxAdmin4">
+		<property value="SPAMBOX" name="name" />
+		<property value="true" name="isSystem" />
+		<property name="messages">
+			<list>
+			</list>
+		</property>
+	</bean>
+
+	<bean class="domain.Box" id="notificationBoxAdmin4">
+		<property value="NOTIFICATIONBOX" name="name" />
+		<property value="true" name="isSystem" />
+		<property name="messages">
+			<list>
+			</list>
+		</property>
+	</bean>
+	<!-- FIN SYSTEM -->
+
+	<!-- ADMIN1 -->
+	<bean class="domain.Box" id="inBoxAdmin1">
+		<property value="INBOX" name="name" />
+		<property value="true" name="isSystem" />
+		<property name="messages">
+			<list>
+			</list>
+		</property>
+	</bean>
+
+	<bean class="domain.Box" id="outBoxAdmin1">
+		<property value="OUTBOX" name="name" />
+		<property value="true" name="isSystem" />
+		<property name="messages">
+			<list>
+			</list>
+		</property>
+	</bean>
+
+	<bean class="domain.Box" id="trashBoxAdmin1">
+		<property value="TRASHBOX" name="name" />
+		<property value="true" name="isSystem" />
+		<property name="messages">
+			<list>
+			</list>
+		</property>
+	</bean>
+
+	<bean class="domain.Box" id="spamBoxAdmin1">
+		<property value="SPAMBOX" name="name" />
+		<property value="true" name="isSystem" />
+		<property name="messages">
+			<list>
+			</list>
+		</property>
+	</bean>
+
+	<bean class="domain.Box" id="notificationBoxAdmin1">
+		<property value="NOTIFICATIONBOX" name="name" />
+		<property value="true" name="isSystem" />
+		<property name="messages">
+			<list>
+			</list>
+		</property>
+	</bean>
+	<!-- FIN ADMIN1 -->
+
+	<bean class="domain.Box" id="inBoxDELETED">
+		<property value="INBOX" name="name" />
+		<property value="true" name="isSystem" />
+		<property name="messages">
+			<list>
+			</list>
+		</property>
+	</bean>
+
+	<bean class="domain.Box" id="outBoxDELETED">
+		<property value="OUTBOX" name="name" />
+		<property value="true" name="isSystem" />
+		<property name="messages">
+			<list>
+			</list>
+		</property>
+	</bean>
+
+	<bean class="domain.Box" id="trashBoxDELETED">
+		<property value="TRASHBOX" name="name" />
+		<property value="true" name="isSystem" />
+		<property name="messages">
+			<list>
+			</list>
+		</property>
+	</bean>
+
+	<bean class="domain.Box" id="spamBoxDELETED">
+		<property value="SPAMBOX" name="name" />
+		<property value="true" name="isSystem" />
+		<property name="messages">
+			<list>
+			</list>
+		</property>
+	</bean>
+
+	<bean class="domain.Box" id="notificationBoxDELETED">
+		<property value="NOTIFICATIONBOX" name="name" />
+		<property value="true" name="isSystem" />
+		<property name="messages">
+			<list>
+			</list>
+		</property>
+	</bean>
+
 	<!-- FIN BOXES -->
-	 
-	 <!-- POSITION -->
-	 
-	 <bean id ="position1" class="domain.Position">
+
+	<!-- POSITION -->
+
+	<bean id="position1" class="domain.Position">
 		<property name="titleEnglish" value="President" />
-		<property name="titleSpanish" value="Presidente"/>	
+		<property name="titleSpanish" value="Presidente" />
 	</bean>
-	
-	<bean id ="position2" class="domain.Position">
+
+	<bean id="position2" class="domain.Position">
 		<property name="titleEnglish" value="Vice President" />
-		<property name="titleSpanish" value="Vicepresidente"/>	
+		<property name="titleSpanish" value="Vicepresidente" />
 	</bean>
-	
-	<bean id ="position3" class="domain.Position">
+
+	<bean id="position3" class="domain.Position">
 		<property name="titleEnglish" value="Secretary" />
-		<property name="titleSpanish" value="Secretario"/>	
+		<property name="titleSpanish" value="Secretario" />
 	</bean>
-	
-	<bean id ="position4" class="domain.Position">
+
+	<bean id="position4" class="domain.Position">
 		<property name="titleEnglish" value="Treasurer" />
-		<property name="titleSpanish" value="Tesorero"/>	
+		<property name="titleSpanish" value="Tesorero" />
 	</bean>
-	
-	<bean id ="position5" class="domain.Position">
+
+	<bean id="position5" class="domain.Position">
 		<property name="titleEnglish" value="Historian" />
-		<property name="titleSpanish" value="Historiador"/>	
+		<property name="titleSpanish" value="Historiador" />
 	</bean>
-	
-	<bean id ="position6" class="domain.Position">
+
+	<bean id="position6" class="domain.Position">
 		<property name="titleEnglish" value="Fundraiser" />
-		<property name="titleSpanish" value="Promotor"/>	
+		<property name="titleSpanish" value="Promotor" />
 	</bean>
-	
-	<bean id ="position7" class="domain.Position">
+
+	<bean id="position7" class="domain.Position">
 		<property name="titleEnglish" value="Officer" />
-		<property name="titleSpanish" value="Vocal"/>	
+		<property name="titleSpanish" value="Vocal" />
 	</bean>
 </beans>

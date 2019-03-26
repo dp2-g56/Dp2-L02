@@ -40,6 +40,7 @@ public class EnrolmentService {
 	private MessageService		messageService;
 
 
+
 	public List<Enrolment> findAll() {
 		return this.enrolmentRepository.findAll();
 	}
@@ -150,6 +151,23 @@ public class EnrolmentService {
 		return enrolmentSaved;
 	}
 
+
+	public void deleteAllEnrolmentsBrotherhood() {
+		Brotherhood brotherhood = this.brotherhoodService.loggedBrotherhood();
+
+		List<Enrolment> enrolmentsToDelete = brotherhood.getEnrolments();
+
+		brotherhood.setEnrolments(new ArrayList<Enrolment>());
+
+		List<Member> members = this.memberService.findAll();
+
+		for (Member m : members) {
+			List<Enrolment> enrolmentsOfMember = m.getEnrolments();
+			enrolmentsOfMember.removeAll(enrolmentsToDelete);
+			m.setEnrolments(enrolmentsOfMember);
+			this.memberService.save(m);
+		}
+
 	//Reject as brotherhood
 	public void rejectEnrolment(Enrolment enrolment) {
 		this.brotherhoodService.loggedAsBrotherhood();
@@ -199,6 +217,7 @@ public class EnrolmentService {
 		enrolment.setDropOutDate(thisMoment);
 		this.enrolmentRepository.save(enrolment);
 		this.messageService.sendNotificationDropOut(enrolment.getBrotherhood());
+
 
 	}
 

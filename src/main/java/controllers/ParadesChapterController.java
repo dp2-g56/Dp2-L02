@@ -15,12 +15,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import services.ChapterService;
-import services.ParadeService;
 import domain.Area;
 import domain.Chapter;
 import domain.Parade;
 import domain.ParadeStatus;
+import services.ChapterService;
+import services.ParadeService;
 
 @Controller
 @RequestMapping("/parade/chapter")
@@ -29,11 +29,10 @@ public class ParadesChapterController extends AbstractController {
 	// Services
 
 	@Autowired
-	private ParadeService	paradeService;
+	private ParadeService paradeService;
 
 	@Autowired
-	private ChapterService	chapterService;
-
+	private ChapterService chapterService;
 
 	// Constructor
 
@@ -81,11 +80,9 @@ public class ParadesChapterController extends AbstractController {
 
 		return result;
 	}
-	//**********************************************************************************************************
+	// **********************************************************************************************************
 
-	@RequestMapping(value = "/filter", method = {
-		RequestMethod.POST, RequestMethod.GET
-	}, params = "refresh")
+	@RequestMapping(value = "/filter", method = { RequestMethod.POST, RequestMethod.GET }, params = "refresh")
 	public ModelAndView paradeFilter(@RequestParam String fselect) {
 		ModelAndView result;
 
@@ -121,7 +118,8 @@ public class ParadesChapterController extends AbstractController {
 
 		return result;
 	}
-	//*******************************************************************************
+
+	// *******************************************************************************
 	// Select Area
 	@RequestMapping(value = "/selectArea", method = RequestMethod.GET)
 	public ModelAndView selectArea() {
@@ -143,6 +141,7 @@ public class ParadesChapterController extends AbstractController {
 		ModelAndView result;
 		Assert.isTrue(this.chapterService.paradeSecurity(paradeId));
 		Parade parade = this.paradeService.findOne(paradeId);
+		Assert.isTrue(parade.getParadeStatus().equals(ParadeStatus.SUBMITTED));
 
 		List<ParadeStatus> paradeStatus = Arrays.asList(ParadeStatus.values());
 
@@ -179,7 +178,8 @@ public class ParadesChapterController extends AbstractController {
 		this.chapterService.loggedAsChapter();
 		Assert.isTrue(this.chapterService.paradeSecurity(parade.getId()));
 
-		if (parade.getParadeStatus().equals(ParadeStatus.REJECTED) && (parade.getRejectedReason().trim().equals("") || parade.getRejectedReason() == null)) {
+		if (parade.getParadeStatus().equals(ParadeStatus.REJECTED)
+				&& (parade.getRejectedReason().trim().equals("") || parade.getRejectedReason() == null)) {
 			String locale = LocaleContextHolder.getLocale().getLanguage();
 			if (locale == "es") {
 				statusName.add("PRESENTADO");
@@ -221,9 +221,9 @@ public class ParadesChapterController extends AbstractController {
 		Chapter cha;
 		cha = this.chapterService.reconstructArea(chapter, binding);
 
-		if (binding.hasErrors()) {
+		if (binding.hasErrors())
 			result = this.createEditModelAndViewB(cha);
-		} else {
+		else
 			try {
 				this.chapterService.updateChapterArea(cha);
 				result = new ModelAndView("redirect:list.do");
@@ -231,7 +231,6 @@ public class ParadesChapterController extends AbstractController {
 			} catch (Throwable oops) {
 				result = this.createEditModelAndViewB(cha, "area.commit.error");
 			}
-		}
 		return result;
 	}
 

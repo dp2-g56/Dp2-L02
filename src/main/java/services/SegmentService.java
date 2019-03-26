@@ -12,9 +12,13 @@ import org.springframework.validation.Validator;
 
 import domain.Brotherhood;
 import domain.Parade;
+import domain.ParadeStatus;
 import domain.Path;
 import domain.Segment;
 import repositories.SegmentRepository;
+import security.Authority;
+import security.LoginService;
+import security.UserAccount;
 
 @Service
 @Transactional
@@ -30,6 +34,8 @@ public class SegmentService {
 	private BrotherhoodService brotherhoodService;
 	@Autowired
 	private PathService pathService;
+	@Autowired
+	private ChapterService chapterService;
 	@Autowired
 	private Validator validator;
 
@@ -74,10 +80,15 @@ public class SegmentService {
 	public List<Segment> getSegmentByParade(Integer paradeId) {
 
 		Parade parade = this.paradeService.findOne(paradeId);
+		UserAccount userAccount = LoginService.getPrincipal();
+		List<Authority> auth = (List<Authority>) userAccount.getAuthorities();
 
-		if (parade.getIsDraftMode())
+		if (parade.getIsDraftMode() || auth.get(0).toString().equals("BROTHERHOOD"))
 			Assert.isTrue(this.brotherhoodService.loggedBrotherhood().getParades().contains(parade));
-
+		else if (auth.get(0).toString().equals("CHAPTER"))
+			this.chapterService.paradeSecurity(parade);
+		else
+			Assert.isTrue(parade.getParadeStatus().equals(ParadeStatus.ACCEPTED));
 		return parade.getPath().getSegments();
 	}
 

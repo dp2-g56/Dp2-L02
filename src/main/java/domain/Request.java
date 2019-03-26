@@ -65,7 +65,7 @@ public class Request extends DomainEntity {
 		this.reasonDescription = reasonDescription;
 	}
 
-	@ManyToOne(optional = false)
+	@ManyToOne(optional = true)
 	public Member getMember() {
 		return this.member;
 	}
@@ -74,7 +74,7 @@ public class Request extends DomainEntity {
 		this.member = member;
 	}
 
-	@ManyToOne(optional = false)
+	@ManyToOne(optional = true)
 	public Parade getParade() {
 		return this.parade;
 	}

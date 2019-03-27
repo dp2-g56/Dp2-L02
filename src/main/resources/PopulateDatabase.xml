@@ -250,7 +250,7 @@
 				</bean>
 			</list>
 		</property>
-		<property name="isNotLocked" value="True" />
+		<property name="isNotLocked" value="False" />
 	</bean> 
 	
 	<!-- chapter -->

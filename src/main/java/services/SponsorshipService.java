@@ -281,6 +281,7 @@ public class SponsorshipService {
 	}
 
 	public void updateSpentMoneyOfSponsorship(int paradeId, int sponsorshipId) {
+		Actor actor = this.actorService.loggedActor();
 		Sponsor sponsor = this.getSponsorOfSponsorship(sponsorshipId);
 
 		Assert.isTrue(sponsorshipId > 0 && paradeId > 0);
@@ -294,11 +295,10 @@ public class SponsorshipService {
 		java.lang.Float newSpentMoney = sponsorship.getSpentMoney() + conf.getFare()
 				+ conf.getFare() * conf.getVAT() / 100;
 
-		sponsorship.setSpentMoney(newSpentMoney);
-
-		Actor actor = this.actorService.loggedActor();
-
 		if (actor.getId() != sponsor.getId()) {
+
+			sponsorship.setSpentMoney(newSpentMoney);
+
 			this.save(sponsorship);
 			this.sendMessageToSponsor(sponsor);
 			this.flush();

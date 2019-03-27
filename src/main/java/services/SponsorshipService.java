@@ -14,6 +14,7 @@ import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
 
+import repositories.SponsorshipRepository;
 import domain.Actor;
 import domain.Configuration;
 import domain.CreditCard;
@@ -23,28 +24,28 @@ import domain.ParadeStatus;
 import domain.Sponsor;
 import domain.Sponsorship;
 import forms.FormObjectSponsorshipCreditCard;
-import repositories.SponsorshipRepository;
 
 @Service
 @Transactional
 public class SponsorshipService {
 
 	@Autowired
-	private SponsorshipRepository sponsorshipRepository;
+	private SponsorshipRepository	sponsorshipRepository;
 	@Autowired
-	private ConfigurationService configurationService;
+	private ConfigurationService	configurationService;
 	@Autowired
-	private Validator validator;
+	private Validator				validator;
 	@Autowired
-	private SponsorService sponsorService;
+	private SponsorService			sponsorService;
 	@Autowired
-	private CreditCardService creditCardService;
+	private CreditCardService		creditCardService;
 	@Autowired
-	private AdminService adminService;
+	private AdminService			adminService;
 	@Autowired
-	private MessageService messageService;
+	private MessageService			messageService;
 	@Autowired
-	private ActorService actorService;
+	private ActorService			actorService;
+
 
 	public List<Sponsorship> findAll() {
 		return this.sponsorshipRepository.findAll();
@@ -83,21 +84,31 @@ public class SponsorshipService {
 		return spo;
 	}
 
-	public Sponsorship reconstruct(FormObjectSponsorshipCreditCard formObject, BindingResult binding,
-			CreditCard creditCard, Parade parade) {
+	public Sponsorship reconstruct(FormObjectSponsorshipCreditCard formObject, BindingResult binding, CreditCard creditCard, Parade parade) {
 		Sponsorship spo;
 		if (formObject.getId() == 0 && parade != null) {
 			spo = new Sponsorship();
 			spo.setIsActivated(true);
 			spo.setSpentMoney(0f);
 			spo.setParade(parade);
-		} else
-			spo = this.findOne(formObject.getId());
 
-		spo.setBanner(formObject.getBanner());
-		spo.setTargetURL(formObject.getTargetURL());
-		spo.setCreditCard(creditCard);
+			spo.setBanner(formObject.getBanner());
+			spo.setTargetURL(formObject.getTargetURL());
+			spo.setCreditCard(creditCard);
+		} else {
+			Sponsorship spo2 = this.findOne(formObject.getId());
 
+			spo = new Sponsorship();
+			spo.setIsActivated(spo2.getIsActivated());
+			spo.setSpentMoney(spo2.getSpentMoney());
+			spo.setParade(spo2.getParade());
+			spo.setVersion(spo2.getVersion());
+			spo.setId(spo2.getId());
+
+			spo.setBanner(formObject.getBanner());
+			spo.setTargetURL(formObject.getTargetURL());
+			spo.setCreditCard(creditCard);
+		}
 		// this.validator.validate(spo, binding);
 
 		return spo;
@@ -115,8 +126,7 @@ public class SponsorshipService {
 		CreditCard creditCard = sponsorship.getCreditCard();
 
 		Assert.isTrue(cardType.contains(sponsorship.getCreditCard().getBrandName()));
-		Assert.isTrue(!sponsorship.getParade().getIsDraftMode()
-				&& sponsorship.getParade().getParadeStatus().equals(ParadeStatus.ACCEPTED));
+		Assert.isTrue(!sponsorship.getParade().getIsDraftMode() && sponsorship.getParade().getParadeStatus().equals(ParadeStatus.ACCEPTED));
 
 		Assert.isTrue(this.creditCardService.validateNumberCreditCard(creditCard));
 		Assert.isTrue(this.creditCardService.validateDateCreditCard(creditCard));
@@ -214,9 +224,7 @@ public class SponsorshipService {
 
 		for (Sponsorship s : sponsorships) {
 			CreditCard card = s.getCreditCard();
-			if (!(this.creditCardService.validateNumberCreditCard(card)
-					&& this.creditCardService.validateDateCreditCard(card)
-					&& this.creditCardService.validateCvvCreditCard(card)) && s.getIsActivated()) {
+			if (!(this.creditCardService.validateNumberCreditCard(card) && this.creditCardService.validateDateCreditCard(card) && this.creditCardService.validateCvvCreditCard(card)) && s.getIsActivated()) {
 				s.setIsActivated(false);
 				this.save(s);
 			}
@@ -263,18 +271,13 @@ public class SponsorshipService {
 	}
 
 	public void sendMessageToSponsor(Sponsor sponsor) {
-		java.lang.Float amount = this.configurationService.getConfiguration().getFare()
-				+ this.configurationService.getConfiguration().getFare()
-						* this.configurationService.getConfiguration().getVAT() / 100;
+		java.lang.Float amount = this.configurationService.getConfiguration().getFare() + this.configurationService.getConfiguration().getFare() * this.configurationService.getConfiguration().getVAT() / 100;
 
 		String subject = "New charge for advertising / Nuevo cargo por publicidad";
 
-		String body = "You have paid: " + amount.toString()
-				+ " euros for advertising one of your sponsorship / Has pagado: " + amount.toString()
-				+ " euros por publicitar uno de tus patrocinios";
+		String body = "You have paid: " + amount.toString() + " euros for advertising one of your sponsorship / Has pagado: " + amount.toString() + " euros por publicitar uno de tus patrocinios";
 
-		Message message = this.messageService.createNotification(subject, body, "NEUTRAL", "Notification, Sponsorship",
-				sponsor);
+		Message message = this.messageService.createNotification(subject, body, "NEUTRAL", "Notification, Sponsorship", sponsor);
 
 		this.messageService.sendMessageAnotherSender(message);
 
@@ -292,8 +295,7 @@ public class SponsorshipService {
 		Assert.isTrue(sponsorship.getIsActivated());
 
 		Configuration conf = this.configurationService.getConfiguration();
-		java.lang.Float newSpentMoney = sponsorship.getSpentMoney() + conf.getFare()
-				+ conf.getFare() * conf.getVAT() / 100;
+		java.lang.Float newSpentMoney = sponsorship.getSpentMoney() + conf.getFare() + conf.getFare() * conf.getVAT() / 100;
 
 		if (actor.getId() != sponsor.getId()) {
 

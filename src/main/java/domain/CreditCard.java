@@ -14,12 +14,13 @@ import org.hibernate.validator.constraints.NotBlank;
 @Access(AccessType.PROPERTY)
 public class CreditCard {
 
-	private String holderName;
-	private String brandName;
-	private Long number;
-	private Integer expirationMonth;
-	private Integer expirationYear;
-	private Integer cvvCode;
+	private String	holderName;
+	private String	brandName;
+	private Long	number;
+	private Integer	expirationMonth;
+	private Integer	expirationYear;
+	private Integer	cvvCode;
+
 
 	public CreditCard() {
 

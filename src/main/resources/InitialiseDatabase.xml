@@ -112,7 +112,7 @@
 				</bean>
 			</list>
 		</property>
-		<property name="isNotLocked" value="True" />
+		<property name="isNotLocked" value="False" />
 	</bean>
 
 	<bean id="userAccount16" class="security.UserAccount">

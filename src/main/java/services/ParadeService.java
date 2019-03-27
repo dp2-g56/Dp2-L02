@@ -16,8 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
 
-import repositories.ParadeRepository;
-import utilities.RandomString;
 import domain.Area;
 import domain.Brotherhood;
 import domain.Chapter;
@@ -32,6 +30,8 @@ import domain.Segment;
 import domain.Sponsorship;
 import forms.FormObjectParadeFloat;
 import forms.FormObjectParadeFloatCheckbox;
+import repositories.ParadeRepository;
+import utilities.RandomString;
 
 @Service
 @Transactional
@@ -40,24 +40,23 @@ public class ParadeService {
 	// Managed repository ------------------------------------------
 
 	@Autowired
-	private ParadeRepository	paradeRepository;
+	private ParadeRepository paradeRepository;
 	@Autowired
-	private BrotherhoodService	brotherhoodService;
+	private BrotherhoodService brotherhoodService;
 	@Autowired
-	private SponsorService		sponsorService;
+	private SponsorService sponsorService;
 	@Autowired
-	private FloatService		floatService;
+	private FloatService floatService;
 	@Autowired
-	private PathService			pathService;
+	private PathService pathService;
 	@Autowired
-	private SegmentService		segmentService;
+	private SegmentService segmentService;
 	@Autowired
-	private RequestService		requestService;
+	private RequestService requestService;
 	@Autowired
-	private FinderService		finderService;
+	private FinderService finderService;
 	@Autowired
-	private SponsorshipService	sponsorshipService;
-
+	private SponsorshipService sponsorshipService;
 
 	// Simple CRUD methods ------------------------------------------
 
@@ -359,7 +358,7 @@ public class ParadeService {
 
 		if (parade.getId() > 0) {
 			Parade paradeFounded = this.findOne(parade.getId());
-			Assert.isTrue(paradeFounded.getIsDraftMode());
+			Assert.isTrue(paradeFounded.getIsDraftMode() && brotherhood.getParades().contains(paradeFounded));
 		}
 
 		parade.setFloats(floats);
@@ -531,34 +530,37 @@ public class ParadeService {
 		paradesToDelete = brother.getParades();
 		Integer size = paradesToDelete.size();
 
-		//for (int i = 0; i < size; i++)
-		//this.deleteOneParade(paradesToDelete.get(0));
+		// for (int i = 0; i < size; i++)
+		// this.deleteOneParade(paradesToDelete.get(0));
 	}
+
 	public void deleteInFinal(Parade p) {
 
 		this.brotherhoodService.loggedAsBrotherhood();
 		Brotherhood brother = this.brotherhoodService.loggedBrotherhood();
 
-		//DELETE PATH------------------
-		Path path = new Path();
-		path = p.getPath();
-		p.setPath(null);
-		this.pathService.delete(path);
-		//-----------------------------
+		// DELETE PATH------------------
+		if (p.getPath() != null) {
+			Path path = new Path();
+			path = p.getPath();
+			p.setPath(null);
+			this.pathService.delete(path);
+		}
+		// -----------------------------
 
-		//UNASSIGN LIST FLOAT--------------------------------------------
+		// UNASSIGN LIST FLOAT--------------------------------------------
 		List<domain.Float> emptyFloats = new ArrayList<domain.Float>();
 		p.setFloats(emptyFloats);
-		//-------------------------------------------------------------
+		// -------------------------------------------------------------
 
-		//UNASSIGN FINDERS-----------------------------------
+		// UNASSIGN FINDERS-----------------------------------
 		List<Finder> allFinders = new ArrayList<Finder>();
 		allFinders = this.finderService.findAll();
 		for (Finder f : allFinders)
 			f.getParades().remove(p);
-		//----------------------------------------------------
+		// ----------------------------------------------------
 
-		//DELETE REQUEST------------------------------------------
+		// DELETE REQUEST------------------------------------------
 		List<Request> requests = p.getRequests();
 		Integer size = requests.size();
 
@@ -567,22 +569,22 @@ public class ParadeService {
 			if (me.getRequests().contains(requests.get(i)))
 				me.getRequests().remove(requests.get(i));
 
-			//parades.get(0).getRequests().remove(requests.get(0));
+			// parades.get(0).getRequests().remove(requests.get(0));
 
 		}
 
 		p.setRequests(new ArrayList<Request>());
 
 		this.requestService.deleteInBatch(requests);
-		//-----------------------------------------------------------
+		// -----------------------------------------------------------
 
-		//SPONSORSHIPS------------------------------------------------
+		// SPONSORSHIPS------------------------------------------------
 		List<Sponsorship> sponsorships = new ArrayList<Sponsorship>();
 		sponsorships = this.sponsorshipService.findAll();
 		for (Sponsorship s : sponsorships)
 			if (s.getParade().equals(p))
 				s.setParade(null);
-		//------------------------------------------------------
+		// ------------------------------------------------------
 
 		brother.getParades().remove(p);
 
@@ -591,12 +593,13 @@ public class ParadeService {
 		this.flush();
 
 	}
+
 	public void deleteParadetest(Parade parade) {
 
 		// Security
 		this.brotherhoodService.loggedAsBrotherhood();
 		Brotherhood loggedBrotherhood = this.brotherhoodService.loggedBrotherhood();
-		//Assert.isTrue(!(loggedBrotherhood.getArea().equals(null)));
+		// Assert.isTrue(!(loggedBrotherhood.getArea().equals(null)));
 		Assert.isTrue(parade.getIsDraftMode());
 		Assert.isTrue(loggedBrotherhood.getParades().contains(parade));
 

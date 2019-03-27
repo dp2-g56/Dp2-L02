@@ -74,7 +74,7 @@ public class CreditCard {
 		this.expirationYear = expirationYear;
 	}
 
-	@Min(100)
+	@Min(1)
 	@Max(999)
 	@NotNull
 	public Integer getCvvCode() {

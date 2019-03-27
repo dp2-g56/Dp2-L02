@@ -250,6 +250,9 @@ public class FloatService {
 	public domain.Float addPicture(String picture, domain.Float floatt) {
 		this.brotherhoodService.loggedAsBrotherhood();
 
+		if (floatt.getId() > 0)
+			Assert.isTrue(this.brotherhoodService.loggedBrotherhood().getFloats().contains(floatt));
+
 		Assert.isTrue(!picture.trim().isEmpty() && this.isUrl(picture));
 
 		floatt.getPictures().add(picture);
@@ -277,6 +280,9 @@ public class FloatService {
 		floatt = this.findOne(floatId);
 
 		Assert.notNull(floatt);
+
+		Brotherhood bro = this.brotherhoodService.loggedBrotherhood();
+		Assert.isTrue(bro.getFloats().contains(floatt));
 
 		pictures = floatt.getPictures();
 

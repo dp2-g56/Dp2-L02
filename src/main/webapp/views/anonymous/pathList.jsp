@@ -28,5 +28,7 @@
 			<spring:param name="brotherhoodId" value="${param.brotherhoodId}"></spring:param>
 		</spring:url>
 		
-
+	<jstl:if test="${chapter!=chapter}">
 	<p><a href="${cancelar}"><spring:message code="annonymous.cancel"/></a></p>
+	
+	</jstl:if>

@@ -76,6 +76,18 @@ public class ActorService {
 		Assert.isTrue(userAccount.getAuthorities().size() > 0);
 	}
 
+	public Boolean loggedAsActorBoolean() {
+		Boolean res = true;
+		UserAccount userAccount;
+		try {
+			userAccount = LoginService.getPrincipal();
+			return res;
+		} catch (Throwable oops) {
+			res = false;
+			return res;
+		}
+	}
+
 	public Boolean loggedAsActorBolean() {
 		Boolean res = false;
 		UserAccount userAccount;

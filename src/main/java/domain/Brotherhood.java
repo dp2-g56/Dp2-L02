@@ -22,22 +22,19 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Access(AccessType.PROPERTY)
-@Table(indexes = {
-	@Index(columnList = "area"), @Index(columnList = "polarity")
-})
+@Table(indexes = { @Index(columnList = "area"), @Index(columnList = "polarity"), @Index(columnList = "history") })
 public class Brotherhood extends Actor {
 
-	private String			title;
-	private Date			establishmentDate;
-	private List<String>	pictures;
+	private String title;
+	private Date establishmentDate;
+	private List<String> pictures;
 
 	// Relaciones
-	private Area			area;
-	private List<Float>		floats;
-	private List<Parade>	parades;
-	private List<Enrolment>	enrolments;
-	private History			history;
-
+	private Area area;
+	private List<Float> floats;
+	private List<Parade> parades;
+	private List<Enrolment> enrolments;
+	private History history;
 
 	@OneToOne(optional = true, cascade = CascadeType.ALL)
 	@Valid

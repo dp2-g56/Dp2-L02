@@ -441,16 +441,12 @@ public class AdminService {
 			statistics.add(this.adminRepository.stddevRecordsPerHistory());
 		}
 
-		if (this.adminRepository.ratioAreasNotCoordinated() == 0)
+		if (this.adminRepository.ratioAreasNotCoordinated() == null)
 			statistics.add((float) -1);
 		else
 			statistics.add(this.adminRepository.ratioAreasNotCoordinated());
 
 		if (this.paradeService.findAll().isEmpty()) {
-			statistics.add((float) 0);
-			statistics.add((float) 0);
-			statistics.add((float) 0);
-			statistics.add((float) 0);
 			statistics.add((float) 0);
 			statistics.add((float) 0);
 			statistics.add((float) 0);
@@ -461,22 +457,35 @@ public class AdminService {
 			statistics.add(this.adminRepository.maxParadesCoordinated());
 			statistics.add(this.adminRepository.avgParadesCoordinated());
 			statistics.add(this.adminRepository.stddevParadesCoordinated());
-			statistics.add(this.adminRepository.paradesDraftVSFinal());
-			statistics.add(this.adminRepository.ratioParadesAcceptedRequests());
-			statistics.add(this.adminRepository.ratioParadesRejectedRequests());
-			statistics.add(this.adminRepository.ratioParadesSubmittedRequests());
-
 		}
+		if (this.adminRepository.paradesDraftVSFinal() == null)
+			statistics.add((float) -1);
+		else
+			statistics.add(this.adminRepository.paradesDraftVSFinal());
+		if (this.adminRepository.ratioParadesAcceptedRequests() == null)
+			statistics.add((float) -1);
+		else
+			statistics.add(this.adminRepository.ratioParadesAcceptedRequests());
+		if (this.adminRepository.ratioParadesRejectedRequests() == null)
+			statistics.add((float) -1);
+		else
+			statistics.add(this.adminRepository.ratioParadesRejectedRequests());
+		if (this.adminRepository.ratioParadesSubmittedRequests() == null)
+			statistics.add((float) -1);
+		else
+			statistics.add(this.adminRepository.ratioParadesSubmittedRequests());
+		if (this.adminRepository.ratioActiveSponsorships() == null)
+			statistics.add((float) -1);
+		else
+			statistics.add(this.adminRepository.ratioActiveSponsorships());
 
 		if (this.sponsorshipService.findAll().isEmpty()) {
 			statistics.add((float) 0);
 			statistics.add((float) 0);
 			statistics.add((float) 0);
 			statistics.add((float) 0);
-			statistics.add((float) 0);
 
 		} else {
-			statistics.add(this.adminRepository.ratioActiveSponsorships());
 			statistics.add(this.adminRepository.minSponsorshipsPerSponsor());
 			statistics.add(this.adminRepository.maxSponsorshipsPerSponsor());
 			statistics.add(this.adminRepository.avgSponsorshipsPerSponsor());
@@ -517,7 +526,10 @@ public class AdminService {
 	}
 
 	public List<Chapter> chaptersThatCoordinateAtLeast() {
-		return this.adminRepository.chaptersThatCoordinateAtLeast();
+		if (this.adminRepository.chaptersThatCoordinateAtLeast().isEmpty())
+			return new ArrayList<Chapter>();
+		else
+			return this.adminRepository.chaptersThatCoordinateAtLeast();
 	}
 
 	public List<String> broLargestHistory() {
@@ -528,7 +540,10 @@ public class AdminService {
 	}
 
 	public List<Brotherhood> broHistoryLargerThanAvg() {
-		return this.adminRepository.broHistoryLargerThanAvg();
+		if (this.adminRepository.broHistoryLargerThanAvg().isEmpty())
+			return new ArrayList<Brotherhood>();
+		else
+			return this.adminRepository.broHistoryLargerThanAvg();
 	}
 
 	public Float maxMembersBrotherhood() {
@@ -552,12 +567,18 @@ public class AdminService {
 	}
 
 	public List<String> largestBrotherhoods() {
-		return this.adminRepository.largestBrotherhoods();
+		if (this.adminRepository.largestBrotherhoods().isEmpty())
+			return new ArrayList<String>();
+		else
+			return this.adminRepository.largestBrotherhoods();
 
 	}
 
 	public List<String> smallestBrotherhoods() {
-		return this.adminRepository.smallestBrotherhoods();
+		if (this.adminRepository.smallestBrotherhoods().isEmpty())
+			return new ArrayList<String>();
+		else
+			return this.adminRepository.smallestBrotherhoods();
 
 	}
 
@@ -755,7 +776,8 @@ public class AdminService {
 		Integer cont = 1;
 
 		for (SocialProfile f : socialProfiles) {
-			sb.append("Profile" + cont + " Name: " + f.getName() + " Nick: " + f.getNick() + " Profile link: " + f.getProfileLink()).append(System.getProperty("line.separator"));
+			sb.append("Profile" + cont + " Name: " + f.getName() + " Nick: " + f.getNick() + " Profile link: "
+					+ f.getProfileLink()).append(System.getProperty("line.separator"));
 			cont++;
 		}
 		return sb.toString();

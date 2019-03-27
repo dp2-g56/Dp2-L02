@@ -944,6 +944,7 @@
 			<list>
 				<ref bean="sponsorship1" />
 				<ref bean="sponsorship2" />
+				<ref bean="sponsorship3" />
 			</list>
 		</property>		
 	</bean>
@@ -962,6 +963,15 @@
 		<property name="banner" value="https://www.eff.org/files/banner_library/https-everywhere-logo.png" />
 		<property name="targetURL" value="https://www.eff.org/files/banner_library/https-everywhere-logo.png" />
 		<property name="spentMoney" value="31" />
+		<property name="isActivated" value="false" />
+		<property name="creditCard" ref="creditCard2" />
+		<property name="parade" ref="parade3" />
+	</bean>
+	
+	<bean id="sponsorship3" class="domain.Sponsorship">
+		<property name="banner" value="https://www.exoclick.com/wp-content/uploads/2017/02/https.jpg" />
+		<property name="targetURL" value="https://www.exoclick.com/wp-content/uploads/2017/02/https.jpg" />
+		<property name="spentMoney" value="5" />
 		<property name="isActivated" value="true" />
 		<property name="creditCard" ref="creditCard2" />
 		<property name="parade" ref="parade3" />

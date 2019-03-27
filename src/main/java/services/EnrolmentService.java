@@ -13,33 +13,31 @@ import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
 
-import repositories.EnrolmentRepository;
 import domain.Brotherhood;
 import domain.Enrolment;
 import domain.Member;
 import domain.Position;
 import domain.StatusEnrolment;
+import repositories.EnrolmentRepository;
 
 @Service
 @Transactional
 public class EnrolmentService {
 
 	@Autowired
-	private EnrolmentRepository	enrolmentRepository;
+	private EnrolmentRepository enrolmentRepository;
 
 	@Autowired
-	private MemberService		memberService;
+	private MemberService memberService;
 
 	@Autowired
-	private BrotherhoodService	brotherhoodService;
+	private BrotherhoodService brotherhoodService;
 
 	@Autowired
-	private Validator			validator;
+	private Validator validator;
 
 	@Autowired
-	private MessageService		messageService;
-
-
+	private MessageService messageService;
 
 	public List<Enrolment> findAll() {
 		return this.enrolmentRepository.findAll();
@@ -151,7 +149,6 @@ public class EnrolmentService {
 		return enrolmentSaved;
 	}
 
-
 	public void deleteAllEnrolmentsBrotherhood() {
 		Brotherhood brotherhood = this.brotherhoodService.loggedBrotherhood();
 
@@ -167,8 +164,9 @@ public class EnrolmentService {
 			m.setEnrolments(enrolmentsOfMember);
 			this.memberService.save(m);
 		}
+	}
 
-	//Reject as brotherhood
+	// Reject as brotherhood
 	public void rejectEnrolment(Enrolment enrolment) {
 		this.brotherhoodService.loggedAsBrotherhood();
 		Assert.notNull(enrolment);
@@ -180,7 +178,7 @@ public class EnrolmentService {
 		this.save(enrolment);
 	}
 
-	//Create a pending enrolment as member
+	// Create a pending enrolment as member
 	public boolean enrolmentMemberComprobation(Brotherhood brotherhood) {
 
 		this.memberService.loggedAsMember();
@@ -217,7 +215,6 @@ public class EnrolmentService {
 		enrolment.setDropOutDate(thisMoment);
 		this.enrolmentRepository.save(enrolment);
 		this.messageService.sendNotificationDropOut(enrolment.getBrotherhood());
-
 
 	}
 

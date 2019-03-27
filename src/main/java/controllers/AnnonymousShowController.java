@@ -68,15 +68,20 @@ public class AnnonymousShowController extends AbstractController {
 		ModelAndView result;
 		List<Brotherhood> brotherhoods = new ArrayList<Brotherhood>();
 		boolean cancelButton = false;
+
+		result = new ModelAndView("showAll/annonymous/brotherhood/list");
 		if (brotherhoodId == null)
 			brotherhoods = this.brotherhoodService.findAll();
 		else {
 			Brotherhood bro = this.brotherhoodService.findOne(brotherhoodId);
-			brotherhoods.add(bro);
-			cancelButton = true;
+			if (bro == null) {
+				brotherhoods = this.brotherhoodService.findAll();
+				result.addObject("res", true);
+			} else {
+				brotherhoods.add(bro);
+				cancelButton = true;
+			}
 		}
-
-		result = new ModelAndView("showAll/annonymous/brotherhood/list");
 
 		result.addObject("brotherhoods", brotherhoods);
 		result.addObject("requestURI", "showAll/annonymous/brotherhood/list.do");

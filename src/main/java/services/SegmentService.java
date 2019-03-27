@@ -12,9 +12,13 @@ import org.springframework.validation.Validator;
 
 import domain.Brotherhood;
 import domain.Parade;
+import domain.ParadeStatus;
 import domain.Path;
 import domain.Segment;
 import repositories.SegmentRepository;
+import security.Authority;
+import security.LoginService;
+import security.UserAccount;
 
 @Service
 @Transactional
@@ -30,6 +34,10 @@ public class SegmentService {
 	private BrotherhoodService brotherhoodService;
 	@Autowired
 	private PathService pathService;
+	@Autowired
+	private ChapterService chapterService;
+	@Autowired
+	private ActorService actorService;
 	@Autowired
 	private Validator validator;
 
@@ -73,11 +81,26 @@ public class SegmentService {
 
 	public List<Segment> getSegmentByParade(Integer paradeId) {
 
+		Boolean logguedBro = false;
+		Boolean logguedChapter = false;
 		Parade parade = this.paradeService.findOne(paradeId);
+		if (this.actorService.loggedAsActorBoolean()) {
+			UserAccount userAccount = LoginService.getPrincipal();
+			List<Authority> auth = (List<Authority>) userAccount.getAuthorities();
+			logguedBro = auth.get(0).toString().equals("BROTHERHOOD");
+			logguedChapter = auth.get(0).toString().equals("CHAPTER");
+		}
 
-		if (parade.getIsDraftMode())
+		if (parade.getIsDraftMode() && logguedBro)
 			Assert.isTrue(this.brotherhoodService.loggedBrotherhood().getParades().contains(parade));
-
+		else if (logguedChapter && (parade.getParadeStatus().equals(ParadeStatus.SUBMITTED)
+				|| parade.getParadeStatus().equals(ParadeStatus.REJECTED)))
+			this.chapterService.paradeSecurity(parade);
+		else if ((!parade.getIsDraftMode() && parade.getParadeStatus().equals(ParadeStatus.SUBMITTED))
+				|| (!parade.getIsDraftMode() && parade.getParadeStatus().equals(ParadeStatus.REJECTED)))
+			Assert.isTrue(this.brotherhoodService.loggedBrotherhood().getParades().contains(parade));
+		else
+			Assert.isTrue(parade.getParadeStatus().equals(ParadeStatus.ACCEPTED));
 		return parade.getPath().getSegments();
 	}
 

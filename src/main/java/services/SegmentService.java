@@ -85,7 +85,8 @@ public class SegmentService {
 
 		if (parade.getIsDraftMode() && auth.get(0).toString().equals("BROTHERHOOD"))
 			Assert.isTrue(this.brotherhoodService.loggedBrotherhood().getParades().contains(parade));
-		else if (auth.get(0).toString().equals("CHAPTER"))
+		else if (auth.get(0).toString().equals("CHAPTER") && (parade.getParadeStatus().equals(ParadeStatus.SUBMITTED)
+				|| parade.getParadeStatus().equals(ParadeStatus.REJECTED)))
 			this.chapterService.paradeSecurity(parade);
 		else if ((!parade.getIsDraftMode() && parade.getParadeStatus().equals(ParadeStatus.SUBMITTED))
 				|| (!parade.getIsDraftMode() && parade.getParadeStatus().equals(ParadeStatus.REJECTED)))

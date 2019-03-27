@@ -401,7 +401,7 @@ public class AdminServiceTest extends AbstractTest {
 	public void testParadesDraftVSFinal() {
 		Float query = this.adminRepository.paradesDraftVSFinal();
 		// Compare the query result with the expected result
-		Assert.isTrue(query > 0.16);
+		Assert.isTrue(query > 16);
 	}
 
 	@Test
@@ -415,7 +415,7 @@ public class AdminServiceTest extends AbstractTest {
 	public void testRatioParadesSubmittedRequests() {
 		Float query = this.adminRepository.ratioParadesSubmittedRequests();
 		// Compare the query result with the expected result
-		Assert.isTrue(query > 66.0);
+		Assert.isTrue(query == 50.0);
 	}
 
 	@Test

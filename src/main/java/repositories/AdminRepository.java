@@ -210,13 +210,13 @@ public interface AdminRepository extends JpaRepository<Admin, Integer> {
 	@Query("select c from Chapter c, Brotherhood b where (c.area = b.area) and (b.parades.size > (select avg(b.parades.size) from Brotherhood b, Chapter c where c.area = b.area)*1.1)")
 	public List<Chapter> chaptersThatCoordinateAtLeast();
 
-	@Query("select distinct(cast((select count(p) from Parade p where p.isDraftMode = true) as float)/(select count(u) from Parade u where u.isDraftMode = false)) from Configuration d")
+	@Query("select distinct(cast((select count(p) from Parade p where p.isDraftMode = true) as float)/(select count(u) from Parade u where u.isDraftMode = false)*100) from Configuration d")
 	public Float paradesDraftVSFinal();
 
 	@Query("select distinct (cast((select count(a1.paradeStatus) from Parade a1 where paradeStatus='ACCEPTED') as float)/ (select count(a2) from Parade a2 where a2.isDraftMode = false) * 100) from Configuration a")
 	public Float ratioParadesAcceptedRequests();
 
-	@Query("select distinct (cast((select count(a1.paradeStatus) from Parade a1 where paradeStatus='SUBMITTED') as float)/ (select count(a2) from Parade a2 where a2.isDraftMode = false) * 100) from Configuration a")
+	@Query("select distinct (cast((select count(a1.paradeStatus) from Parade a1 where paradeStatus='SUBMITTED' and a1.isDraftMode = false) as float)/ (select count(a2) from Parade a2 where a2.isDraftMode = false) * 100) from Configuration a")
 	public Float ratioParadesSubmittedRequests();
 
 	@Query("select distinct (cast((select count(a1.paradeStatus) from Parade a1 where paradeStatus='REJECTED') as float)/ (select count(a2) from Parade a2 where a2.isDraftMode = false) * 100) from Configuration a")

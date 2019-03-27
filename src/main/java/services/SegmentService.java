@@ -83,10 +83,13 @@ public class SegmentService {
 		UserAccount userAccount = LoginService.getPrincipal();
 		List<Authority> auth = (List<Authority>) userAccount.getAuthorities();
 
-		if (parade.getIsDraftMode() || auth.get(0).toString().equals("BROTHERHOOD"))
+		if (parade.getIsDraftMode() && auth.get(0).toString().equals("BROTHERHOOD"))
 			Assert.isTrue(this.brotherhoodService.loggedBrotherhood().getParades().contains(parade));
 		else if (auth.get(0).toString().equals("CHAPTER"))
 			this.chapterService.paradeSecurity(parade);
+		else if ((!parade.getIsDraftMode() && parade.getParadeStatus().equals(ParadeStatus.SUBMITTED))
+				|| (!parade.getIsDraftMode() && parade.getParadeStatus().equals(ParadeStatus.REJECTED)))
+			Assert.isTrue(this.brotherhoodService.loggedBrotherhood().getParades().contains(parade));
 		else
 			Assert.isTrue(parade.getParadeStatus().equals(ParadeStatus.ACCEPTED));
 		return parade.getPath().getSegments();

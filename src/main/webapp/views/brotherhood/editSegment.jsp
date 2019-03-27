@@ -20,7 +20,19 @@
 		<acme:textbox code="segment.destinationLongitude" path="destinationLongitude"/>
 		<acme:textbox code="segment.time" path="time"/>
 
+	<jstl:choose>
+	
+		<jstl:when test="${isOrigin}">
 		<acme:submit name="save" code="segment.save"/>
+		</jstl:when>
+		<jstl:otherwise>
+		
+		<button type="submit" name="save" class="btn btn-primary" onClick="return confirm('<spring:message code="confirmation.segment" />')">
+			<spring:message code="segment.save" />
+		</button>
+		</jstl:otherwise>
+		
+	</jstl:choose>
 		
 	<jstl:if test="${segmentId!=0}">
 		<acme:delete code="segment.delete" confirmationMessage="segment.confirmDelete"/>

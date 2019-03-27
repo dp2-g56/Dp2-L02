@@ -37,6 +37,8 @@ public class SegmentService {
 	@Autowired
 	private ChapterService chapterService;
 	@Autowired
+	private ActorService actorService;
+	@Autowired
 	private Validator validator;
 
 	// Simple CRUD methods ------------------------------------------
@@ -79,13 +81,19 @@ public class SegmentService {
 
 	public List<Segment> getSegmentByParade(Integer paradeId) {
 
+		Boolean logguedBro = false;
+		Boolean logguedChapter = false;
 		Parade parade = this.paradeService.findOne(paradeId);
-		UserAccount userAccount = LoginService.getPrincipal();
-		List<Authority> auth = (List<Authority>) userAccount.getAuthorities();
+		if (this.actorService.loggedAsActorBoolean()) {
+			UserAccount userAccount = LoginService.getPrincipal();
+			List<Authority> auth = (List<Authority>) userAccount.getAuthorities();
+			logguedBro = auth.get(0).toString().equals("BROTHERHOOD");
+			logguedChapter = auth.get(0).toString().equals("CHAPTER");
+		}
 
-		if (parade.getIsDraftMode() && auth.get(0).toString().equals("BROTHERHOOD"))
+		if (parade.getIsDraftMode() && logguedBro)
 			Assert.isTrue(this.brotherhoodService.loggedBrotherhood().getParades().contains(parade));
-		else if (auth.get(0).toString().equals("CHAPTER") && (parade.getParadeStatus().equals(ParadeStatus.SUBMITTED)
+		else if (logguedChapter && (parade.getParadeStatus().equals(ParadeStatus.SUBMITTED)
 				|| parade.getParadeStatus().equals(ParadeStatus.REJECTED)))
 			this.chapterService.paradeSecurity(parade);
 		else if ((!parade.getIsDraftMode() && parade.getParadeStatus().equals(ParadeStatus.SUBMITTED))

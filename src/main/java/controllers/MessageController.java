@@ -248,9 +248,15 @@ public class MessageController extends AbstractController {
 		Actor actor = new Actor();
 		String locale = LocaleContextHolder.getLocale().getLanguage();
 
+		Actor deleted = this.actorService.getActorByUsername("DELETED");
+		Actor system = this.actorService.getActorByUsername("system");
+
 		actor = this.actorService.getActorByUsername(username);
 		List<Actor> actors = new ArrayList<Actor>();
 		actors = this.actorService.findAll();
+
+		actors.remove(deleted);
+		actors.remove(system);
 
 		List<Box> actorBoxes = new ArrayList<Box>();
 		actorBoxes = this.actorService.getlistOfBoxes(actor);
@@ -290,10 +296,14 @@ public class MessageController extends AbstractController {
 		String username = userAccount.getUsername();
 		Actor actor = new Actor();
 		String locale = LocaleContextHolder.getLocale().getLanguage();
+		Actor deleted = this.actorService.getActorByUsername("DELETED");
+		Actor system = this.actorService.getActorByUsername("system");
 
 		actor = this.actorService.getActorByUsername(username);
 		List<Actor> actors = new ArrayList<Actor>();
 		actors = this.actorService.findAll();
+		actors.remove(deleted);
+		actors.remove(system);
 
 		List<Box> actorBoxes = new ArrayList<Box>();
 		actorBoxes = this.actorService.getlistOfBoxes(actor);

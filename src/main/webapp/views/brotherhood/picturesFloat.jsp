@@ -8,6 +8,7 @@
 	uri="http://www.springframework.org/security/tags"%>
 <%@taglib prefix="display" uri="http://displaytag.sf.net"%>
 <%@taglib prefix="acme" tagdir="/WEB-INF/tags"%>
+<%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 
 <p>
 	<spring:message code="brotherhood.pictures" />
@@ -22,10 +23,13 @@
 		</display:column>
 	</display:table>
 	
+	  <jstl:if test="${!isInFinal}">
 	<spring:url var="picturesURL" value="/float/brotherhood/picture/create.do?floatId=${floatId}&parade=${parade}"> 
 	  </spring:url>
+	
 	  <a href="${picturesURL}">
           <spring:message code="pictures.create" /></a>
+      </jstl:if>
 	
 	<jstl:choose>
 		<jstl:when test="${!parade}" >

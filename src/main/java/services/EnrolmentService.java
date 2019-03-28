@@ -218,4 +218,8 @@ public class EnrolmentService {
 
 	}
 
+	public void deleteInBatch(List<Enrolment> list) {
+		this.enrolmentRepository.deleteInBatch(list);
+	}
+
 }

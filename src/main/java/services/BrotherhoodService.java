@@ -569,7 +569,7 @@ public class BrotherhoodService {
 		//this.save(brotherhood);
 		//this.enrolmentService.deleteAllEnrolmentsBrotherhood();
 		//this.paradeService.deleteAllParadesTest();
-		//	this.floatService.deleteAllFloatsBrotherhood();
+		this.floatService.deleteAllFloatsBrotherhood();
 
 		//this.save(brotherhood);
 		this.flush();

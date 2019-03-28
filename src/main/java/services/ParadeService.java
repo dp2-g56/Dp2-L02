@@ -610,6 +610,13 @@ public class ParadeService {
 		List<Float> floats = new ArrayList<>();
 		parade.setFloats(floats);
 
+		if (parade.getPath() != null) {
+			Path path = new Path();
+			path = parade.getPath();
+			parade.setPath(null);
+			this.pathService.delete(path);
+		}
+
 		List<Parade> parades = loggedBrotherhood.getParades();
 		parades.remove(parade);
 		loggedBrotherhood.setParades(parades);

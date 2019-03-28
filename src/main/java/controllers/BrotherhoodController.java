@@ -66,6 +66,13 @@ public class BrotherhoodController extends AbstractController {
 		ModelAndView result;
 
 		List<String> pictures = this.floatService.getPicturesOfFloat(floatId, parade);
+		Boolean isInFinal = false;
+		List<domain.Float> floatFinalMode = new ArrayList<domain.Float>();
+		floatFinalMode = this.floatService.floatsInParadeInFinalMode();
+		domain.Float floatt = this.floatService.findOne(floatId);
+
+		if (floatFinalMode.contains(floatt))
+			isInFinal = true;
 
 		result = new ModelAndView("picture/brotherhood/picturesFloat");
 
@@ -73,6 +80,7 @@ public class BrotherhoodController extends AbstractController {
 		result.addObject("requestURI", "float/brotherhood/picture/list.do");
 		result.addObject("parade", parade);
 		result.addObject("floatId", floatId);
+		result.addObject("isInFinal", isInFinal);
 
 		return result;
 	}
@@ -105,6 +113,8 @@ public class BrotherhoodController extends AbstractController {
 			}
 		} catch (Throwable oops) {
 			result = new ModelAndView("picture/brotherhood/createPicture");
+			result.addObject("floatId", floatId);
+			result.addObject("parade", parade);
 
 		}
 
